@@ -3,6 +3,7 @@ export const en = {
     login1: 'Continue with Apple',
     login2: 'Continue with Google',
     login3: 'Continue with Facebook',
+    seed: 'Login with existing Terra wallet',
   },
   agreeView: {
     button: 'Trade at your own risk',
@@ -330,6 +331,14 @@ export const en = {
     step3Content:
       'Users will be airdropped prizes prorated by their total trading volume.',
   },
+  recoveryWalletView: {
+    title: 'Restore Wallet',
+    subTitle:
+      'Restore an existing Terra wallet with the associated 24 word seed phrase that you have written down.',
+    paste: 'PASTE',
+    inputPlaceHolder: 'Enter your seed phrase here',
+    confirm: 'Confirm',
+  },
 }
 
 export const ko = {
@@ -337,6 +346,7 @@ export const ko = {
     login1: 'Continue with Apple',
     login2: 'Continue with Google',
     login3: 'Continue with Facebook',
+    seed: 'Login with existing Terra wallet',
   },
   agreeView: {
     button: 'Trade at your own risk',
@@ -663,5 +673,13 @@ export const ko = {
     step3: 'Step 3',
     step3Content:
       'Users will be airdropped prizes prorated by their total trading volume.',
+  },
+  recoveryWalletView: {
+    title: 'Restore Wallet',
+    subTitle:
+      'Restore an existing Terra wallet with the associated 24 word seed phrase that you have written down.',
+    paste: 'PASTE',
+    inputPlaceHolder: 'Enter your seed phrase here',
+    confirm: 'Confirm',
   },
 }

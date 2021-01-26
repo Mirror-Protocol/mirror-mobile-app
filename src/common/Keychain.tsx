@@ -64,7 +64,7 @@ export async function setCurrentChain(chain: string) {
 export async function getCurrentChain() {
   const chain = await preferences.getString(PrefKeys.currentChain)
   if (chain === undefined || chain === '') {
-    return Config.isDev ? 'moonshine' : 'columbus'
+    return Config.isDev ? 'tequila' : 'columbus'
   }
 
   return chain
@@ -174,7 +174,6 @@ export function setPasswordLock(time: number) {
 
 export async function getPasswordLock() {
   const response = await preferences.getString(PrefKeys.PasswordLock)
-
   if (response == null || response == undefined || response == '') {
     return 0
   }
@@ -187,7 +186,6 @@ export async function setSkipOnboarding() {
 
 export async function getSkipOnboarding() {
   const response = await preferences.getBool(PrefKeys.skipOnboarding)
-
   if (response === null || response === undefined) return false
   else return response
 }

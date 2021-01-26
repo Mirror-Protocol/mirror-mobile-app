@@ -261,9 +261,8 @@ export function PinSecurityView(props: { route: any; navigation: any }) {
 
           Keychain.setLoginType(props.route.params.typeOfLogin)
 
-          let email = undefined
           try {
-            await Api.setConnect(email)
+            await Api.setConnect(undefined)
           } catch (e) {}
 
           try {

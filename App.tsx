@@ -42,11 +42,12 @@ import SplashScreen from 'react-native-splash-screen'
 import RNExitApp from 'react-native-exit-app'
 import * as Keychain from './src/common/Keychain'
 
-// Workaround for bad RN URL() behavior
 import 'react-native-url-polyfill/auto'
 import * as gql from './src/common/Apis/gql'
 import * as api from './src/common/Apis/Api'
 import { VersionView } from './src/views/wallet/setting/VersionView'
+import { RecoveryWalletView } from './src/views/init/RecoveryWalletView'
+import { SelectWalletView } from './src/views/init/SelectWalletView'
 
 const App = () => {
   const [isLoadingChainConfig, setLoadingChainConfig] = useState(false)
@@ -189,6 +190,18 @@ function SplashScreenStack() {
       <SplashStack.Screen
         name='InitialView'
         component={InitialView}
+        options={{ headerShown: false }}
+      />
+
+      <SplashStack.Screen
+        name='RecoveryWalletView'
+        component={RecoveryWalletView}
+        options={{ headerShown: false }}
+      />
+
+      <SplashStack.Screen
+        name='SelectWalletView'
+        component={SelectWalletView}
         options={{ headerShown: false }}
       />
 

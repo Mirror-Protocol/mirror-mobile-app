@@ -167,7 +167,6 @@ export function SettingView(props: { navigation: any }) {
         {Config.isDev && (
           <>
             <SelectChain setChangeConfig={setChangeConfig} />
-            <SelectTorus setChangeConfig={setChangeConfig} />
             <ResetApp />
           </>
         )}
@@ -459,7 +458,7 @@ function SelectChain(props: { setChangeConfig: (b: boolean) => void }) {
       <ReactNativePickerModule
         pickerRef={pickerRef as any}
         value={currentChain}
-        items={['columbus', 'moonshine', 'tequila']}
+        items={['columbus', 'tequila']}
         onValueChange={(value) => {
           setCurrentChain(value)
           Keychain.setCurrentChain(value).then(() => {

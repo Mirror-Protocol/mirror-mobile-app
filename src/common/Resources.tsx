@@ -23,6 +23,7 @@ export const Colors = {
   veryLightPinkTwo: '#eaeaea',
   white: '#ffffff',
   brightTeal: '#00edc7',
+  brightTealTransparent: '#00edc766',
   aquamarine: '#01e0bc',
   sea: '#329f87',
   darkGreenBlue: '#296d60',

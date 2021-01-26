@@ -2,7 +2,7 @@ import React, { useState, useCallback, useContext } from 'react'
 import { View, Text, Image, Alert, Platform } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native'
 import LottieView from 'lottie-react-native'
-import { RectButton } from 'react-native-gesture-handler'
+import { RectButton, TouchableOpacity } from 'react-native-gesture-handler'
 import * as Resources from '../../common/Resources'
 import * as Keychain from '../../common/Keychain'
 import { PasscodeMode } from '../common/PinSecurityView'
@@ -218,6 +218,24 @@ export function InitialView(props: { navigation: any; route: any }) {
               passPressed('facebook')
             }}
           />
+          <View style={{ height: 12 }} />
+          <TouchableOpacity
+            onPress={() => {
+              props.navigation.navigate('RecoveryWalletView')
+            }}
+          >
+            <Text
+              style={{
+                fontFamily: Resources.Fonts.medium,
+                fontSize: 14,
+                letterSpacing: -0.3,
+                color: Resources.Colors.brownishGrey,
+                alignSelf: 'center',
+              }}
+            >
+              {translations.initialView.seed}
+            </Text>
+          </TouchableOpacity>
         </View>
       ) : (
         <View />
