@@ -1,6 +1,7 @@
 import { CommonActions } from '@react-navigation/native'
 import BigNumber from 'bignumber.js'
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback'
+import { currencies } from './Currencies'
 
 const months = [
   'Jan',
@@ -46,20 +47,8 @@ export function hexToArray(_value: string): number[] {
 }
 
 export function getDenom(udenom: string): string {
-  if (udenom == 'uusd') {
-    return 'UST'
-  }
-  if (udenom == 'uluna') {
-    return 'Luna'
-  }
-  if (udenom == 'ukrw') {
-    return 'KRT'
-  }
-  if (udenom == 'umnt') {
-    return 'MNT'
-  }
-  if (udenom == 'usdr') {
-    return 'SDT'
+  if (udenom.startsWith('u')) {
+    return getDenomWithoutMasset(udenom)
   } else if (
     (udenom.startsWith('m') || udenom.startsWith('u')) &&
     udenom.length > 1
@@ -70,6 +59,27 @@ export function getDenom(udenom: string): string {
   }
 
   return udenom
+}
+
+export function getDenomWithoutMasset(udenom: string): string {
+  const invalid = !udenom || !udenom.startsWith('u')
+  const unit = udenom.slice(1).toUpperCase()
+  return invalid
+    ? ''
+    : unit === 'LUNA'
+    ? 'Luna'
+    : currencies.includes(unit)
+    ? unit.slice(0, 2) + 'T'
+    : unit
+}
+
+export function getDenomImageWithoutMasset(udenom: string): string {
+  const denom = getDenomWithoutMasset(udenom)
+  const convDenom = denom.charAt(0).toUpperCase() + denom.toLowerCase().slice(1)
+
+  const uri = `https://mirror.finance/assets/logos/logo${convDenom}.png`
+
+  return uri
 }
 
 export function getCutNumber(n: BigNumber, precision: number): BigNumber {
@@ -164,6 +174,7 @@ export function getDateFormat1(date: Date): string {
 
 export function getDateFormat2(timestamp: number): string {
   const date = new Date(timestamp)
+
   const hour = get2Digit24Hour(date)
   const minutes = get2DigitMinutes(date)
 
@@ -189,6 +200,7 @@ export function getDateFormat3(date: Date): string {
 
 export function getDateFormat4(timestamp: number): string {
   const date = new Date(timestamp)
+
   const hour = get2Digit24Hour(date)
   const minutes = get2DigitMinutes(date)
 

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Text, View, Image, Platform } from 'react-native'
 import * as Resources from '../../../common/Resources'
 import * as Utils from '../../../common/Utils'
@@ -248,17 +248,9 @@ function CardView(props: {
         }}
       >
         <Image
-          source={
-            props.denom == 'uusd'
-              ? Resources.Images.logoUst
-              : props.denom == 'ukrw'
-              ? Resources.Images.logoKrt
-              : props.denom == 'umnt'
-              ? Resources.Images.logoMnt
-              : props.denom == 'usdr'
-              ? Resources.Images.logoSdt
-              : Resources.Images.logoLuna
-          }
+          source={{
+            uri: Utils.getDenomImageWithoutMasset(props.denom),
+          }}
           style={{
             width: 22,
             height: 22,
@@ -275,7 +267,7 @@ function CardView(props: {
             color: Resources.Colors.veryLightPinkTwo,
           }}
         >
-          {Utils.getDenom(props.denom)}
+          {Utils.getDenomWithoutMasset(props.denom)}
         </Text>
         <Image
           source={Resources.Images.chevronR10G}
@@ -411,6 +403,18 @@ function CardViewDark(props: {
 }) {
   const showConverted = props.denom != Keychain.baseCurrency
 
+  const [icon, setIcon] = useState<string>()
+  useEffect(() => {
+    const getDenomIcon = async (udenom: string): Promise<string> => {
+      const uri = Utils.getDenomImageWithoutMasset(udenom)
+      const ret = await fetch(uri, { method: 'GET' })
+      return ret.status === 200
+        ? uri
+        : 'https://mirror.finance/assets/logos/logoTerra.png'
+    }
+    getDenomIcon(props.denom).then((ret) => ret !== '' && setIcon(ret))
+  }, [])
+
   return (
     <View
       style={{
@@ -445,17 +449,9 @@ function CardViewDark(props: {
           style={{ flexDirection: 'row' }}
         >
           <Image
-            source={
-              props.denom == 'uusd'
-                ? Resources.Images.logoUst
-                : props.denom == 'ukrw'
-                ? Resources.Images.logoKrt
-                : props.denom == 'umnt'
-                ? Resources.Images.logoMnt
-                : props.denom == 'usdr'
-                ? Resources.Images.logoSdt
-                : Resources.Images.logoLuna
-            }
+            source={{
+              uri: icon,
+            }}
             style={{
               width: 22,
               height: 22,
@@ -471,7 +467,7 @@ function CardViewDark(props: {
               color: Resources.Colors.veryLightPinkTwo,
             }}
           >
-            {Utils.getDenom(props.denom)}
+            {Utils.getDenomWithoutMasset(props.denom)}
           </Text>
           <Image
             source={Resources.Images.chevronR10G}

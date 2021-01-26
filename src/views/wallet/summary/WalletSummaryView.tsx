@@ -60,15 +60,9 @@ export function WalletSummaryView(props: { navigation: any }) {
       converted: BigNumber
     }[] = []
 
-    const sortOrder = ['uusd', 'ukrw', 'umnt', 'usdr', 'uluna']
-    for (let i = 0; i < sortOrder.length; i++) {
-      for (let j = 0; j < _balances.length; j++) {
-        if (_balances[j].denom == sortOrder[i]) {
-          balances.push(_balances[j])
-          break
-        }
-      }
-    }
+    _balances.map((v) =>
+      v.denom === 'uusd' ? balances.unshift(v) : balances.push(v)
+    )
 
     let uusdTotal = new BigNumber(0)
     for (let i = 0; i < balances.length; i++) {
