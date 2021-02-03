@@ -9,6 +9,7 @@ import ThrottleButton from '../../component/ThrottleButton'
 import * as Resources from '../../common/Resources'
 import * as Keychain from '../../common/Keychain'
 import * as Utils from '../../common/Utils'
+import BtnBack from '../../component/BtnBack'
 
 export const SelectWalletView = (props: { navigation: any; route: any }) => {
   const { translations } = useContext(ConfigContext)
@@ -174,6 +175,7 @@ export const SelectWalletView = (props: { navigation: any; route: any }) => {
         paddingTop: safeInsetTop,
       }}
     >
+      <BtnBack onPress={() => props.navigation.pop()} />
       {empty118 && (
         <>
           <ScrollView>

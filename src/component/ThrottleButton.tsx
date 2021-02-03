@@ -1,6 +1,6 @@
 import React, { ReactNode, useEffect, useState } from 'react'
-import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native'
-import { RectButton } from 'react-native-gesture-handler'
+import { StyleProp, ViewStyle } from 'react-native'
+import { RectButton, TouchableOpacity } from 'react-native-gesture-handler'
 
 const DEFAULT_DELAY = 1000
 

@@ -1,6 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import {
   ActivityIndicator,
+  Animated,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -8,29 +9,71 @@ import {
   Text,
   View,
 } from 'react-native'
-import { TextInput, TouchableOpacity } from 'react-native-gesture-handler'
+import {
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from 'react-native-gesture-handler'
 import { ConfigContext } from '../../common/provider/ConfigProvider'
 import * as Resources from '../../common/Resources'
 import ThrottleButton from '../../component/ThrottleButton'
 import { validateMnemonic, getMnemonicKeys } from '@terra-money/key-utils'
 import * as Config from '../../common/Apis/Config'
 import { StackActions } from '@react-navigation/native'
+import BtnBack from '../../component/BtnBack'
 
-const useKeyboardState = () => {
+export const RecoveryWalletView = (props: { navigation: any; route: any }) => {
+  const { translations } = useContext(ConfigContext)
+  const safeInsetTop = Resources.getSafeLayoutInsets().top
+  const safeInsetBottom = Resources.getSafeLayoutInsets().bottom
   const [isKeyboardShow, setKeyboardShow] = useState(false)
 
+  const bottomMargin = useRef(new Animated.Value(safeInsetBottom + 40)).current
+  const animDuration = 200
+  const startDownAnim = () => {
+    Animated.parallel([
+      Animated.timing(bottomMargin, {
+        toValue: safeInsetBottom + 40,
+        duration: animDuration,
+        delay: 0,
+        useNativeDriver: false,
+      }),
+    ]).start()
+  }
+
+  const startUpAnim = () => {
+    Animated.parallel([
+      Animated.timing(bottomMargin, {
+        toValue: 0,
+        duration: animDuration,
+        delay: 0,
+        useNativeDriver: false,
+      }),
+    ]).start()
+  }
+
   useEffect(() => {
-    const show = () => setKeyboardShow(true)
+    const show = () => {
+      setKeyboardShow(true)
+      startUpAnim()
+    }
+    Keyboard.addListener('keyboardWillShow', show)
     Keyboard.addListener('keyboardDidShow', show)
     return () => {
+      Keyboard.removeListener('keyboardWillShow', show)
       Keyboard.removeListener('keyboardDidShow', show)
     }
   }, [])
 
   useEffect(() => {
-    const hide = () => setKeyboardShow(false)
+    const hide = () => {
+      setKeyboardShow(false)
+      startDownAnim()
+    }
+    Keyboard.addListener('keyboardWillHide', hide)
     Keyboard.addListener('keyboardDidHide', hide)
     return () => {
+      Keyboard.removeListener('keyboardWillHide', hide)
       Keyboard.removeListener('keyboardDidHide', hide)
     }
   }, [])
@@ -38,15 +81,6 @@ const useKeyboardState = () => {
   const hideKeyboard = () => {
     Keyboard.dismiss()
   }
-
-  return { isKeyboardShow, hideKeyboard }
-}
-
-export const RecoveryWalletView = (props: { navigation: any; route: any }) => {
-  const { translations } = useContext(ConfigContext)
-  const { isKeyboardShow, hideKeyboard } = useKeyboardState()
-  const safeInsetTop = Resources.getSafeLayoutInsets().top
-  const safeInsetBottom = Resources.getSafeLayoutInsets().bottom
 
   const [wordCount, setWordCount] = useState(0)
   const [confirmEnable, setConfirmEnable] = useState(true)
@@ -57,11 +91,13 @@ export const RecoveryWalletView = (props: { navigation: any; route: any }) => {
 
   useEffect(() => {
     setWordCount(getWordCount(mk))
-    setConfirmEnable(validateMnemonic(mk.trim()))
+    setConfirmEnable(validateMnemonic(trimMnemonicWords(mk)))
   }, [mk])
 
   const trimMnemonicWords = (words: string): string => {
-    return words.trim().replace(/\n/g, ' ')
+    const w = words.trim().replace(/\n/g, ' ')
+    console.log(w)
+    return w
   }
 
   const getWordCount = (words: string): number => {
@@ -98,108 +134,95 @@ export const RecoveryWalletView = (props: { navigation: any; route: any }) => {
     <>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={[styles.container, { paddingTop: safeInsetTop }]}
+        style={styles.container}
       >
-        <View style={{ flex: 1 }}>
-          {!isKeyboardShow && (
-            <View
-              style={{
-                marginTop: 100,
-              }}
-            >
-              <Text style={styles.title}>
-                {translations.recoveryWalletView.title}
-              </Text>
-              <Text style={styles.subTitle}>
-                {translations.recoveryWalletView.subTitle}
-              </Text>
-            </View>
-          )}
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              marginHorizontal: 24,
-              marginTop: 50,
-              marginBottom: 16,
-            }}
-          >
-            <View style={{ flexDirection: 'row' }}>
-              <Text
-                style={{
-                  fontFamily: Resources.Fonts.book,
-                  fontSize: 12,
-                  letterSpacing: -0.3,
-                  color: Resources.Colors.veryLightPinkTwo,
-                }}
-              >
-                {wordCount}
-              </Text>
-              <Text
-                style={{
-                  fontFamily: Resources.Fonts.book,
-                  fontSize: 12,
-                  letterSpacing: -0.3,
-                  color: Resources.Colors.brownishGrey,
-                }}
-              >
-                {'/24'}
-              </Text>
-            </View>
-            <TouchableOpacity
-              onPress={() => {
-                Resources.pasteClipboard().then((value) => setMk(value))
-              }}
-            >
-              <Text style={styles.paste}>
-                {translations.recoveryWalletView.paste}
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <TextInput
-            keyboardAppearance='dark'
-            keyboardType='default'
-            multiline={true}
-            placeholder={translations.recoveryWalletView.inputPlaceHolder}
-            placeholderTextColor={Resources.Colors.brownishGrey}
-            underlineColorAndroid='transparent'
-            style={[
-              styles.seedInput,
-              {
-                flex: isKeyboardShow ? 1 : undefined,
-              },
-            ]}
-            onChangeText={(text) => {
-              setMk(text)
-            }}
-            value={mk}
-          />
-        </View>
-        <ThrottleButton
-          type='TouchableOpacity'
-          style={[
-            styles.confirmButton,
-            {
-              backgroundColor: confirmEnable
-                ? Resources.Colors.brightTeal
-                : Resources.Colors.darkGreyTwo,
-            },
-          ]}
-          onPress={() => createWallet()}
+        <TouchableWithoutFeedback
+          containerStyle={{ flex: 1 }}
+          style={{
+            flex: 1,
+            paddingTop: safeInsetTop,
+          }}
+          onPress={() => {
+            Keyboard.dismiss()
+          }}
         >
-          <Text
-            style={[
-              styles.confirmText,
-              {
-                color: confirmEnable
-                  ? Resources.Colors.black
-                  : Resources.Colors.greyishBrown,
-              },
-            ]}
-          >
-            {translations.recoveryWalletView.confirm}
-          </Text>
-        </ThrottleButton>
+          <>
+            <BtnBack onPress={() => props.navigation.pop()} />
+            {!isKeyboardShow && (
+              <View style={{ marginTop: 100 }}>
+                <Text style={styles.title}>
+                  {translations.recoveryWalletView.title}
+                </Text>
+                <Text style={styles.subTitle}>
+                  {translations.recoveryWalletView.subTitle}
+                </Text>
+              </View>
+            )}
+            <View style={styles.wordCountContainer}>
+              <View style={{ flexDirection: 'row' }}>
+                <Text style={styles.wordCountText}>{wordCount}</Text>
+                <Text style={styles.wordCountText2}>{'/24'}</Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  Resources.pasteClipboard().then((value) => setMk(value))
+                }}
+              >
+                <Text style={styles.paste}>
+                  {translations.recoveryWalletView.paste}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <TextInput
+              keyboardAppearance='dark'
+              keyboardType='default'
+              multiline={true}
+              placeholder={translations.recoveryWalletView.inputPlaceHolder}
+              placeholderTextColor={Resources.Colors.brownishGrey}
+              underlineColorAndroid='transparent'
+              style={[
+                styles.seedInput,
+                {
+                  height: isKeyboardShow ? 200 : undefined,
+                },
+              ]}
+              onChangeText={(text) => {
+                setMk(text)
+              }}
+              value={mk}
+            />
+            <View style={{ flex: 1 }} />
+
+            <ThrottleButton
+              type='TouchableOpacity'
+              style={[
+                isKeyboardShow
+                  ? styles.confirmButtonWithoutRadius
+                  : styles.confirmButton,
+                {
+                  backgroundColor: confirmEnable
+                    ? Resources.Colors.brightTeal
+                    : Resources.Colors.darkGreyTwo,
+                },
+              ]}
+              onPress={() => createWallet()}
+            >
+              <Text
+                style={[
+                  styles.confirmText,
+                  {
+                    color: confirmEnable
+                      ? Resources.Colors.black
+                      : Resources.Colors.greyishBrown,
+                  },
+                ]}
+              >
+                {translations.recoveryWalletView.confirm}
+              </Text>
+            </ThrottleButton>
+            <Animated.View style={{ height: bottomMargin }} />
+          </>
+        </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
       {isAwait && (
         <View
@@ -247,6 +270,7 @@ const styles = StyleSheet.create({
     letterSpacing: -0.3,
   },
   seedInput: {
+    flex: 1,
     borderRadius: 16,
     backgroundColor: Resources.Colors.darkGreyTwo,
     marginHorizontal: 24,
@@ -262,8 +286,15 @@ const styles = StyleSheet.create({
   confirmButton: {
     borderRadius: 30,
     height: 48,
-    marginVertical: 40,
+    marginTop: 40,
     marginHorizontal: 24,
+
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  confirmButtonWithoutRadius: {
+    height: 48,
+    marginTop: 40,
 
     alignItems: 'center',
     justifyContent: 'center',
@@ -273,5 +304,26 @@ const styles = StyleSheet.create({
     color: Resources.Colors.black,
     fontSize: 18,
     letterSpacing: -0.5,
+  },
+
+  wordCountContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: 24,
+    marginTop: 50,
+    marginBottom: 16,
+  },
+
+  wordCountText: {
+    fontFamily: Resources.Fonts.book,
+    fontSize: 12,
+    letterSpacing: -0.3,
+    color: Resources.Colors.veryLightPinkTwo,
+  },
+  wordCountText2: {
+    fontFamily: Resources.Fonts.book,
+    fontSize: 12,
+    letterSpacing: -0.3,
+    color: Resources.Colors.brownishGrey,
   },
 })
