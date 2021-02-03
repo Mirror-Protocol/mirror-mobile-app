@@ -38,7 +38,6 @@ enum PrefKeys {
 }
 
 export const baseCurrency = 'uusd'
-export const otherCurrencies = ['ukrw', 'usdr', 'umnt', 'uluna']
 export const baseCurrencyDenom = 'UST'
 
 const preferences = NativeModules.RnPreferences

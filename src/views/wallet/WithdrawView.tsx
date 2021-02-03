@@ -90,10 +90,7 @@ export function WithdrawView(props: { route: any; navigation: any }) {
     let balance = new BigNumber(0)
     let fee = new BigNumber(0)
 
-    if (
-      symbol == Keychain.baseCurrency ||
-      Keychain.otherCurrencies.includes(symbol)
-    ) {
+    if (!symbol.startsWith('m')) {
       const balances = await Api.getBalances()
       const item = balances.filter((item) => {
         return item.denom == symbol

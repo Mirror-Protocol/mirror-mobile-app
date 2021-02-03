@@ -1,4 +1,16 @@
 export const isDev = true
+export const reviewApp = false
+
+export const hideOnboarding = reviewApp
+export const hideBuysellButton = reviewApp
+export const hideMoonpay = reviewApp
+export const useOtherAgreement = reviewApp
+export const hideMassetDetail = reviewApp
+export const hideAppleAsset = reviewApp
+export const changeBuyingPowerToBalance = reviewApp
+export const changeInvestWithMirrorToDepositToMirror = reviewApp
+export const changeInvestToMarket = reviewApp
+export const hideWalletCategory = reviewApp
 
 export let currentChain: string | undefined = undefined
 export function setCurrentChain(chain: string) {
@@ -19,6 +31,8 @@ const domain = {
     gqlPriceClientDomain: 'https://graph.mirror.finance/graphql',
 
     assetsAddress: 'https://whitelist.mirror.finance/columbus.json',
+
+    gasPrices: 'https://fcd.terra.dev/v1/txs/gas_prices',
   },
   moonshine: {
     chainDomain: 'https://moonshine-lcd.terra.dev',
@@ -28,6 +42,8 @@ const domain = {
     gqlPriceClientDomain: 'https://moonshine-graph.mirror.finance/graphql',
 
     assetsAddress: 'https://whitelist.mirror.finance/moonshine.json',
+
+    gasPrices: 'https://tequila-fcd.terra.dev/v1/txs/gas_prices',
   },
   tequila: {
     chainDomain: 'https://tequila-lcd.terra.dev',
@@ -37,6 +53,8 @@ const domain = {
     gqlPriceClientDomain: 'https://tequila-graph.mirror.finance/graphql',
 
     assetsAddress: 'https://whitelist.mirror.finance/tequila.json',
+
+    gasPrices: 'https://tequila-fcd.terra.dev/v1/txs/gas_prices',
   },
 }
 

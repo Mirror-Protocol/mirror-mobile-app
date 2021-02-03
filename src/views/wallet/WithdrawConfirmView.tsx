@@ -41,10 +41,11 @@ export function WithdrawConfirmView(props: { route: any; navigation: any }) {
       feeDenom = symbol
       setFeeEnough(true)
     } else if (
-      symbol == 'uusd' ||
-      symbol == 'ukrw' ||
-      symbol == 'umnt' ||
-      symbol == 'usdr'
+      !symbol.startsWith('m')
+      // symbol == 'uusd' ||
+      // symbol == 'ukrw' ||
+      // symbol == 'umnt' ||
+      // symbol == 'usdr'
     ) {
       fee = Api.feeFromDenom(symbol)
       const taxRate = await Api.getTaxRate()

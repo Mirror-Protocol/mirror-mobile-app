@@ -15,22 +15,6 @@ import {
   MsgSwap,
 } from '@terra-money/terra.js'
 import * as gql from './gql'
-import { Dictionary } from 'ramda/tools'
-
-const GAS_PRICES_MAINNET: Dictionary<string> = {
-  uluna: '0.00506',
-  uusd: '0.0015',
-  usdr: '0.00102',
-  ukrw: '1.7805',
-  umnt: '4.31626',
-}
-const GAS_PRICES_TESTNET: Dictionary<string> = {
-  uluna: '0.15',
-  uusd: '0.15',
-  usdr: '0.1018',
-  ukrw: '178.05',
-  umnt: '431.6259',
-}
 
 let GAS_PRICES: any = undefined
 export const gas = new BigNumber(333333)
@@ -40,9 +24,8 @@ export function feeFromDenom(denom: string) {
   return new BigNumber(Math.ceil(gas.times(GAS_PRICES[denom]).toNumber()))
 }
 
-export function setGasPrice() {
-  GAS_PRICES =
-    Config.currentChain === 'columbus' ? GAS_PRICES_MAINNET : GAS_PRICES_TESTNET
+export async function setGasPrice() {
+  GAS_PRICES = (await get(Config.currentDomain.gasPrices)).data
   fee = new BigNumber(Config.currentChain === 'columbus' ? 500 : 50000)
 }
 
