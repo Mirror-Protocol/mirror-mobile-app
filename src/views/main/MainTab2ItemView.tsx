@@ -15,8 +15,9 @@ export function MainTab2ItemView(props: {
   showPercent: boolean
 }) {
   const item = props._item.item as GQL_AssetList1
-
   if (item.symbol.toLowerCase() === 'mir') return null
+
+  const disable = item.price === 'NaN' ? true : false
 
   return (
     <View
@@ -36,12 +37,12 @@ export function MainTab2ItemView(props: {
           flexDirection: 'row',
         }}
         onPress={() => {
-          props.detailPressed(item.symbol)
+          disable === false && props.detailPressed(item.symbol)
         }}
       >
-        <IconView symbol={item.symbol} />
+        <IconView symbol={item.symbol} disable={disable} />
 
-        <InfoView symbol={item.symbol} name={item.name} />
+        <InfoView symbol={item.symbol} name={item.name} disable={disable} />
       </ThrottleButton>
 
       <PriceView
@@ -49,12 +50,13 @@ export function MainTab2ItemView(props: {
         showPercent={props.showPercent}
         dayDiff={item.dayDiff}
         price={item.price}
+        disable={disable}
       />
     </View>
   )
 }
 
-function IconView(props: { symbol: string }) {
+function IconView(props: { symbol: string; disable: boolean }) {
   const [noIcon, setNoIcon] = useState(false)
 
   return (
@@ -74,6 +76,7 @@ function IconView(props: { symbol: string }) {
           display: !noIcon ? 'flex' : 'none',
           width: 22,
           height: 22,
+          opacity: props.disable ? 0.3 : undefined,
         }}
         onLoadStart={() => {
           setNoIcon(false)
@@ -98,7 +101,7 @@ function IconView(props: { symbol: string }) {
   )
 }
 
-function InfoView(props: { symbol: string; name: string }) {
+function InfoView(props: { symbol: string; name: string; disable: boolean }) {
   return (
     <View
       style={{
@@ -110,7 +113,9 @@ function InfoView(props: { symbol: string; name: string }) {
     >
       <Text
         style={{
-          color: Resources.Colors.veryLightPinkTwo,
+          color: props.disable
+            ? Resources.Colors.greyishBrown
+            : Resources.Colors.veryLightPinkTwo,
           fontFamily: Resources.Fonts.medium,
           fontSize: 24,
           letterSpacing: -0.3,
@@ -140,6 +145,7 @@ function PriceView(props: {
   showPercent: boolean
   dayDiff: string
   price: string
+  disable: boolean
 }) {
   const price: BigNumber = new BigNumber(props.price)
 
@@ -162,12 +168,13 @@ function PriceView(props: {
         justifyContent: 'center',
       }}
       onPress={() => {
-        props.setShowPercent(!props.showPercent)
+        props.disable === false && props.setShowPercent(!props.showPercent)
       }}
     >
       {props.showPercent ? (
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          {dayDiffRate.isEqualTo(0) ? null : dayDiffRate.isGreaterThan(0) ? (
+          {dayDiffRate.isEqualTo(0) ||
+          props.disable ? null : dayDiffRate.isGreaterThan(0) ? (
             <Image
               source={Resources.Images.iconIncrease}
               style={{ width: 6, height: 6 }}
@@ -183,12 +190,17 @@ function PriceView(props: {
               fontFamily: Resources.Fonts.medium,
               fontSize: 14,
               letterSpacing: -0.75,
-              color: color,
+              color: props.disable ? Resources.Colors.greyishBrown : color,
               marginLeft: 3,
             }}
           >
-            {Utils.getFormatted(dayDiffRate.multipliedBy(100).abs(), 1, true) +
-              '%'}
+            {props.disable
+              ? '- %'
+              : Utils.getFormatted(
+                  dayDiffRate.multipliedBy(100).abs(),
+                  1,
+                  true
+                ) + '%'}
           </Text>
         </View>
       ) : (
@@ -198,10 +210,10 @@ function PriceView(props: {
               fontFamily: Resources.Fonts.medium,
               fontSize: 14,
               letterSpacing: -0.75,
-              color: color,
+              color: props.disable ? Resources.Colors.greyishBrown : color,
             }}
           >
-            {value1}
+            {props.disable ? '-' : value1}
           </Text>
           <Text
             style={{
@@ -209,10 +221,12 @@ function PriceView(props: {
               fontFamily: Resources.Fonts.medium,
               fontSize: 10,
               letterSpacing: -0.2,
-              color: color,
+              color: props.disable ? Resources.Colors.greyishBrown : color,
             }}
           >
-            {'.' + value2 + ' ' + Keychain.baseCurrencyDenom}
+            {props.disable
+              ? ' ' + Keychain.baseCurrencyDenom
+              : '.' + value2 + ' ' + Keychain.baseCurrencyDenom}
           </Text>
         </View>
       )}
