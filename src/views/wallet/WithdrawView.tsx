@@ -90,7 +90,7 @@ export function WithdrawView(props: { route: any; navigation: any }) {
     let balance = new BigNumber(0)
     let fee = new BigNumber(0)
 
-    if (!symbol.startsWith('m')) {
+    if (!symbol.toLowerCase().startsWith('m')) {
       const balances = await Api.getBalances()
       const item = balances.filter((item) => {
         return item.denom == symbol
