@@ -95,7 +95,7 @@ export const RecoveryWalletView = (props: { navigation: any; route: any }) => {
   }, [mk])
 
   const trimMnemonicWords = (words: string): string => {
-    const w = words.trim().replace(/\n/g, ' ')
+    const w = words.trim().toLowerCase().replace(/\n/g, ' ')
     console.log(w)
     return w
   }
@@ -189,7 +189,7 @@ export const RecoveryWalletView = (props: { navigation: any; route: any }) => {
               onChangeText={(text) => {
                 setMk(text)
               }}
-              value={mk}
+              value={mk.toLowerCase()}
             />
             <View style={{ flex: 1 }} />
 
