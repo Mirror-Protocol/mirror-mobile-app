@@ -26,7 +26,7 @@ export function feeFromDenom(denom: string) {
 
 export async function setGasPrice() {
   GAS_PRICES = (await get(Config.currentDomain.gasPrices)).data
-  fee = new BigNumber(Config.currentChain === 'columbus' ? 500 : 50000)
+  fee = feeFromDenom(Keychain.baseCurrency)
 }
 
 let terra: any = undefined
