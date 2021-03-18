@@ -11,7 +11,7 @@ import { ConfigContext } from '../../common/provider/ConfigProvider'
 import { Search } from './Search'
 import ThrottleButton from '../../component/ThrottleButton'
 
-export function Main(props: { navigation: any }) {
+export function Main(props: { navigation: any; route: any }) {
   const safeInsetTop = Resources.getSafeLayoutInsets().top
   const { translations } = useContext(ConfigContext)
   const [selectedTab, setTab] = useState(0)
@@ -103,6 +103,7 @@ export function Main(props: { navigation: any }) {
       >
         <MainTab1
           navigation={props.navigation}
+          route={props.route}
           selectedTab={selectedTab}
           setChartLongPressed={(b: boolean) => {
             if (scrollXRef.current == 0) {

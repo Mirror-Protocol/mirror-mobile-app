@@ -1,9 +1,12 @@
 import 'react-native-gesture-handler'
 import React, { useContext, useEffect, useState } from 'react'
-import { View, StatusBar, NativeModules, Alert } from 'react-native'
+import { View, StatusBar, Platform, NativeModules, Alert } from 'react-native'
 
 import { NavigationContainer } from '@react-navigation/native'
-import { createStackNavigator } from '@react-navigation/stack'
+import {
+  createStackNavigator,
+  TransitionPresets,
+} from '@react-navigation/stack'
 import { ConfigProvider } from './src/common/provider/ConfigProvider'
 import * as Config from './src/common/Apis/Config'
 import { Main } from './src/views/main/Main'
@@ -48,6 +51,12 @@ import * as api from './src/common/Apis/Api'
 import { VersionView } from './src/views/wallet/setting/VersionView'
 import { RecoveryWalletView } from './src/views/init/RecoveryWalletView'
 import { SelectWalletView } from './src/views/init/SelectWalletView'
+import RampSelectView from './src/views/wallet/ramp/RampSelectView'
+import RampInputView from './src/views/wallet/ramp/RampInputView'
+import RampOfferView from './src/views/wallet/ramp/RampOfferView'
+import RampErrorView from './src/views/wallet/ramp/RampErrorView'
+import RampQrView from './src/views/wallet/ramp/RampQrView'
+import RampItemDetailView from './src/views/wallet/ramp/RampItemDetailView'
 
 const App = () => {
   const [isLoadingChainConfig, setLoadingChainConfig] = useState(false)
@@ -161,6 +170,10 @@ function ContainerView() {
   )
 }
 
+const androidTransition = Platform.OS === 'android' && {
+  ...TransitionPresets.RevealFromBottomAndroid,
+}
+
 function SplashScreenStack() {
   const SplashStack = createStackNavigator()
 
@@ -178,6 +191,7 @@ function SplashScreenStack() {
       mode='modal'
       screenOptions={{
         gestureEnabled: false,
+        ...androidTransition,
       }}
       initialRouteName={skipOnboarding ? 'InitialView' : 'OnboardingView'}
     >
@@ -224,6 +238,12 @@ function SplashScreenStack() {
       />
 
       <SplashStack.Screen
+        name='RampStack'
+        component={RampStack}
+        options={{ headerShown: false }}
+      />
+
+      <SplashStack.Screen
         name='SwapStack'
         component={SwapStack}
         options={{ headerShown: false }}
@@ -234,6 +254,7 @@ function SplashScreenStack() {
         component={TradeInputView}
         options={{ headerShown: false }}
       />
+
       <SplashStack.Screen
         name='PinSecurityView'
         component={PinSecurityView}
@@ -252,7 +273,11 @@ function SplashScreenStack() {
 function InitialStack() {
   const Stack = createStackNavigator()
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        ...androidTransition,
+      }}
+    >
       <Stack.Screen
         name='AgreeView'
         component={AgreeView}
@@ -275,7 +300,9 @@ function InitialStack() {
 function MainScreenStack() {
   const MainStack = createStackNavigator()
   return (
-    <MainStack.Navigator screenOptions={{ cardOverlayEnabled: true }}>
+    <MainStack.Navigator
+      screenOptions={{ cardOverlayEnabled: true, ...androidTransition }}
+    >
       <MainStack.Screen
         name='Main'
         component={Main}
@@ -304,7 +331,7 @@ function MainScreenStack() {
 function WalletStack() {
   const WalletStack = createStackNavigator()
   return (
-    <WalletStack.Navigator screenOptions={{}}>
+    <WalletStack.Navigator screenOptions={{ ...androidTransition }}>
       <WalletStack.Screen
         name='WalletSummary'
         component={WalletSummaryView}
@@ -323,6 +350,11 @@ function WalletStack() {
       <WalletStack.Screen
         name='WithdrawView'
         component={WithdrawView}
+        options={{ headerShown: false }}
+      />
+      <WalletStack.Screen
+        name='RampItemDetailView'
+        component={RampItemDetailView}
         options={{ headerShown: false }}
       />
       <WalletStack.Screen
@@ -346,10 +378,53 @@ function WalletStack() {
   )
 }
 
+function RampStack() {
+  const RampStack = createStackNavigator()
+  return (
+    <RampStack.Navigator screenOptions={{ ...androidTransition }}>
+      <RampStack.Screen
+        name='RampSelectView'
+        component={RampSelectView}
+        options={{ headerShown: false }}
+      />
+      <RampStack.Screen
+        name='RampInputView'
+        component={RampInputView}
+        options={{ headerShown: false }}
+      />
+      <RampStack.Screen
+        name='RampOfferView'
+        component={RampOfferView}
+        options={{ headerShown: false }}
+      />
+      <RampStack.Screen
+        name='RampErrorView'
+        component={RampErrorView}
+        options={{ headerShown: false }}
+      />
+      <RampStack.Screen
+        name='RampQrView'
+        component={RampQrView}
+        options={{ headerShown: false }}
+      />
+      <RampStack.Screen
+        name='WithdrawView'
+        component={WithdrawView}
+        options={{ headerShown: false }}
+      />
+      <RampStack.Screen
+        name='WithdrawConfirmView'
+        component={WithdrawConfirmView}
+        options={{ headerShown: false }}
+      />
+    </RampStack.Navigator>
+  )
+}
+
 function SwapStack() {
   const Stack = createStackNavigator()
   return (
-    <Stack.Navigator mode='modal' screenOptions={{}}>
+    <Stack.Navigator mode='modal' screenOptions={{ ...androidTransition }}>
       <Stack.Screen
         name='SwapView'
         component={SwapView}
@@ -362,7 +437,7 @@ function SwapStack() {
 function SettingStack() {
   const Stack = createStackNavigator()
   return (
-    <Stack.Navigator screenOptions={{ gestureEnabled: true }}>
+    <Stack.Navigator screenOptions={{ ...androidTransition }}>
       <Stack.Screen
         name='SettingView'
         component={SettingView}

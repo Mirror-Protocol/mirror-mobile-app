@@ -440,7 +440,12 @@ function HeaderView(props: {
           <ButtonView
             balance={props.balance.amount}
             withdrawPressed={() => {
-              navigation.navigate('WithdrawView', { symbol: props.symbol })
+              props.symbol === 'uusd'
+                ? navigation.navigate('RampStack', {
+                    screen: 'RampSelectView',
+                    params: { withdraw: true },
+                  })
+                : navigation.navigate('WithdrawView', { symbol: props.symbol })
             }}
             depositPressed={() => {
               props.setShowAddressView(true)

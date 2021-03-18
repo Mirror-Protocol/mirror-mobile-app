@@ -1,3 +1,5 @@
+import _ from 'lodash'
+import { both } from 'ramda'
 import React, { ReactNode, useEffect, useState } from 'react'
 import { StyleProp, ViewStyle } from 'react-native'
 import { RectButton, TouchableOpacity } from 'react-native-gesture-handler'
@@ -9,6 +11,7 @@ let timer: NodeJS.Timeout | undefined = undefined
 interface Props {
   type?: 'TouchableOpacity' | 'RectButton'
   children?: ReactNode
+  hitSlop?: number
   style?: StyleProp<ViewStyle>
   onPress?: () => void
   delay?: number
@@ -18,32 +21,37 @@ const ThrottleButton = ({
   type,
   children,
   style,
+  hitSlop,
   onPress,
-  delay = DEFAULT_DELAY,
+  delay,
 }: Props) => {
   const [isPress, setPress] = useState(false)
 
-  const pressHandler = () => {
+  const onPressHandler = () => {
     if (!isPress) {
       setPress(true)
       onPress && onPress()
 
       timer = setTimeout(() => {
         setPress(false)
-      }, delay)
+      }, delay ?? DEFAULT_DELAY)
     }
   }
 
-  useEffect(() => {
-    return () => {
-      timer !== undefined && clearTimeout(timer)
-    }
-  }, [])
+  // useEffect(() => {
+  //   return () => {
+  //     timer !== undefined && clearTimeout(timer)
+  //     setPress(false)
+  //   }
+  // }, [])
 
   const attrs = {
     style: style,
-    onPress: pressHandler,
+    onPress: onPressHandler,
     children: children,
+    hitSlop: hitSlop
+      ? { left: hitSlop, top: hitSlop, right: hitSlop, bottom: hitSlop }
+      : undefined,
   }
 
   return (

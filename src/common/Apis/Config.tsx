@@ -166,3 +166,25 @@ export function setTorusNetwork(net: string) {
   torusConfig =
     torusNetwork === 'testnet' ? _torusConfig.testnet : _torusConfig.mainnet
 }
+
+export const switchainConfig = {
+  mainnet: {
+    url: 'https://api.switchain.com/rest/v1',
+    apiKey: '',
+  },
+  testnet: {
+    url: 'https://api-testnet.switchain.com/rest/v1',
+    apiKey: '',
+  },
+}
+
+export const getSwitchainUrl = (): string => {
+  return currentChain === 'columbus'
+    ? switchainConfig.mainnet.url
+    : switchainConfig.testnet.url
+}
+export const getSwitchainApiKey = (): string => {
+  return currentChain === 'columbus'
+    ? switchainConfig.mainnet.apiKey
+    : switchainConfig.testnet.apiKey
+}

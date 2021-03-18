@@ -128,7 +128,9 @@ export const en = {
     funds: 'Funds',
     fundYourWallet: 'Fund Your Wallet',
     deposit: 'Deposit',
+    withdrawal: 'Withdrawal',
     depositNow: 'Deposit Now',
+    buyNow: 'Buy Now',
     masset: 'mASSET',
     addMasset: '+ mASSET',
     showDecimals: 'Show Decimals',
@@ -204,6 +206,7 @@ export const en = {
     changePassword: 'Change Password',
     privacyAndTerms: 'Privacy and Terms',
     version: 'Version',
+    contactUs: 'Contact Us',
     language: 'language',
     selectChain: 'Select Chain',
     selectTorusNet: 'Select TorusNet',
@@ -269,6 +272,7 @@ export const en = {
   moonpayPopupView: {
     completedTitle: 'MoonPay Deposit Completed',
     failedTitle: 'MoonPay Deposit Failed',
+    completedMessageWithdraw: ' has been successfully withdrawn as ',
     completedMessage1:
       ' has been successfully deposited into your Mirror Wallet.',
     failedMessage1: 'Your MoonPay transaction for ',
@@ -471,7 +475,9 @@ export const ko = {
     funds: 'Funds',
     fundYourWallet: 'Fund Your Wallet',
     deposit: 'Deposit',
+    withdrawal: 'Withdrawal',
     depositNow: 'Deposit Now',
+    buyNow: 'Buy Now',
     masset: 'mASSET',
     addMasset: '+ mASSET',
     showDecimals: 'Show Decimals',
@@ -547,6 +553,7 @@ export const ko = {
     changePassword: 'Change Password',
     privacyAndTerms: 'Privacy and Terms',
     version: 'Version',
+    contactUs: 'Contact Us',
     language: 'language',
     selectChain: 'Select Chain',
     selectTorusNet: 'Select TorusNet',
@@ -612,6 +619,7 @@ export const ko = {
   moonpayPopupView: {
     completedTitle: 'MoonPay Deposit Completed',
     failedTitle: 'MoonPay Deposit Failed',
+    completedMessageWithdraw: ' has been successfully withdrawn as ',
     completedMessage1:
       ' has been successfully deposited into your Mirror Wallet.',
     failedMessage1: 'Your MoonPay transaction for ',

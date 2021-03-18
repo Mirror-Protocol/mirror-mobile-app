@@ -10,6 +10,7 @@ export function AnimatedAddressInputView(props: {
   focusChanged?: (focused: boolean) => void
   placeholder: string
   style: any
+  setPreventEvent?: () => void
 }) {
   const duration = 200
   const placeholderTop = useRef(new Animated.Value(14)).current
@@ -103,6 +104,7 @@ export function AnimatedAddressInputView(props: {
           },
         ]}
         onPress={() => {
+          props.setPreventEvent && props.setPreventEvent()
           if (field.current != null) {
             field.current.focus()
           }
@@ -142,14 +144,15 @@ export function AnimatedAddressInputView(props: {
             onContentSizeChange={(e) => {}}
             autoCorrect={false}
             autoCompleteType='off'
-            returnKeyType='next'
+            returnKeyType='done'
+            blurOnSubmit={true}
             onFocus={() => {
               onFocusChanged(true)
             }}
-            maxLength={44}
+            maxLength={100}
             keyboardAppearance='dark'
             keyboardType='default'
-            numberOfLines={3}
+            // numberOfLines={3}
             multiline={true}
             style={{
               marginLeft: 24,

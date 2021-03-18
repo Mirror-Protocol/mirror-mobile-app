@@ -19,6 +19,8 @@ export function WithdrawConfirmView(props: { route: any; navigation: any }) {
   const amount = props.route.params.amount
   const memo = props.route.params.memo
   const symbol = props.route.params.symbol
+  const ramp = props.route.params.ramp
+  const rampPair = props.route.params.rampPair
 
   const [fee, setFee] = useState(new BigNumber(0))
   const [tax, setTax] = useState(new BigNumber(0))
@@ -92,6 +94,7 @@ export function WithdrawConfirmView(props: { route: any; navigation: any }) {
       feeDenom: feeDenom,
       tax: tax.toString(),
       memo: memo,
+      rampPair: rampPair,
     })
   }
   return (
@@ -104,7 +107,12 @@ export function WithdrawConfirmView(props: { route: any; navigation: any }) {
     >
       <Nav
         backPressed={() => {
-          props.navigation.pop()
+          if (ramp) {
+            Keychain.removeSwitchainOffer(rampPair)
+            props.navigation.popToTop()
+          } else {
+            props.navigation.pop()
+          }
         }}
       />
 

@@ -95,9 +95,7 @@ export const RecoveryWalletView = (props: { navigation: any; route: any }) => {
   }, [mk])
 
   const trimMnemonicWords = (words: string): string => {
-    const w = words.trim().toLowerCase().replace(/\n/g, ' ')
-    console.log(w)
-    return w
+    return words.trim().replace(/\n/g, ' ')
   }
 
   const getWordCount = (words: string): number => {

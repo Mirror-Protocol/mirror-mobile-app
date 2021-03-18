@@ -19,13 +19,14 @@ import BigNumber from 'bignumber.js'
 import { AnimatedInputView } from '../common/AnimatedInputView'
 import { AnimatedAddressInputView } from '../common/AnimatedAddressInputView'
 import { useFocusEffect } from '@react-navigation/native'
-import { NavigationView } from '../common/NavigationView'
 import { ConfigContext } from '../../common/provider/ConfigProvider'
-import ThrottleButton from '../../component/ThrottleButton'
+import Nav from '../common/Nav'
+import useGestureHandlerEventPrevent from '../../hooks/useGestureHandlerPreventEvent'
 
 export function WithdrawView(props: { route: any; navigation: any }) {
   const { translations } = useContext(ConfigContext)
   const safeInsetTop = Resources.getSafeLayoutInsets().top
+  const { isPrevent, setPreventEvent } = useGestureHandlerEventPrevent()
 
   const symbol = props.route.params.symbol
 
@@ -147,6 +148,9 @@ export function WithdrawView(props: { route: any; navigation: any }) {
     >
       <TouchableWithoutFeedback
         onPress={() => {
+          if (isPrevent()) {
+            return
+          }
           Keyboard.dismiss()
         }}
       >
@@ -227,6 +231,7 @@ export function WithdrawView(props: { route: any; navigation: any }) {
                 setFocused(0)
               }
             }}
+            setPreventEvent={setPreventEvent}
           />
           <AnimatedAddressInputView
             onLayout={(e) => {
@@ -243,6 +248,7 @@ export function WithdrawView(props: { route: any; navigation: any }) {
                 setFocused(1)
               }
             }}
+            setPreventEvent={setPreventEvent}
           />
           <AnimatedInputView
             onLayout={(e) => {
@@ -265,6 +271,7 @@ export function WithdrawView(props: { route: any; navigation: any }) {
                 setFocused(2)
               }
             }}
+            setPreventEvent={setPreventEvent}
           />
         </Animated.View>
         <Nav
@@ -282,90 +289,12 @@ export function WithdrawView(props: { route: any; navigation: any }) {
               amount: amount.split(',').join(''),
               memo: memo,
               symbol: symbol,
+              ramp: false,
+              rampPair: '',
             })
           }}
         />
       </TouchableWithoutFeedback>
-    </View>
-  )
-}
-
-function Nav(props: {
-  navigation: any
-  focused: number
-  symbol: string
-  nextEnable: boolean
-  nextPressed: () => void
-}) {
-  const { translations } = useContext(ConfigContext)
-  const safeInsetTop = Resources.getSafeLayoutInsets().top
-
-  return (
-    <View
-      style={{
-        position: 'absolute',
-        left: 0,
-        top: 0,
-        width: '100%',
-      }}
-    >
-      <NavigationView navigation={props.navigation} />
-
-      {props.focused > 0 ? (
-        <Text
-          style={{
-            width: '100%',
-            textAlign: 'center',
-            top: safeInsetTop + 22,
-            position: 'absolute',
-            fontFamily: Resources.Fonts.medium,
-            fontSize: 14,
-            color: Resources.Colors.white,
-          }}
-        >
-          {translations.withdrawView.withdraw +
-            ' ' +
-            Utils.getDenom(props.symbol)}
-        </Text>
-      ) : (
-        <View />
-      )}
-
-      <View
-        style={{
-          flexDirection: 'row',
-          marginLeft: '50%',
-          width: '50%',
-        }}
-      >
-        <View style={{ flex: 1 }} />
-        <ThrottleButton
-          type='RectButton'
-          style={{
-            height: 36,
-            marginTop: 11 + safeInsetTop,
-            marginRight: 24,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-          onPress={() => {
-            props.nextPressed()
-          }}
-        >
-          <Text
-            style={{
-              fontFamily: Resources.Fonts.medium,
-              fontSize: 14,
-              letterSpacing: -0.2,
-              color: props.nextEnable
-                ? Resources.Colors.brightTeal
-                : Resources.Colors.greyishBrown,
-            }}
-          >
-            {translations.withdrawView.next}
-          </Text>
-        </ThrottleButton>
-      </View>
     </View>
   )
 }

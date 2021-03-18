@@ -67,6 +67,13 @@ export const Images = {
   iconHistoryW: require('../../assets/images/iconHistoryW.png'),
   iconSettingW: require('../../assets/images/iconSettingW.png'),
   iconQuestion: require('../../assets/images/iconQuestion.png'),
+  iconBuyG: require('../../assets/images/iconBuyG.png'),
+  iconSwitch: require('../../assets/images/iconSwitch.png'),
+  iconCreditCard: require('../../assets/images/iconCreditCard.png'),
+  iconExchange: require('../../assets/images/iconExchange.png'),
+  iconSupport: require('../../assets/images/iconSupport.png'),
+  iconError: require('../../assets/images/iconError.png'),
+  iconSending: require('../../assets/images/iconSending.png'),
 
   onboarding01: require('../../assets/images/imgOnboarding01.png'),
   onboarding02: require('../../assets/images/imgOnboarding02.png'),
@@ -110,6 +117,14 @@ export const Images = {
 
   iconCharge: require('../../assets/images/iconCharge.png'),
   iconMirror28: require('../../assets/images/iconMirror28.png'),
+
+  logoBtc: require('../../assets/images/logoBtc.png'),
+  logoEth: require('../../assets/images/logoEth.png'),
+  logoMoonpay: require('../../assets/images/logoMoonpay.png'),
+  LogoSimplex: require('../../assets/images/logoSimplex.png'),
+  logoTransak: require('../../assets/images/logoTransak.png'),
+  logoUsdc: require('../../assets/images/logoUsdc.png'),
+  logoUsdt: require('../../assets/images/logoUsdt.png'),
 }
 
 export function getSafeLayoutInsets(): EdgeInsets {

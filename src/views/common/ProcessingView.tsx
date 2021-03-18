@@ -5,6 +5,7 @@ import { RectButton } from 'react-native-gesture-handler'
 import * as Resources from '../../common/Resources'
 import * as Utils from '../../common/Utils'
 import * as Api from '../../common/Apis/Api'
+import * as Keychain from '../../common/Keychain'
 import { ConfigContext } from '../../common/provider/ConfigProvider'
 import { useFocusEffect } from '@react-navigation/native'
 import { AnimatedTextView } from './AnimatedTextView'
@@ -26,6 +27,8 @@ export function ProcessingView(props: { route: any; navigation: any }) {
   const symbol = props.route.params.symbol
   const displayAmount = new BigNumber(props.route.params.displayAmount)
   const displaySymbol = props.route.params.displaySymbol
+
+  const rampPair = props.route.params.rampPair
 
   const [subMessage, setSubMessage] = useState('')
   const [subMessageColor, setSubMessageColor] = useState('transparent')
@@ -121,6 +124,10 @@ export function ProcessingView(props: { route: any; navigation: any }) {
     setSubMessageColor(Resources.Colors.brightPink)
     setSubMessage(error.toString())
     setConfirmEnable(2)
+
+    if (rampPair) {
+      Keychain.removeSwitchainOffer(rampPair)
+    }
   }
 
   function confirmPressed() {

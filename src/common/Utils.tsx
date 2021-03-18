@@ -133,6 +133,10 @@ export function textInputFilter(
   const allowd = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.']
   const refined = text.split(',').join('')
 
+  if (refined.length > 0 && refined[0] === '.') {
+    return '0'
+  }
+
   for (let i = 0; i < refined.length; i++) {
     if (!allowd.includes(refined.charAt(i))) {
       return ''
@@ -239,4 +243,10 @@ export function gotoMain(navigation: any) {
       routes: [{ name: 'MainStack' }],
     })
   )
+}
+
+export function encodeQueryData(data: Object) {
+  return Object.entries(data)
+    .map((pair) => pair.map(encodeURIComponent).join('='))
+    .join('&')
 }

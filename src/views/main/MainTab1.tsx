@@ -34,6 +34,7 @@ export interface ChartInfo {
 
 export function MainTab1(props: {
   navigation: any
+  route: any
   selectedTab: number
   setChartLongPressed: (b: boolean) => void
   chartLongPressed: boolean
@@ -242,11 +243,16 @@ export function MainTab1(props: {
               <MainTab1NoAssetView
                 balance={investedInfo.balance}
                 topupPressed={() => {
-                  props.navigation.push('WalletTopupView')
+                  props.navigation.navigate('RampStack', {
+                    screen: 'RampSelectView',
+                    params: { withdraw: false },
+                  })
                 }}
               />
             ) : (
               <MainTab1AssetView
+                navigation={props.navigation}
+                route={props.route}
                 chartLoading={chartLoading}
                 info={investedInfo}
                 isRefresh={isRefresh}

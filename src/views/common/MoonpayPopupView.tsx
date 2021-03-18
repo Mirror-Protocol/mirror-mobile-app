@@ -11,6 +11,7 @@ import * as Keychain from '../../common/Keychain'
 
 export function MoonpayPopupView(props: {
   navigation: any
+  route: any
   status: 'completed' | 'failed'
   amount: string
   onDismissPressed: () => void
@@ -86,9 +87,10 @@ export function MoonpayPopupView(props: {
         }}
       >
         <Content
+          navigation={props.navigation}
+          route={props.route}
           amount={props.amount}
           status={props.status}
-          navigation={props.navigation}
           dismissPressed={dismissPressed}
         />
       </Animated.View>
@@ -98,6 +100,7 @@ export function MoonpayPopupView(props: {
 
 const Content = (props: {
   navigation: any
+  route: any
   amount: string
   status: 'completed' | 'failed'
   dismissPressed: () => void
@@ -208,9 +211,20 @@ const Content = (props: {
           <TouchableOpacity
             onPress={() => {
               props.dismissPressed()
-              props.navigation.push('WalletDetailView', {
-                symbol: Keychain.baseCurrency,
-              })
+
+              if (props.route.name === 'RampSelectView') {
+                // props.navigation.pop()
+                props.navigation.navigate('WalletStack', {
+                  screen: 'WalletDetailView',
+                  params: {
+                    symbol: Keychain.baseCurrency,
+                  },
+                })
+              } else {
+                props.navigation.push('WalletDetailView', {
+                  symbol: Keychain.baseCurrency,
+                })
+              }
             }}
           >
             <Text

@@ -5,7 +5,15 @@ import React, {
   useRef,
   useEffect,
 } from 'react'
-import { Text, View, Image, StyleSheet, Platform, Alert } from 'react-native'
+import {
+  Text,
+  View,
+  Image,
+  StyleSheet,
+  Platform,
+  Alert,
+  Linking,
+} from 'react-native'
 import * as Resources from '../../../common/Resources'
 import * as BioAuth from '../../../common/BioAuth'
 import * as Keychain from '../../../common/Keychain'
@@ -161,6 +169,14 @@ export function SettingView(props: { navigation: any }) {
         <Version
           onPressed={() => {
             props.navigation.navigate('VersionView')
+          }}
+        />
+        <ContactUs
+          onPressed={() => {
+            const supportEmail = 'support@mirrorwallet.com'
+            try {
+              Linking.openURL(`mailto:${supportEmail}`)
+            } catch (e) {}
           }}
         />
         <Language />
@@ -351,6 +367,27 @@ function Version(props: { onPressed: () => void }) {
   )
 }
 
+function ContactUs(props: { onPressed: () => void }) {
+  const { translations } = useContext(ConfigContext)
+  return (
+    <RectButton
+      style={styles.buttonbg}
+      onPress={() => {
+        props.onPressed()
+      }}
+    >
+      <Image source={Resources.Images.iconSupport} style={styles.buttonimg} />
+      <Text style={styles.buttonlabel}>
+        {translations.settingView.contactUs}
+      </Text>
+      <Image
+        source={Resources.Images.details}
+        style={{ width: 7, height: 13 }}
+      />
+    </RectButton>
+  )
+}
+
 function Language() {
   return null
 }
@@ -378,50 +415,6 @@ function ResetApp() {
           style={{ width: 7, height: 13 }}
         />
       </RectButton>
-    </>
-  )
-}
-
-function SelectTorus(props: { setChangeConfig: (b: boolean) => void }) {
-  const { translations } = useContext(ConfigContext)
-  const pickerRef = useRef<ReactNativePickerModule | undefined>(undefined)
-
-  const [currentTorusNet, setCurrentTorusNet] = useState('')
-  useEffect(() => {
-    Keychain.getCurrentTorusNet().then((chain) => {
-      setCurrentTorusNet(chain)
-    })
-  }, [currentTorusNet])
-
-  return (
-    <>
-      <RectButton
-        style={styles.buttonbg}
-        onPress={() => {
-          pickerRef.current?.show()
-        }}
-      >
-        <View style={styles.buttonimg} />
-        <Text style={styles.buttonlabel}>
-          {translations.settingView.selectTorusNet + '\n > ' + currentTorusNet}
-        </Text>
-        <Image
-          source={Resources.Images.details}
-          style={{ width: 7, height: 13 }}
-        />
-      </RectButton>
-      <ReactNativePickerModule
-        pickerRef={pickerRef as any}
-        value={currentTorusNet}
-        items={['mainnet', 'testnet']}
-        onValueChange={(value) => {
-          setCurrentTorusNet(value)
-          Keychain.setCurrentTorusNet(value).then(() => {
-            props.setChangeConfig(true)
-            Keychain.reset()
-          })
-        }}
-      />
     </>
   )
 }

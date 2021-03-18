@@ -7,7 +7,7 @@ import { RectButton, TouchableOpacity } from 'react-native-gesture-handler'
 import { ConfigContext } from '../../../common/provider/ConfigProvider'
 
 export function WalletActivityFilterView(props: {
-  denom?: String
+  denom?: string
   selected: Api.HistoryType
   onDismissPressed: (v: any) => void
 }) {

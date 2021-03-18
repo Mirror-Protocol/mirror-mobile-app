@@ -11,8 +11,12 @@ import { ConfigContext } from '../../common/provider/ConfigProvider'
 import { ChartInfo, InvestedInfo } from './MainTab1'
 import ThrottleButton from '../../component/ThrottleButton'
 import { useNavigation } from '@react-navigation/native'
+import BuyButton from '../common/BuyButton'
+import usePending from '../../hooks/usePending'
 
 export function MainTab1AssetView(props: {
+  navigation: any
+  route: any
   chartLoading: boolean
   info: InvestedInfo
   chartInfo: ChartInfo
@@ -29,6 +33,8 @@ export function MainTab1AssetView(props: {
   const safeInsetBottom = Resources.getSafeLayoutInsets().bottom
   const scrolling = useRef(false)
   const navigation = useNavigation()
+
+  const { pendingData } = usePending()
 
   return (
     <ScrollView
@@ -231,70 +237,20 @@ export function MainTab1AssetView(props: {
             </>
           ) : (
             <>
-              <TouchableOpacity
-                style={{
-                  marginTop: 56,
-                  marginLeft: 24,
-                  marginRight: 24,
-                  height: 56,
-                  borderRadius: 16,
-                  backgroundColor: Resources.Colors.brightTeal,
+              <BuyButton
+                navigation={props.navigation}
+                route={props.route}
+                topupPressed={() => {
+                  navigation.navigate('RampStack', {
+                    screen: 'RampSelectView',
+                    params: { withdraw: false },
+                  })
                 }}
-                onPress={() => {
-                  navigation.navigate('WalletTopupView')
-                }}
-              >
-                <View
-                  style={{
-                    margin: 1,
-                    height: 54,
-                    borderRadius: 16,
-                    backgroundColor: Resources.Colors.darkBackground,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Image
-                    style={{
-                      marginLeft: 24,
-                      width: 22,
-                      height: 22,
-                    }}
-                    source={Resources.Images.logoUst}
-                  />
-                  <Text
-                    style={{
-                      marginLeft: 3,
-                      fontSize: 14,
-                      fontFamily: Resources.Fonts.medium,
-                      letterSpacing: -0.35,
-                      color: Resources.Colors.veryLightPinkTwo,
-                      flex: 1,
-                    }}
-                  >
-                    {Keychain.baseCurrencyDenom}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      fontFamily: Resources.Fonts.medium,
-                      letterSpacing: -0.23,
-                      color: Resources.Colors.brightTeal,
-                    }}
-                  >
-                    {translations.mainTab1View.deposit}
-                  </Text>
-                  <Image
-                    style={{
-                      marginRight: 24,
-                      width: 6,
-                      height: 12,
-                      marginLeft: 6,
-                    }}
-                    source={Resources.Images.chevronR11G}
-                  />
-                </View>
-              </TouchableOpacity>
+                pendingData={pendingData}
+                title={translations.walletSummaryView.deposit}
+                titleIcon={Resources.Images.iconBuyG}
+                withdraw={false}
+              />
             </>
           )}
         </View>

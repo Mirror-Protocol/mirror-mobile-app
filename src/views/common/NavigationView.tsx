@@ -49,6 +49,7 @@ export function NavigationView(props: { navigation: any }) {
           justifyContent: 'center',
           alignItems: 'center',
         }}
+        hitSlop={{ left: 8, top: 8, right: 8, bottom: 8 }}
         onPress={() => {
           props.navigation.pop()
         }}

@@ -1,5 +1,6 @@
 import { NativeModules, Platform } from 'react-native'
 import nacl from 'tweetnacl'
+// @ts-ignore
 import argon2 from 'react-native-argon2'
 import { scrypt } from 'scrypt-js'
 import { generateSecureRandom } from 'react-native-securerandom'
@@ -11,6 +12,8 @@ import * as BioAuth from '../common/BioAuth'
 import * as Config from '../common/Apis/Config'
 
 import { InvalidKeyError, InvalidAlgorithmError } from './CryptographicErrors'
+import _ from 'lodash'
+import { SwitchainOrderResponse } from '../hooks/useSwitchain'
 
 enum KeychainKeys {
   Wallet = 'wallet',
@@ -29,12 +32,16 @@ enum PrefKeys {
   favoriteList = 'favoriteList',
   PasswordLock = 'password_lock',
   welcomePageShow = 'welcomePageShow',
+  refundNotiShow = 'refundNotiShow',
+  hideBalance = 'hideBalance',
   loginAddress = 'loginAddress',
   skipOnboarding = 'skipOnboarding',
   currentChain = 'currentChain',
   currentTorusNet = 'currentTorusNet',
+  lastMoonpayHistory = 'lastMoonpayHistory',
   lastMoonpayStatus = 'lastMoonpayStatus',
   lastMoonpayOpen = 'lastMoonpayOpen',
+  switchainStatus = 'switchainStatus',
 }
 
 export const baseCurrency = 'uusd'
@@ -69,6 +76,19 @@ export async function getCurrentChain() {
   return chain
 }
 
+export async function setMoonpayLastHistory(history: string) {
+  if (history !== undefined) {
+    await preferences.setString(PrefKeys.lastMoonpayHistory, history)
+  }
+}
+
+export async function getMoonpayLastHistory() {
+  const history = await preferences.getString(PrefKeys.lastMoonpayHistory)
+  if (history === undefined || history === null) return ''
+
+  return history
+}
+
 export async function setMoonpayLastStatus(status: string) {
   await preferences.setString(PrefKeys.lastMoonpayStatus, status)
 }
@@ -99,6 +119,77 @@ export async function getMoonpayLastOpen() {
   return date
 }
 
+export async function getSwitchainOffer(key?: string) {
+  const status = await preferences.getString(PrefKeys.switchainStatus)
+  if (status === undefined || status === null || status === '') {
+    return []
+  }
+
+  const parse = JSON.parse(status)
+  if (key) {
+    const ret = _.find(parse, (i) => {
+      const keys = Object.keys(i)
+      return keys.length > 0 && keys[0] === key
+    })
+    return ret
+  } else {
+    return parse
+  }
+}
+
+export async function addSwitchainOffer(
+  key: string,
+  order: SwitchainOrderResponse,
+  progress: string = 'progress'
+) {
+  const status = await getSwitchainOffer()
+  const newOffer = { [key]: { order, progress } }
+  const filter = [
+    ..._.filter(status, (i) => {
+      const keys = Object.keys(i)
+      return keys.length > 0 && keys[0] !== key
+    }),
+    newOffer,
+  ]
+
+  preferences.setString(PrefKeys.switchainStatus, JSON.stringify(filter))
+}
+
+export async function modifySwitchainOffer(
+  key: string,
+  order?: SwitchainOrderResponse,
+  progress?: string
+) {
+  const modify = await getSwitchainOffer(key)
+  if (modify) {
+    if (order) modify[key].order = order
+    if (progress) modify[key].progress = progress
+  }
+
+  const status = await getSwitchainOffer()
+  const filter = [
+    ..._.filter(status, (i) => {
+      const keys = Object.keys(i)
+      return keys.length > 0 && keys[0] !== key
+    }),
+    modify,
+  ]
+
+  preferences.setString(PrefKeys.switchainStatus, JSON.stringify(filter))
+}
+
+export async function removeSwitchainOffer(key: string) {
+  const status = await getSwitchainOffer()
+  const filter = [
+    ..._.filter(status, (i) => {
+      const keys = Object.keys(i)
+      return keys.length > 0 && keys[0] !== key
+    }),
+  ]
+
+  preferences.setString(PrefKeys.switchainStatus, JSON.stringify(filter))
+}
+
 export function setLocalePref(index: number) {
   preferences.setInt(PrefKeys.Locale, index)
 }
@@ -123,6 +214,7 @@ export async function getUseBio() {
 export async function setLoginType(name: string): Promise<void> {
   return await preferences.setString(PrefKeys.LoginType, name)
 }
+
 export async function getLoginType() {
   return preferences.getString(PrefKeys.LoginType)
 }
@@ -189,6 +281,17 @@ export async function getSkipOnboarding() {
   else return response
 }
 
+export async function setSkipRefundNotification() {
+  preferences.setBool(PrefKeys.refundNotiShow, true)
+}
+export async function getSkipRefundNotification() {
+  const response = await preferences.getBool(PrefKeys.refundNotiShow)
+  if (response == null || response == undefined) {
+    return false
+  }
+  return response
+}
+
 export function setWelcomeDone() {
   preferences.setBool(PrefKeys.welcomePageShow, true)
 }
@@ -199,6 +302,19 @@ export async function isWelcomePageDone() {
     return false
   }
   return response
+}
+
+export async function getHideBalance() {
+  const response = await preferences.getString(PrefKeys.hideBalance)
+  if (response === null || response === undefined || response === '') {
+    return true
+  }
+  return response === 'true' ? true : false
+}
+
+export async function toggleHideBalance() {
+  const hideBalance = await getHideBalance()
+  await preferences.setString(PrefKeys.hideBalance, (!hideBalance).toString())
 }
 
 export async function toggleFavorite(value: string) {
@@ -420,10 +536,6 @@ export async function reset() {
   try {
     await preferences.setBool(PrefKeys.AppIsInititialized, false)
 
-    await keystore.remove(KeychainKeys.Address)
-    await keystore.remove(KeychainKeys.Wallet)
-    await keystore.remove(KeychainKeys.Email)
-
     await preferences.remove(PrefKeys.Locale)
     await preferences.remove(PrefKeys.UseBio)
     await preferences.remove(PrefKeys.favoriteList)
@@ -433,8 +545,13 @@ export async function reset() {
 
     await preferences.remove(PrefKeys.PasswordLock)
 
+    await preferences.remove(PrefKeys.switchainStatus)
     await clearMoonpayLastOpen()
     await clearMoonpayLastStatus()
+
+    await keystore.remove(KeychainKeys.Address)
+    await keystore.remove(KeychainKeys.Wallet)
+    await keystore.remove(KeychainKeys.Email)
   } catch (e) {
     throw e
   }

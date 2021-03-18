@@ -22,7 +22,7 @@ import { ConfigContext } from '../../common/provider/ConfigProvider'
 import ThrottleButton from '../../component/ThrottleButton'
 import { MoonpayPopupView } from '../common/MoonpayPopupView'
 
-export function WalletTopupView(props: { navigation: any }) {
+export function WalletTopupView(props: { navigation: any; route: any }) {
   const { translations } = useContext(ConfigContext)
   const safeInsetTop = Resources.getSafeLayoutInsets().top
   const [showAddressView, setShowAddressView] = useState(false)
@@ -185,6 +185,7 @@ export function WalletTopupView(props: { navigation: any }) {
           amount={moonpayAmount}
           status={moonpayStatus}
           navigation={props.navigation}
+          route={props.route}
         />
       )}
     </View>

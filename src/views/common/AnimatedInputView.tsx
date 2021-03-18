@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect, ReactElement } from 'react'
 import { Text, View, Animated, KeyboardTypeOptions } from 'react-native'
 import { RectButton, TextInput } from 'react-native-gesture-handler'
 import * as Resources from '../../common/Resources'
@@ -13,8 +13,11 @@ export function AnimatedInputView(props: {
   numberOfLines: number
   suffixTitle: string
   placeholder: string
+  placeholderSub?: string
+  placeHolderElement?: ReactElement
   autoFocus: boolean
   style: any
+  setPreventEvent?: () => void
 }) {
   const duration = 200
   const placeholderTop = useRef(new Animated.Value(14)).current
@@ -108,6 +111,7 @@ export function AnimatedInputView(props: {
           { borderRadius: 16, backgroundColor: bgColor },
         ]}
         onPress={() => {
+          props.setPreventEvent && props.setPreventEvent()
           if (field.current != null) {
             field.current.focus()
           }
@@ -127,6 +131,21 @@ export function AnimatedInputView(props: {
           }}
         >
           {props.placeholder}
+          {props.placeholderSub && !focused && (
+            <>
+              <View style={{ width: 5 }} />
+              <Animated.Text
+                style={{
+                  fontFamily: Resources.Fonts.book,
+                  fontSize: 12,
+                  letterSpacing: -0.14,
+                  color: Resources.Colors.greyishBrown,
+                }}
+              >
+                {props.placeholderSub}
+              </Animated.Text>
+            </>
+          )}
         </Animated.Text>
 
         <View style={{ marginTop: 34, flexDirection: 'row' }}>
@@ -138,7 +157,8 @@ export function AnimatedInputView(props: {
             onContentSizeChange={(e) => {}}
             autoCorrect={false}
             autoCompleteType='off'
-            returnKeyType='next'
+            returnKeyType='done'
+            blurOnSubmit={true}
             onFocus={() => {
               onFocusChanged(true)
             }}

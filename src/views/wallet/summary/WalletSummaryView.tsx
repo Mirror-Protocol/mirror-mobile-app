@@ -5,7 +5,6 @@ import * as Api from '../../../common/Apis/Api'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import BigNumber from 'bignumber.js'
 import { LoadingContext } from '../../../common/provider/LoadingProvider'
-import * as Keychain from '../../../common/Keychain'
 import { useFocusEffect } from '@react-navigation/native'
 import { AddressPopupView } from '../../common/AddressPopupView'
 import { BlurView } from '@react-native-community/blur'
@@ -13,9 +12,20 @@ import { ConfigContext } from '../../../common/provider/ConfigProvider'
 import { WalletSummaryTab1 } from './WalletSummaryTab1'
 import { WalletSummaryTab2 } from './WalletSummaryTab2'
 import ThrottleButton from '../../../component/ThrottleButton'
+import usePending from '../../../hooks/usePending'
+import { SwitchainPopupView } from '../../common/SwitchainPopupView'
+import { MoonpayPopupView } from '../../common/MoonpayPopupView'
 
-export function WalletSummaryView(props: { navigation: any }) {
+export function WalletSummaryView(props: { navigation: any; route: any }) {
   const { setLoading } = useContext(LoadingContext)
+
+  const {
+    withdrawData,
+    pendingData,
+    completeData,
+    moonpay,
+    checkSwitchainComplete,
+  } = usePending()
 
   const [isLoaded, setLoaded] = useState(true)
   const [showAddressView, setShowAddressView] = useState(false)
@@ -111,7 +121,10 @@ export function WalletSummaryView(props: { navigation: any }) {
   }
 
   function topupPressed() {
-    props.navigation.push('WalletTopupView')
+    props.navigation.navigate('RampStack', {
+      screen: 'RampSelectView',
+      params: { withdraw: false },
+    })
   }
 
   function itemPressed(symbol: string) {
@@ -128,14 +141,17 @@ export function WalletSummaryView(props: { navigation: any }) {
   }
 
   function depositPressed(symbol: string) {
-    if (symbol == Keychain.baseCurrency) {
-      props.navigation.push('WalletTopupView')
-    } else {
-      setShowAddressView(true)
-    }
+    setShowAddressView(true)
   }
 
   function withdrawPressed(symbol: string) {
+    props.navigation.navigate('RampStack', {
+      screen: 'RampSelectView',
+      params: { withdraw: true },
+    })
+  }
+
+  function withdrawOtherBalancePressed(symbol: string) {
     props.navigation.push('WithdrawView', { symbol: symbol })
   }
 
@@ -182,6 +198,8 @@ export function WalletSummaryView(props: { navigation: any }) {
           showsVerticalScrollIndicator={false}
         >
           <WalletSummaryTab1
+            navigation={props.navigation}
+            route={props.route}
             topupPressed={topupPressed}
             uusdTotal={uusdTotal}
             balances={balances}
@@ -189,6 +207,9 @@ export function WalletSummaryView(props: { navigation: any }) {
             swapPressed={swapPressed}
             depositPressed={depositPressed}
             withdrawPressed={withdrawPressed}
+            withdrawOtherBalancePressed={withdrawOtherBalancePressed}
+            pendingData={pendingData}
+            withdrawData={withdrawData}
           />
           <WalletSummaryTab2
             topupPressed={topupPressed}
@@ -226,6 +247,36 @@ export function WalletSummaryView(props: { navigation: any }) {
       ) : (
         <View />
       )}
+
+      {moonpay.showMoonpayDepositPopup && (
+        <MoonpayPopupView
+          onDismissPressed={() => {
+            moonpay.setShowMoonpayDepositPopup(false)
+          }}
+          amount={moonpay.moonpayAmount}
+          status={moonpay.moonpayStatus}
+          navigation={props.navigation}
+          route={props.route}
+        />
+      )}
+      {completeData.length > 0 &&
+        completeData.map((i) => {
+          return (
+            <SwitchainPopupView
+              key={i.key}
+              onDismissPressed={() => {
+                checkSwitchainComplete(i.key)
+              }}
+              from={i.from}
+              to={i.to}
+              fromAmount={i.fromAmount}
+              toAmount={i.toAmount}
+              state={i.state}
+              navigation={props.navigation}
+              route={props.route}
+            />
+          )
+        })}
     </View>
   )
 }
