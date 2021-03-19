@@ -206,7 +206,7 @@ const RampInputView = (props: { navigation: any; route: any }) => {
   }, [selected, memo])
 
   useEffect(() => {
-    const amount = new BigNumber(fromAmount)
+    const amount = new BigNumber(Utils.stringNumberWithoutComma(fromAmount))
     const invalid =
       amount.lt(minLimit) ||
       amount.gt(maxLimit) ||

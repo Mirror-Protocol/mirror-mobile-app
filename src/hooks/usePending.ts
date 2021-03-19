@@ -2,6 +2,7 @@ import _ from 'lodash'
 import { useEffect, useState } from 'react'
 import useMoonpay from './useMoonpay'
 import { SwitchainOfferPending, useSwitchainState } from './useSwitchain'
+import * as Utils from '../common/Utils'
 
 export interface PendingData {
   key: string
@@ -65,8 +66,8 @@ const usePending = () => {
       _.forEach(switchain.pendingOffers, (i: SwitchainOfferPending) => {
         const pending = {
           key: `${i.from}-${i.to}`,
-          from: `${i.fromAmount} ${i.from}`,
-          to: `${i.toAmount} ${i.to}`,
+          from: `${Utils.stringNumberWithComma(i.fromAmount)} ${i.from}`,
+          to: `${Utils.stringNumberWithComma(i.toAmount)} ${i.to}`,
         }
         i.from === 'UST'
           ? withdrawData.push(pending)

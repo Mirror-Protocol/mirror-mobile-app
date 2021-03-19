@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext } from 'react'
 import {
   Animated,
   Image,
@@ -12,8 +12,7 @@ import ThrottleButton from '../../component/ThrottleButton'
 import useProgressAnim from './anim/useProgressAnim'
 import * as Resources from '../../common/Resources'
 import * as Keychain from '../../common/Keychain'
-import { PendingData } from '../wallet/hooks/usePending'
-import { RectButton, TouchableOpacity } from 'react-native-gesture-handler'
+import { PendingData } from '../../hooks/usePending'
 
 function BuyButton(props: {
   navigation: any

@@ -250,3 +250,13 @@ export function encodeQueryData(data: Object) {
     .map((pair) => pair.map(encodeURIComponent).join('='))
     .join('&')
 }
+
+export function stringNumberWithComma(n: string) {
+  const parts = n.split('.')
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  return parts.join('.')
+}
+
+export function stringNumberWithoutComma(n: string) {
+  return n.replace(/,/g, '')
+}

@@ -3,6 +3,7 @@ import { View } from 'react-native'
 
 import * as Keychain from '../../../common/Keychain'
 import * as Resources from '../../../common/Resources'
+import * as Utils from '../../../common/Utils'
 import {
   requestCreateOrder,
   requestOrderStatus,
@@ -37,7 +38,7 @@ const RampOfferView = (props: { navigation: any; route: any }) => {
         toAddressTag: memo,
         refundAddressTag: memo,
         pair: pair,
-        fromAmount: fromAmount,
+        fromAmount: Utils.stringNumberWithoutComma(fromAmount),
         signature: signature,
       }
       const order = await requestCreateOrder(switchainOrder)
