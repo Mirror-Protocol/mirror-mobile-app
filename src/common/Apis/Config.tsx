@@ -1,3 +1,5 @@
+import BigNumber from 'bignumber.js'
+
 export const isDev = true
 export const reviewApp = false
 
@@ -171,10 +173,12 @@ export const switchainConfig = {
   mainnet: {
     url: 'https://api.switchain.com/rest/v1',
     apiKey: '',
+    slippage: new BigNumber(2.5),
   },
   testnet: {
     url: 'https://api-testnet.switchain.com/rest/v1',
     apiKey: '',
+    slippage: new BigNumber(2.5),
   },
 }
 
@@ -188,3 +192,16 @@ export const getSwitchainApiKey = (): string => {
     ? switchainConfig.mainnet.apiKey
     : switchainConfig.testnet.apiKey
 }
+
+export const getSwitchainSlippage = (): BigNumber => {
+  return currentChain === 'columbus'
+    ? switchainConfig.mainnet.slippage
+    : switchainConfig.testnet.slippage
+}
+
+export const slippageMinus = new BigNumber(1).minus(
+  getSwitchainSlippage().div(100)
+)
+export const slippagePlus = new BigNumber(1).plus(
+  getSwitchainSlippage().div(100)
+)

@@ -238,9 +238,8 @@ const Content = (props: {
             onPress={() => {
               props.dismissPressed()
 
-              if (props.state === 'complated') {
+              if (props.state === 'completed') {
                 if (props.route.name === 'RampSelectView') {
-                  // props.navigation.pop()
                   props.navigation.navigate('WalletStack', {
                     screen: 'WalletDetailView',
                     params: {

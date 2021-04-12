@@ -4,6 +4,7 @@ import { View } from 'react-native'
 import * as Keychain from '../../../common/Keychain'
 import * as Resources from '../../../common/Resources'
 import * as Utils from '../../../common/Utils'
+import * as Config from '../../../common/Apis/Config'
 import {
   requestCreateOrder,
   requestOrderStatus,
@@ -12,6 +13,7 @@ import {
 import { getPairName } from '../../../hooks/useSwitchain'
 import _ from 'lodash'
 import { LoadingView } from '../../common/LoadingView'
+import BigNumber from 'bignumber.js'
 
 const RampOfferView = (props: { navigation: any; route: any }) => {
   const [loading, setLoading] = useState<boolean>(true)
@@ -26,6 +28,8 @@ const RampOfferView = (props: { navigation: any; route: any }) => {
     : props.route.params.memo
   const pair = props.route.params.pair
   const fromAmount = props.route.params.fromAmount
+  const quote = new BigNumber(props.route.params.quote)
+  const minerFee = new BigNumber(props.route.params.minerFee)
   const signature = props.route.params.signature
   const denom = props.route.params.denom
 
@@ -38,8 +42,12 @@ const RampOfferView = (props: { navigation: any; route: any }) => {
         toAddressTag: memo,
         refundAddressTag: memo,
         pair: pair,
+        signature: undefined,
         fromAmount: Utils.stringNumberWithoutComma(fromAmount),
-        signature: signature,
+        toAmount: Utils.stringNumberWithoutComma(
+          new BigNumber(fromAmount).times(quote).minus(minerFee).toString()
+        ),
+        slippage: Config.getSwitchainSlippage().toString(),
       }
       const order = await requestCreateOrder(switchainOrder)
       if (order.error) {
@@ -81,7 +89,7 @@ const RampOfferView = (props: { navigation: any; route: any }) => {
               ramp: true,
               rampPair: pair,
             })
-          : props.navigation.push('RampQrView', {
+          : props.navigation.replace('RampQrView', {
               address: sendAddress,
               denom,
             })

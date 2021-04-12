@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react'
 import useMoonpay from './useMoonpay'
 import { SwitchainOfferPending, useSwitchainState } from './useSwitchain'
 import * as Utils from '../common/Utils'
+import * as Config from '../common/Apis/Config'
+import BigNumber from 'bignumber.js'
 
 export interface PendingData {
   key: string
@@ -64,10 +66,14 @@ const usePending = () => {
       const pendingData: PendingData[] = []
       const withdrawData: PendingData[] = []
       _.forEach(switchain.pendingOffers, (i: SwitchainOfferPending) => {
+        const from = new BigNumber(i.fromAmount).toString()
+        const to = new BigNumber(i.toAmount)
+          .times(Config.slippageMinus)
+          .toString()
         const pending = {
           key: `${i.from}-${i.to}`,
-          from: `${Utils.stringNumberWithComma(i.fromAmount)} ${i.from}`,
-          to: `${Utils.stringNumberWithComma(i.toAmount)} ${i.to}`,
+          from: `${Utils.stringNumberWithComma(from)} ${i.from}`,
+          to: `${Utils.stringNumberWithComma(to)} ${i.to}`,
         }
         i.from === 'UST'
           ? withdrawData.push(pending)

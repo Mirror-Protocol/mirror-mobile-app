@@ -12,7 +12,9 @@ import ThrottleButton from '../../component/ThrottleButton'
 import useProgressAnim from './anim/useProgressAnim'
 import * as Resources from '../../common/Resources'
 import * as Keychain from '../../common/Keychain'
+import * as Config from '../../common/Apis/Config'
 import { PendingData } from '../../hooks/usePending'
+import BigNumber from 'bignumber.js'
 
 function BuyButton(props: {
   navigation: any

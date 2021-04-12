@@ -2,14 +2,11 @@ import React, { useContext } from 'react'
 import { Platform, Text, View } from 'react-native'
 import * as Resources from '../../../common/Resources'
 import * as Utils from '../../../common/Utils'
-import * as Api from '../../../common/Apis/Api'
-import * as Keychain from '../../../common/Keychain'
+import * as Config from '../../../common/Apis/Config'
 import { RectButton, ScrollView } from 'react-native-gesture-handler'
 import BigNumber from 'bignumber.js'
-import { NavigationView } from '../../common/NavigationView'
 import { ConfigContext } from '../../../common/provider/ConfigProvider'
 import RampNavHeader from './RampNavHeader'
-import { PendingData } from '../../../hooks/usePending'
 import { SwitchainOrderResponse } from '../../../hooks/useSwitchain'
 import _ from 'lodash'
 import { NotificationContext } from '../../../common/provider/NotificationProvider'
@@ -85,7 +82,7 @@ function RampItemDetailView(props: { navigation: any; route: any }) {
               <ItemViewPrice
                 title={`Amount to be Received`}
                 value={Utils.getFormatted(
-                  new BigNumber(item.rate),
+                  new BigNumber(item.rate).times(Config.slippageMinus),
                   to === 'UST' ? 2 : 4,
                   true
                 )}

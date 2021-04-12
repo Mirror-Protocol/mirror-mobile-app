@@ -41,6 +41,7 @@ const RampQrView = (props: { navigation: any; route: any }) => {
           flex: 1,
           backgroundColor: Resources.Colors.darkBackground,
           paddingHorizontal: 24,
+          paddingTop: insets.top + 52,
         }}
       >
         <View
@@ -73,7 +74,6 @@ const RampQrView = (props: { navigation: any; route: any }) => {
               alignItems: 'center',
               justifyContent: 'center',
               paddingVertical: 36,
-              marginBottom: 24,
             }}
           >
             {address !== '' && (

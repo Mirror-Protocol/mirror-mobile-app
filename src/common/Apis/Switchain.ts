@@ -20,7 +20,8 @@ export type SwitchainOrder = {
   pair: string
   fromAmount: string
   toAmount?: string
-  signature: string
+  signature?: string
+  slippage: string
 }
 
 export type SwitchainProgressStatus =

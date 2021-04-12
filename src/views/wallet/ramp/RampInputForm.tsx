@@ -11,6 +11,7 @@ import {
 } from 'react-native'
 
 import * as Utils from '../../../common/Utils'
+import * as Config from '../../../common/Apis/Config'
 import * as Resources from '../../../common/Resources'
 import BigNumber from 'bignumber.js'
 import { SelectItem } from '../../common/SelectPopup'
@@ -83,6 +84,7 @@ const RampInputForm = ({
   onLayout,
   onUpdate,
   fromAmountChanged,
+  toAmountChanged,
   setPreventEvent,
   withdraw,
   amount,
@@ -97,13 +99,14 @@ const RampInputForm = ({
   onLayout: (e: LayoutChangeEvent) => void
   onUpdate: () => void
   fromAmountChanged: (v: string) => void
+  toAmountChanged: (v: string) => void
   setPreventEvent?: () => void
   withdraw?: boolean
   amount: BigNumber
   setAmount: (n: BigNumber) => void
 }) => {
   // BTC, ETH - 4
-  // USDC, USDT - 4
+  // USDC, USDT - 2
   const precision =
     selectedItem.value === 'BTC' || selectedItem.value === 'ETH' ? 4 : 2
   const strZero = '0.' + '0'.repeat(precision)
@@ -148,7 +151,8 @@ const RampInputForm = ({
   }
 
   const calcTo = (c: BigNumber) => {
-    const ret = c.times(quote).minus(minerFee)
+    BigNumber.config({ EXPONENTIAL_AT: 20 })
+    const ret = c.times(quote).minus(minerFee).times(Config.slippageMinus)
     return Utils.getFormatted(
       ret.lt(0) ? new BigNumber(0) : ret,
       precision,
@@ -157,7 +161,12 @@ const RampInputForm = ({
   }
 
   const calcFrom = (c: BigNumber) => {
-    const ret = c.dividedBy(quote).plus(minerFee.dividedBy(quote))
+    BigNumber.config({ EXPONENTIAL_AT: 20 })
+
+    const ret = c
+      .dividedBy(quote)
+      .plus(minerFee.dividedBy(quote))
+      .times(Config.slippagePlus)
     return Utils.getFormatted(
       ret.lt(0) ? new BigNumber(0) : ret,
       precision,
@@ -202,7 +211,6 @@ const RampInputForm = ({
   }, [amount])
 
   useEffect(() => {
-    fromAmountChanged(inputTop)
     setCalcTop(inputTop)
     calcInput(inputTop, calcTo, setCalcBottom)
   }, [inputTop])
@@ -215,6 +223,11 @@ const RampInputForm = ({
   useEffect(() => {
     setFocus(topFocus || bottomFocus)
   }, [topFocus, bottomFocus])
+
+  useEffect(() => {
+    fromAmountChanged(Utils.stringNumberWithoutComma(calcTop))
+    toAmountChanged(Utils.stringNumberWithoutComma(calcBottom))
+  }, [calcTop, calcBottom])
 
   const refTopInput = useRef<TextInput>(null)
   const refBottomInput = useRef<TextInput>(null)
