@@ -1,5 +1,6 @@
 import { CommonActions } from '@react-navigation/native'
 import BigNumber from 'bignumber.js'
+import { Linking } from 'react-native'
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback'
 import { currencies } from './Currencies'
 
@@ -252,6 +253,7 @@ export function encodeQueryData(data: Object) {
 }
 
 export function stringNumberWithComma(n: string) {
+  if (n === undefined) return 0.0
   const parts = n.split('.')
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
   return parts.join('.')
@@ -259,4 +261,11 @@ export function stringNumberWithComma(n: string) {
 
 export function stringNumberWithoutComma(n: string) {
   return n.replace(/,/g, '')
+}
+
+export function contactUs() {
+  const supportEmail = 'support@mirrorwallet.com'
+  try {
+    Linking.openURL(`mailto:${supportEmail}`)
+  } catch (e) {}
 }

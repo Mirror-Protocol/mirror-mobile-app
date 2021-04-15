@@ -2,11 +2,13 @@ import React, { useContext } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { ConfigContext } from '../../../common/provider/ConfigProvider'
 import { NotificationContext } from '../../../common/provider/NotificationProvider'
-import { Share, Text, View } from 'react-native'
+import { Image, Share, Text, View } from 'react-native'
 import * as Resources from '../../../common/Resources'
+import * as Utils from '../../../common/Utils'
 import QRCode from 'react-native-qrcode-svg'
 import RoundedButton from '../../common/RoundedButton'
 import RampNavHeader from './RampNavHeader'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const onShare = async (address: string) => {
   try {
@@ -106,8 +108,70 @@ const RampQrView = (props: { navigation: any; route: any }) => {
             </Text>
           </View>
         </View>
+      </View>
+      <View
+        style={{
+          flexDirection: 'column',
+          paddingHorizontal: 20,
+          paddingTop: 28,
+          paddingBottom: insets.bottom + 40,
+          backgroundColor: Resources.Colors.darkGreyFour,
+        }}
+      >
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Image
+              source={Resources.Images.iconNoticeB}
+              style={{ width: 15, height: 13, marginRight: 4 }}
+            />
+            <Text
+              style={{
+                fontFamily: Resources.Fonts.medium,
+                fontSize: 12,
+                letterSpacing: -0.3,
+                color: Resources.Colors.greyishBrown,
+              }}
+            >{`NOTICE`}</Text>
+          </View>
+          <TouchableOpacity
+            onPress={() => {
+              Utils.contactUs()
+            }}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Text
+                style={{
+                  fontFamily: Resources.Fonts.book,
+                  fontSize: 12,
+                  letterSpacing: -0.2,
+                  color: Resources.Colors.brightTeal,
+                  marginRight: 4,
+                }}
+              >{`Further Inquiries`}</Text>
+              <Image
+                source={Resources.Images.chevronR10G}
+                style={{ width: 8, height: 10 }}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
+        <Text
+          style={{
+            fontFamily: Resources.Fonts.book,
+            fontSize: 12,
+            lineHeight: 16,
+            letterSpacing: -0.4,
+            color: Resources.Colors.greyishBrown,
+            marginTop: 8,
+            marginBottom: 28,
+          }}
+        >
+          {`Please double check the deposit address as it may be different than the one utilized in previous transactions.`}
+        </Text>
         <View
-          style={{ flexDirection: 'row', paddingBottom: insets.bottom + 40 }}
+          style={{
+            flexDirection: 'row',
+          }}
         >
           <RoundedButton
             type={'RectButton'}

@@ -17,6 +17,7 @@ import {
 import * as Resources from '../../../common/Resources'
 import * as BioAuth from '../../../common/BioAuth'
 import * as Keychain from '../../../common/Keychain'
+import * as Utils from '../../../common/Utils'
 import * as Config from '../../../common/Apis/Config'
 import { ScrollView, RectButton } from 'react-native-gesture-handler'
 import { PasscodeMode } from '../../common/PinSecurityView'
@@ -173,10 +174,7 @@ export function SettingView(props: { navigation: any }) {
         />
         <ContactUs
           onPressed={() => {
-            const supportEmail = 'support@mirrorwallet.com'
-            try {
-              Linking.openURL(`mailto:${supportEmail}`)
-            } catch (e) {}
+            Utils.contactUs()
           }}
         />
         <Language />

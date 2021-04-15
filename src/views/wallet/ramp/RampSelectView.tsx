@@ -99,7 +99,7 @@ const TabAll = (props: {
       <View
         key={`RampSelect-Tab-View${0}`}
         style={{
-          marginTop: TAB_ABS_TOP,
+          // marginTop: TAB_ABS_TOP,
           marginLeft: SLIDER_MARGIN * 2,
           marginRight: SLIDER_MARGIN / 2,
         }}
@@ -143,11 +143,28 @@ const TabAll = (props: {
                 )
               )}
             />
-            {idx + 1 < cryptoList.length && (
-              <Separator style={{ marginVertical: SEPARATOR_MARGIN }} />
-            )}
+            {<Separator style={{ marginVertical: SEPARATOR_MARGIN }} />}
           </View>
         ))}
+        <View>
+          <Text
+            style={{
+              fontFamily: Resources.Fonts.book,
+              fontSize: 14,
+              letterSpacing: -0.2,
+              color: Resources.Colors.brownishGrey,
+              marginBottom: 8,
+            }}
+          >{`For further inquiries, navigate to`}</Text>
+          <Text
+            style={{
+              fontFamily: Resources.Fonts.medium,
+              fontSize: 14,
+              letterSpacing: -0.2,
+              color: Resources.Colors.veryLightPink,
+            }}
+          >{`Settings > Contact Us`}</Text>
+        </View>
       </View>
     </View>
   )
@@ -359,78 +376,101 @@ const RampSelectView = (props: { route: any; navigation: any }) => {
             { useNativeDriver: false }
           )}
         >
-          {viewArray}
+          <ScrollView>
+            <Text
+              style={[
+                styles.titleText,
+                styles.titleTextLight,
+                {
+                  paddingTop: 63 + insets.top,
+                  paddingBottom: 48,
+                  paddingLeft: TITLE_LEFT,
+                  marginBottom: 12,
+                },
+              ]}
+            >
+              {isWithdraw ? `Withdraw UST` : `Buy UST`}
+              {/* {'Buy UST with'} */}
+            </Text>
+            {viewArray}
+          </ScrollView>
         </Animated.ScrollView>
 
-        <View
-          style={{
-            flexDirection: 'column',
-            position: 'absolute',
-            top: TITLE_TOP,
-            left: TITLE_LEFT,
-          }}
-        >
-          <Text
-            style={[
-              styles.titleText,
-              styles.titleTextLight,
-              { marginBottom: 12 },
-            ]}
-            onLayout={(e) => {
-              setLayoutY(e.nativeEvent.layout.height + 12)
+        {false && (
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'column',
+              position: 'absolute',
+
+              paddingTop: TITLE_TOP,
+              paddingLeft: TITLE_LEFT,
+
+              backgroundColor: Resources.Colors.darkBackground,
             }}
           >
-            {isWithdraw ? `Withdraw UST` : `Buy UST`}
-            {/* {'Buy UST with'} */}
-          </Text>
-          {false && (
-            <View style={{ flexDirection: 'row' }}>
-              <TouchableOpacity
-                onPress={() => selectTab(0)}
-                onLayout={(e) => {
-                  setX1(e.nativeEvent.layout.x + TITLE_LEFT)
-                  setY1(e.nativeEvent.layout.y + TITLE_TOP)
-                  setW1(e.nativeEvent.layout.width)
-                  setH1(e.nativeEvent.layout.height)
-                }}
-              >
-                <Text
-                  style={[
-                    styles.titleText,
-                    currenTab === 0
-                      ? styles.titleTextLight
-                      : styles.titleTextDark,
-                  ]}
+            <Text
+              style={[
+                styles.titleText,
+                styles.titleTextLight,
+                { marginBottom: 12 },
+              ]}
+              onLayout={(e) => {
+                setLayoutY(e.nativeEvent.layout.height + 12)
+              }}
+            >
+              {isWithdraw ? `Withdraw UST` : `Buy UST`}
+              {/* {'Buy UST with'} */}
+            </Text>
+            {false && (
+              <View style={{ flexDirection: 'row' }}>
+                <TouchableOpacity
+                  onPress={() => selectTab(0)}
+                  onLayout={(e) => {
+                    setX1(e.nativeEvent.layout.x + TITLE_LEFT)
+                    setY1(e.nativeEvent.layout.y + TITLE_TOP)
+                    setW1(e.nativeEvent.layout.width)
+                    setH1(e.nativeEvent.layout.height)
+                  }}
                 >
-                  {'FIAT'}
+                  <Text
+                    style={[
+                      styles.titleText,
+                      currenTab === 0
+                        ? styles.titleTextLight
+                        : styles.titleTextDark,
+                    ]}
+                  >
+                    {'FIAT'}
+                  </Text>
+                </TouchableOpacity>
+                <Text style={[styles.titleText, styles.titleTextDark]}>
+                  {' or '}
                 </Text>
-              </TouchableOpacity>
-              <Text style={[styles.titleText, styles.titleTextDark]}>
-                {' or '}
-              </Text>
-              <TouchableOpacity
-                onPress={() => selectTab(1)}
-                onLayout={(e) => {
-                  setX2(e.nativeEvent.layout.x + TITLE_LEFT)
-                  setY2(e.nativeEvent.layout.y + TITLE_TOP)
-                  setW2(e.nativeEvent.layout.width)
-                  setH2(e.nativeEvent.layout.height)
-                }}
-              >
-                <Text
-                  style={[
-                    styles.titleText,
-                    currenTab === 1
-                      ? styles.titleTextLight
-                      : styles.titleTextDark,
-                  ]}
+                <TouchableOpacity
+                  onPress={() => selectTab(1)}
+                  onLayout={(e) => {
+                    setX2(e.nativeEvent.layout.x + TITLE_LEFT)
+                    setY2(e.nativeEvent.layout.y + TITLE_TOP)
+                    setW2(e.nativeEvent.layout.width)
+                    setH2(e.nativeEvent.layout.height)
+                  }}
                 >
-                  {'CRYPTO'}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          )}
-        </View>
+                  <Text
+                    style={[
+                      styles.titleText,
+                      currenTab === 1
+                        ? styles.titleTextLight
+                        : styles.titleTextDark,
+                    ]}
+                  >
+                    {'CRYPTO'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
+        )}
 
         {false && (
           <Animated.View
