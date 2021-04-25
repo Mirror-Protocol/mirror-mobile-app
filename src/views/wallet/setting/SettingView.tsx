@@ -355,7 +355,7 @@ function Version(props: { onPressed: () => void }) {
           marginRight: 6,
         }}
       >
-        {'V.' + DeviceInfo.getVersion()}
+        {'v' + DeviceInfo.getVersion()}
       </Text>
       <Image
         source={Resources.Images.details}

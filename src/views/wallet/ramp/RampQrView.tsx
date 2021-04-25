@@ -58,7 +58,7 @@ const RampQrView = (props: { navigation: any; route: any }) => {
               lineHeight: 20,
               letterSpacing: -0.3,
               color: Resources.Colors.brightTeal,
-              marginBottom: 24,
+              marginBottom: 16,
               textAlign: 'center',
             }}
           >
@@ -73,7 +73,7 @@ const RampQrView = (props: { navigation: any; route: any }) => {
               backgroundColor: Resources.Colors.white,
               alignItems: 'center',
               justifyContent: 'center',
-              paddingVertical: 36,
+              paddingVertical: 30,
             }}
           >
             {address !== '' && (
@@ -131,7 +131,9 @@ const RampQrView = (props: { navigation: any; route: any }) => {
                 letterSpacing: -0.3,
                 color: Resources.Colors.greyishBrown,
               }}
-            >{`NOTICE`}</Text>
+            >
+              {translations.rampQrView.notice}
+            </Text>
           </View>
           <TouchableOpacity
             onPress={() => {
@@ -147,7 +149,9 @@ const RampQrView = (props: { navigation: any; route: any }) => {
                   color: Resources.Colors.brightTeal,
                   marginRight: 4,
                 }}
-              >{`Further Inquiries`}</Text>
+              >
+                {translations.rampQrView.furtherInquiries}
+              </Text>
               <Image
                 source={Resources.Images.chevronR10G}
                 style={{ width: 8, height: 10 }}
@@ -166,7 +170,7 @@ const RampQrView = (props: { navigation: any; route: any }) => {
             marginBottom: 28,
           }}
         >
-          {`Please double check the deposit address as it may be different than the one utilized in previous transactions.`}
+          {translations.rampQrView.noticeContent}
         </Text>
         <View
           style={{

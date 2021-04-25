@@ -343,6 +343,11 @@ export const en = {
     inputPlaceHolder: 'Enter your seed phrase here',
     confirm: 'Confirm',
   },
+  rampQrView: {
+    notice: `NOTICE`,
+    noticeContent: `Please double check the deposit address as it may be different than the one utilized in previous transactions. The total deposit amount does not include fees. BEP20 asset deposits are not supported.`,
+    furtherInquiries: `Further Inquiries`,
+  },
 }
 
 export const ko = {
@@ -689,5 +694,10 @@ export const ko = {
     paste: 'PASTE',
     inputPlaceHolder: 'Enter your seed phrase here',
     confirm: 'Confirm',
+  },
+  rampQrView: {
+    notice: `NOTICE`,
+    noticeContent: `Please double check the deposit address as it may be different than the one utilized in previous transactions. The total deposit amount does not include fees. BEP20 asset deposits are not supported.`,
+    furtherInquiries: `Further Inquiries`,
   },
 }
