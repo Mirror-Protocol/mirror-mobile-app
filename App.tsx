@@ -49,7 +49,7 @@ import 'react-native-url-polyfill/auto'
 import * as gql from './src/common/Apis/gql'
 import * as api from './src/common/Apis/Api'
 import { VersionView } from './src/views/wallet/setting/VersionView'
-import { RecoveryWalletView } from './src/views/init/RecoveryWalletView'
+import { RecoverSeedView } from './src/views/init/RecoverSeedView'
 import { SelectWalletView } from './src/views/init/SelectWalletView'
 import RampSelectView from './src/views/wallet/ramp/RampSelectView'
 import RampInputView from './src/views/wallet/ramp/RampInputView'
@@ -57,6 +57,10 @@ import RampOfferView from './src/views/wallet/ramp/RampOfferView'
 import RampErrorView from './src/views/wallet/ramp/RampErrorView'
 import RampQrView from './src/views/wallet/ramp/RampQrView'
 import RampItemDetailView from './src/views/wallet/ramp/RampItemDetailView'
+import { RecoverQrView } from './src/views/init/RecoverQrView'
+import { RecoverPasswordView } from './src/views/init/RecoverPasswordView'
+import { RecoverPrivateKeyView } from './src/views/init/RecoverPrivateKeyView'
+import { RecoverWalletView } from './src/views/init/RecoverWalletView'
 
 const App = () => {
   const [isLoadingChainConfig, setLoadingChainConfig] = useState(false)
@@ -208,8 +212,32 @@ function SplashScreenStack() {
       />
 
       <SplashStack.Screen
-        name='RecoveryWalletView'
-        component={RecoveryWalletView}
+        name='RecoverWalletView'
+        component={RecoverWalletView}
+        options={{ headerShown: false }}
+      />
+
+      <SplashStack.Screen
+        name='RecoverSeedView'
+        component={RecoverSeedView}
+        options={{ headerShown: false }}
+      />
+
+      <SplashStack.Screen
+        name='RecoverQrView'
+        component={RecoverQrView}
+        options={{ headerShown: false }}
+      />
+
+      <SplashStack.Screen
+        name='RecoverPrivateKeyView'
+        component={RecoverPrivateKeyView}
+        options={{ headerShown: false }}
+      />
+
+      <SplashStack.Screen
+        name='RecoverPasswordView'
+        component={RecoverPasswordView}
         options={{ headerShown: false }}
       />
 

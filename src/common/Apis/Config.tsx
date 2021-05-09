@@ -13,6 +13,7 @@ export const changeBuyingPowerToBalance = reviewApp
 export const changeInvestWithMirrorToDepositToMirror = reviewApp
 export const changeInvestToMarket = reviewApp
 export const hideWalletCategory = reviewApp
+export const changeLoginButton = reviewApp
 
 export let currentChain: string | undefined = undefined
 export function setCurrentChain(chain: string) {

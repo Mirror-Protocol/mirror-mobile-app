@@ -1,9 +1,12 @@
 import React from 'react'
-import { Image, View } from 'react-native'
+import { Image, StyleProp, View, ViewStyle } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import * as Resources from '../common/Resources'
 
-const BtnBack = (props: { onPress: () => void }) => {
+const BtnBack = (props: {
+  style?: StyleProp<ViewStyle>
+  onPress: () => void
+}) => {
   return (
     <View style={{ flexDirection: 'row' }}>
       <TouchableOpacity onPress={props.onPress}>

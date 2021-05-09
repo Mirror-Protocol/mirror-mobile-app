@@ -84,9 +84,13 @@ export const Images = {
   faceid: require('../../assets/images/faceid.png'),
   touchid: require('../../assets/images/touchid.png'),
 
-  apple: require('../../assets/images/apple2.png'),
-  google: require('../../assets/images/google2.png'),
-  facebook: require('../../assets/images/facebook2.png'),
+  apple: require('../../assets/images/apple.png'),
+  google: require('../../assets/images/google.png'),
+  facebook: require('../../assets/images/facebook.png'),
+
+  apple2: require('../../assets/images/apple2.png'),
+  google2: require('../../assets/images/google2.png'),
+  facebook2: require('../../assets/images/facebook2.png'),
 
   language: require('../../assets/images/language.png'),
   version: require('../../assets/images/version.png'),

@@ -221,7 +221,7 @@ export const SelectWalletView = (props: { navigation: any; route: any }) => {
                 },
               ]}
             >
-              {translations.recoveryWalletView.confirm}
+              {translations.recoverSeedView.confirm}
             </Text>
           </ThrottleButton>
         </>

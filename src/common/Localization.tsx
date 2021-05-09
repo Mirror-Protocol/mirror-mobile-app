@@ -335,12 +335,26 @@ export const en = {
     step3Content:
       'Users will be airdropped prizes prorated by their total trading volume.',
   },
-  recoveryWalletView: {
-    title: 'Restore Wallet',
+  recoverSeedView: {
+    title: 'Seed phrase',
     subTitle:
       'Restore an existing Terra wallet with the associated 24 word seed phrase that you have written down.',
     paste: 'PASTE',
     inputPlaceHolder: 'Enter your seed phrase here',
+    confirm: 'Confirm',
+  },
+  recoverPrivateKeyView: {
+    title: 'Private key',
+    subTitle:
+      'Restore an existing Terra wallet with encrypted private key from Terra station.',
+    paste: 'PASTE',
+    inputPlaceHolder: 'Enter your private key here',
+    confirm: 'Next',
+  },
+  recoverPasswordView: {
+    title: 'Password',
+    subTitle: 'Confirm your Terra wallet password',
+    inputPlaceHolder: 'Enter your password here',
     confirm: 'Confirm',
   },
   rampQrView: {
@@ -687,12 +701,26 @@ export const ko = {
     step3Content:
       'Users will be airdropped prizes prorated by their total trading volume.',
   },
-  recoveryWalletView: {
-    title: 'Restore Wallet',
+  recoverSeedView: {
+    title: 'Seed phrase',
     subTitle:
       'Restore an existing Terra wallet with the associated 24 word seed phrase that you have written down.',
     paste: 'PASTE',
     inputPlaceHolder: 'Enter your seed phrase here',
+    confirm: 'Confirm',
+  },
+  recoverPrivateKeyView: {
+    title: 'Private key',
+    subTitle:
+      'Restore an existing Terra wallet with encrypted private key from Terra station.',
+    paste: 'PASTE',
+    inputPlaceHolder: 'Enter your private key here',
+    confirm: 'Next',
+  },
+  recoverPasswordView: {
+    title: 'Password',
+    subTitle: 'Confirm your Terra wallet password',
+    inputPlaceHolder: 'Enter your password here',
     confirm: 'Confirm',
   },
   rampQrView: {

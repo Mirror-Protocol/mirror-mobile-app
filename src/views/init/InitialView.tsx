@@ -5,6 +5,7 @@ import LottieView from 'lottie-react-native'
 import { RectButton, TouchableOpacity } from 'react-native-gesture-handler'
 import * as Resources from '../../common/Resources'
 import * as Keychain from '../../common/Keychain'
+import * as Config from '../../common/Apis/Config'
 import { PasscodeMode } from '../common/PinSecurityView'
 import { ConfigContext } from '../../common/provider/ConfigProvider'
 import * as TorusUtils from '../../common/TorusUtils'
@@ -194,7 +195,11 @@ export function InitialView(props: { navigation: any; route: any }) {
         >
           <SignInButton
             title={translations.initialView.login1}
-            icon={Resources.Images.apple}
+            icon={
+              Config.changeLoginButton
+                ? Resources.Images.apple2
+                : Resources.Images.apple
+            }
             enable={enableButton}
             onPress={() => {
               passPressed('apple')
@@ -203,7 +208,11 @@ export function InitialView(props: { navigation: any; route: any }) {
           <View style={{ width: 12 }} />
           <SignInButton
             title={translations.initialView.login2}
-            icon={Resources.Images.google}
+            icon={
+              Config.changeLoginButton
+                ? Resources.Images.google2
+                : Resources.Images.google
+            }
             enable={enableButton}
             onPress={() => {
               passPressed('google')
@@ -212,7 +221,11 @@ export function InitialView(props: { navigation: any; route: any }) {
           <View style={{ width: 12 }} />
           <SignInButton
             title={translations.initialView.login3}
-            icon={Resources.Images.facebook}
+            icon={
+              Config.changeLoginButton
+                ? Resources.Images.facebook2
+                : Resources.Images.facebook
+            }
             enable={enableButton}
             onPress={() => {
               passPressed('facebook')
@@ -221,7 +234,7 @@ export function InitialView(props: { navigation: any; route: any }) {
           <View style={{ height: 12 }} />
           <TouchableOpacity
             onPress={() => {
-              props.navigation.navigate('RecoveryWalletView')
+              props.navigation.navigate('RecoverWalletView')
             }}
           >
             <Text
@@ -253,9 +266,11 @@ function SignInButton(props: {
   return (
     <RectButton
       style={{
-        backgroundColor: Resources.Colors.white,
-        borderRadius: 6,
-        height: 44,
+        backgroundColor: Config.changeLoginButton
+          ? Resources.Colors.white
+          : Resources.Colors.darkGrey,
+        borderRadius: Config.changeLoginButton ? 6 : 12,
+        height: Config.changeLoginButton ? 44 : 48,
         marginBottom: 12,
         alignItems: 'center',
         flexDirection: 'row',
@@ -265,29 +280,56 @@ function SignInButton(props: {
         props.onPress()
       }}
     >
-      <Image
-        style={{
-          position: 'absolute',
-          left: 16,
-          width: 31,
-          height: 44,
-        }}
-        source={props.icon}
-      ></Image>
-      <Text
-        style={{
-          fontFamily:
-            Platform.OS === 'ios' ? undefined : Resources.Fonts.medium,
-          fontWeight: Platform.OS === 'ios' ? '600' : undefined,
-          fontSize: 19,
-          lineHeight: 24,
-          color: Resources.Colors.black,
-          letterSpacing: -0.38,
-          marginLeft: 63,
-        }}
-      >
-        {props.title}
-      </Text>
+      {Config.changeLoginButton ? (
+        <Image
+          style={{
+            position: 'absolute',
+            left: 16,
+            width: 31,
+            height: 44,
+          }}
+          source={props.icon}
+        />
+      ) : (
+        <Image
+          style={{
+            position: 'absolute',
+            left: 16,
+            width: 18,
+            height: 18,
+          }}
+          source={props.icon}
+        />
+      )}
+      {Config.changeLoginButton ? (
+        <Text
+          style={{
+            fontFamily:
+              Platform.OS === 'ios' ? undefined : Resources.Fonts.medium,
+            fontWeight: Platform.OS === 'ios' ? '600' : undefined,
+            fontSize: 19,
+            lineHeight: 24,
+            color: Resources.Colors.black,
+            letterSpacing: -0.38,
+            marginLeft: 63,
+          }}
+        >
+          {props.title}
+        </Text>
+      ) : (
+        <Text
+          style={{
+            flex: 1,
+            fontFamily: Resources.Fonts.medium,
+            fontSize: 14,
+            color: Resources.Colors.veryLightPinkTwo,
+            letterSpacing: -0.3,
+            textAlign: 'center',
+          }}
+        >
+          {props.title}
+        </Text>
+      )}
     </RectButton>
   )
 }
