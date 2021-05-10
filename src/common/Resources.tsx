@@ -74,6 +74,9 @@ export const Images = {
   iconSupport: require('../../assets/images/iconSupport.png'),
   iconError: require('../../assets/images/iconError.png'),
   iconSending: require('../../assets/images/iconSending.png'),
+  iconSeed: require('../../assets/images/iconSeed.png'),
+  iconQr: require('../../assets/images/iconQr.png'),
+  iconPrivateKey: require('../../assets/images/iconPrivateKey.png'),
 
   onboarding01: require('../../assets/images/imgOnboarding01.png'),
   onboarding02: require('../../assets/images/imgOnboarding02.png'),

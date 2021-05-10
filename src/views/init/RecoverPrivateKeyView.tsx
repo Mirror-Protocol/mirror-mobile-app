@@ -17,6 +17,7 @@ import { ConfigContext } from '../../common/provider/ConfigProvider'
 import * as Resources from '../../common/Resources'
 import ThrottleButton from '../../component/ThrottleButton'
 import BtnBackBlur from '../../component/BtnBackBlur'
+import { parseImportKey } from '../../hooks/useRawKey'
 
 export const RecoverPrivateKeyView = (props: {
   navigation: any
@@ -81,14 +82,30 @@ export const RecoverPrivateKeyView = (props: {
     Keyboard.dismiss()
   }
 
-  const [confirmEnable, setConfirmEnable] = useState(true)
-  const [privateKey, setPrivateKey] = useState('')
+  const [confirmEnable, setConfirmEnable] = useState(false)
+  const [encodePrivateKey, setEncodePrivateKey] = useState('')
+  const [encryptPrivateKey, setEncryptPrivateKey] = useState('')
+
+  useEffect(() => {
+    if (encodePrivateKey) {
+      parseImportKey(encodePrivateKey).then((decodeBuffer) => {
+        if (decodeBuffer !== undefined) {
+          setEncryptPrivateKey(decodeBuffer.encrypted_key)
+          setConfirmEnable(true)
+        } else {
+          setConfirmEnable(false)
+        }
+      })
+    }
+  }, [encodePrivateKey])
 
   const onNext = () => {
     hideKeyboard()
     setTimeout(async () => {
       try {
-        props.navigation.navigate('RecoverPasswordView')
+        props.navigation.replace('RecoverPasswordView', {
+          encryptPrivateKey,
+        })
       } finally {
       }
     })
@@ -123,7 +140,7 @@ export const RecoverPrivateKeyView = (props: {
                 <TouchableOpacity
                   onPress={() => {
                     Resources.pasteClipboard().then((value) =>
-                      setPrivateKey(value)
+                      setEncodePrivateKey(value)
                     )
                   }}
                 >
@@ -143,9 +160,9 @@ export const RecoverPrivateKeyView = (props: {
                 underlineColorAndroid='transparent'
                 style={[styles.privateKeyInput, { height: 64 }]}
                 onChangeText={(text) => {
-                  setPrivateKey(text)
+                  setEncodePrivateKey(text.trim())
                 }}
-                value={privateKey}
+                value={encodePrivateKey}
               />
               <View style={{ flex: 1 }} />
 
@@ -161,7 +178,9 @@ export const RecoverPrivateKeyView = (props: {
                       : Resources.Colors.darkGreyTwo,
                   },
                 ]}
-                onPress={() => onNext()}
+                onPress={() => {
+                  confirmEnable && onNext()
+                }}
               >
                 <Text
                   style={[
@@ -230,7 +249,6 @@ const styles = StyleSheet.create({
   confirmButton: {
     borderRadius: 30,
     height: 48,
-    marginTop: 40,
     marginHorizontal: 24,
 
     alignItems: 'center',
@@ -238,7 +256,6 @@ const styles = StyleSheet.create({
   },
   confirmButtonWithoutRadius: {
     height: 48,
-    marginTop: 40,
 
     alignItems: 'center',
     justifyContent: 'center',

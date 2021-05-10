@@ -15,14 +15,26 @@ import {
 } from 'react-native-gesture-handler'
 import { ConfigContext } from '../../common/provider/ConfigProvider'
 import * as Resources from '../../common/Resources'
+import * as Keychain from '../../common/Keychain'
+import * as Utils from '../../common/Utils'
 import ThrottleButton from '../../component/ThrottleButton'
 import BtnBackBlur from '../../component/BtnBackBlur'
+import {
+  decryptPrivateKey,
+  recoverWalletFromPrivateKey,
+} from '../../hooks/useRawKey'
+import { StackActions } from '@react-navigation/native'
+import { NotificationContext } from '../../common/provider/NotificationProvider'
+import { RawKey } from '@terra-money/terra.js'
 
 export const RecoverPasswordView = (props: { navigation: any; route: any }) => {
   const { translations } = useContext(ConfigContext)
+  const { showNotification } = useContext(NotificationContext)
   const safeInsetTop = Resources.getSafeLayoutInsets().top
   const safeInsetBottom = Resources.getSafeLayoutInsets().bottom
   const [isKeyboardShow, setKeyboardShow] = useState(false)
+
+  const encryptPrivateKey = props.route.params.encryptPrivateKey
 
   const bottomMargin = useRef(new Animated.Value(safeInsetBottom + 40)).current
   const animDuration = 200
@@ -79,16 +91,56 @@ export const RecoverPasswordView = (props: { navigation: any; route: any }) => {
   }
 
   const [confirmEnable, setConfirmEnable] = useState(false)
-  const [privateKey, setPrivateKey] = useState('')
-  const [isAwait, setAwait] = useState(false)
+  const [password, setPassword] = useState('')
 
-  const onNext = () => {
+  useEffect(() => {
+    const lengthCheck = password.length >= 10
+    setConfirmEnable(lengthCheck)
+  }, [password])
+
+  const recoverError = () => {
+    showNotification(
+      translations.recoverPasswordView.incorrectPassword,
+      Resources.Colors.brightPink
+    )
+  }
+
+  const recover = async (): Promise<RawKey | undefined> => {
+    const privateKey = await decryptPrivateKey(encryptPrivateKey, password)
+    if (privateKey) {
+      return await recoverWalletFromPrivateKey(privateKey)
+    }
+  }
+
+  const onNext = async () => {
     hideKeyboard()
-    setTimeout(async () => {
-      try {
-      } finally {
+    try {
+      const wallet = await recover()
+      if (wallet) {
+        const isHaveAddress = await Keychain.isHaveUserAddress(
+          wallet.accAddress
+        )
+
+        const authParams = {
+          accessToken: '',
+          email: '',
+          privateKey: Utils.toHexString(wallet.privateKey),
+          typeOfLogin: '',
+          verifier: '',
+        }
+
+        props.navigation.dispatch({
+          ...StackActions.replace('InitialStack', {
+            screen: 'AgreeView',
+            params: { ...authParams, agreePass: isHaveAddress },
+          }),
+        })
+      } else {
+        recoverError()
       }
-    })
+    } catch (e) {
+      recoverError()
+    }
   }
 
   return (
@@ -127,9 +179,9 @@ export const RecoverPasswordView = (props: { navigation: any; route: any }) => {
                 underlineColorAndroid='transparent'
                 style={[styles.passwordInput, { height: 64 }]}
                 onChangeText={(text) => {
-                  setPrivateKey(text)
+                  setPassword(text)
                 }}
-                value={privateKey}
+                value={password}
               />
               <View style={{ flex: 1 }} />
 
@@ -145,7 +197,9 @@ export const RecoverPasswordView = (props: { navigation: any; route: any }) => {
                       : Resources.Colors.darkGreyTwo,
                   },
                 ]}
-                onPress={() => onNext()}
+                onPress={() => {
+                  confirmEnable && onNext()
+                }}
               >
                 <Text
                   style={[
@@ -164,18 +218,6 @@ export const RecoverPasswordView = (props: { navigation: any; route: any }) => {
             </>
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
-        {isAwait && (
-          <View
-            style={{
-              position: 'absolute',
-              justifyContent: 'center',
-              width: Resources.windowSize().width,
-              height: Resources.windowSize().height,
-            }}
-          >
-            <ActivityIndicator size='large' color='#ffffff' animating={true} />
-          </View>
-        )}
       </View>
 
       <BtnBackBlur onPress={() => props.navigation.pop()} />

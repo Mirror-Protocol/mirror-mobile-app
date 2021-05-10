@@ -1,9 +1,12 @@
-import React, { ReactElement } from 'react'
+import React, { ReactElement, useContext } from 'react'
 import * as Resources from '../../common/Resources'
 import { Image, StyleSheet, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import QRCodeScanner from 'react-native-qrcode-scanner'
 import { BarCodeReadEvent } from 'react-native-camera'
+import { ConfigContext } from '../../common/provider/ConfigProvider'
+import { NotificationContext } from '../../common/provider/NotificationProvider'
+import { parseImportKey, parseImportKeyScheme } from '../../hooks/useRawKey'
 
 const MARKER_FULL_WIDTH = 260
 const MARKER_FULL_HEIGHT = 260
@@ -13,10 +16,37 @@ const FRAME_HEIGHT = 20
 const MARKER_WIDTH = MARKER_FULL_WIDTH + FRAME_BORDER * 2
 
 export const RecoverQrView = (props: { navigation: any; route: any }) => {
+  const { translations } = useContext(ConfigContext)
+  const { showNotification } = useContext(NotificationContext)
   const insets = Resources.getSafeLayoutInsets()
 
-  const onSuccess = ({ data }: BarCodeReadEvent): void => {
-    console.log(data)
+  const scanError = () => {
+    showNotification(
+      translations.recoverQrView.error,
+      Resources.Colors.brightPink
+    )
+  }
+
+  const onSuccess = async ({ data }: BarCodeReadEvent): Promise<void> => {
+    try {
+      parseImportKeyScheme(data).then((payload) => {
+        if (payload) {
+          parseImportKey(payload).then((decodeBuffer) => {
+            if (decodeBuffer) {
+              props.navigation.replace('RecoverPasswordView', {
+                encryptPrivateKey: decodeBuffer.encrypted_key,
+              })
+            } else {
+              scanError()
+            }
+          })
+        } else {
+          scanError()
+        }
+      })
+    } catch (e) {
+      scanError()
+    }
   }
 
   const Vertical = (): ReactElement => (
@@ -62,56 +92,58 @@ export const RecoverQrView = (props: { navigation: any; route: any }) => {
 
   const Title = (): ReactElement => (
     <View style={style.titleContainer}>
-      <Text style={style.titleText}>{'Scan QR code'}</Text>
+      <Text style={style.titleText}>{translations.recoverQrView.title}</Text>
     </View>
   )
 
   return (
-    <QRCodeScanner
-      reactivate
-      reactivateTimeout={2500}
-      onRead={onSuccess}
-      cameraStyle={{ height: '100%' }}
-      showMarker
-      customMarker={
-        <View style={style.container}>
-          <View style={style.verticalContainer} />
+    <View style={{ flex: 1, backgroundColor: Resources.Colors.darkBackground }}>
+      <QRCodeScanner
+        reactivate
+        reactivateTimeout={2500}
+        onRead={onSuccess}
+        cameraStyle={{ height: '100%' }}
+        showMarker
+        customMarker={
+          <View style={style.container}>
+            <View style={style.verticalContainer} />
 
-          <Title />
+            <Title />
 
-          <Vertical />
+            <Vertical />
 
-          <View style={style.markerContainer}>
-            <View
-              style={[
-                style.horizontalContainer,
-                { justifyContent: 'flex-end' },
-              ]}
-            >
-              <Horizontal />
+            <View style={style.markerContainer}>
+              <View
+                style={[
+                  style.horizontalContainer,
+                  { justifyContent: 'flex-end' },
+                ]}
+              >
+                <Horizontal />
+              </View>
+
+              <View style={{ alignItems: 'center' }}>
+                <View style={style.marker} />
+              </View>
+
+              <View
+                style={[
+                  style.horizontalContainer,
+                  { justifyContent: 'flex-start' },
+                ]}
+              >
+                <Horizontal />
+              </View>
             </View>
 
-            <View style={{ alignItems: 'center' }}>
-              <View style={style.marker} />
-            </View>
+            <Vertical />
 
-            <View
-              style={[
-                style.horizontalContainer,
-                { justifyContent: 'flex-start' },
-              ]}
-            >
-              <Horizontal />
-            </View>
+            <View style={style.verticalContainer} />
+            <Header />
           </View>
-
-          <Vertical />
-
-          <View style={style.verticalContainer} />
-          <Header />
-        </View>
-      }
-    />
+        }
+      />
+    </View>
   )
 }
 

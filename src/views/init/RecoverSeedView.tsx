@@ -10,6 +10,7 @@ import {
   View,
 } from 'react-native'
 import {
+  ScrollView,
   TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
@@ -56,6 +57,9 @@ export const RecoverSeedView = (props: { navigation: any; route: any }) => {
     const show = () => {
       setKeyboardShow(true)
       startUpAnim()
+      setTimeout(() => {
+        refScrollView?.current?.scrollToEnd()
+      }, 200)
     }
     Keyboard.addListener('keyboardWillShow', show)
     Keyboard.addListener('keyboardDidShow', show)
@@ -69,6 +73,9 @@ export const RecoverSeedView = (props: { navigation: any; route: any }) => {
     const hide = () => {
       setKeyboardShow(false)
       startDownAnim()
+      setTimeout(() => {
+        refScrollView?.current?.scrollTo({ y: 0 })
+      }, 200)
     }
     Keyboard.addListener('keyboardWillHide', hide)
     Keyboard.addListener('keyboardDidHide', hide)
@@ -83,11 +90,12 @@ export const RecoverSeedView = (props: { navigation: any; route: any }) => {
   }
 
   const [wordCount, setWordCount] = useState(0)
-  const [confirmEnable, setConfirmEnable] = useState(true)
+  const [confirmEnable, setConfirmEnable] = useState(false)
 
   const [mk, setMk] = useState<string>('')
 
   const [isAwait, setAwait] = useState(false)
+  const refScrollView = useRef<ScrollView | null>(null)
 
   useEffect(() => {
     try {
@@ -99,7 +107,7 @@ export const RecoverSeedView = (props: { navigation: any; route: any }) => {
   }, [mk])
 
   const trimMnemonicWords = (words: string): string => {
-    return words.trim().replace(/\n/g, ' ')
+    return words.trim().replace(/\n/g, ' ').replace(/ +/g, ' ')
   }
 
   const getWordCount = (words: string): number => {
@@ -148,7 +156,7 @@ export const RecoverSeedView = (props: { navigation: any; route: any }) => {
               Keyboard.dismiss()
             }}
           >
-            <>
+            <ScrollView ref={refScrollView}>
               <View style={{ marginTop: 48 }}>
                 <Text style={styles.title}>
                   {translations.recoverSeedView.title}
@@ -182,7 +190,8 @@ export const RecoverSeedView = (props: { navigation: any; route: any }) => {
                 style={[
                   styles.seedInput,
                   {
-                    height: isKeyboardShow ? 200 : undefined,
+                    minHeight: 162,
+                    // height: isKeyboardShow ? 200 : undefined,
                   },
                 ]}
                 onChangeText={(text) => {
@@ -190,37 +199,38 @@ export const RecoverSeedView = (props: { navigation: any; route: any }) => {
                 }}
                 value={mk.toLowerCase()}
               />
-              <View style={{ flex: 1 }} />
-
-              <ThrottleButton
-                type='TouchableOpacity'
+              <View style={{ flex: 1, minHeight: 40 }} />
+            </ScrollView>
+            <ThrottleButton
+              type='TouchableOpacity'
+              style={[
+                isKeyboardShow
+                  ? styles.confirmButtonWithoutRadius
+                  : styles.confirmButton,
+                {
+                  backgroundColor: confirmEnable
+                    ? Resources.Colors.brightTeal
+                    : Resources.Colors.darkGreyTwo,
+                },
+              ]}
+              onPress={() => {
+                confirmEnable && createWallet()
+              }}
+            >
+              <Text
                 style={[
-                  isKeyboardShow
-                    ? styles.confirmButtonWithoutRadius
-                    : styles.confirmButton,
+                  styles.confirmText,
                   {
-                    backgroundColor: confirmEnable
-                      ? Resources.Colors.brightTeal
-                      : Resources.Colors.darkGreyTwo,
+                    color: confirmEnable
+                      ? Resources.Colors.black
+                      : Resources.Colors.greyishBrown,
                   },
                 ]}
-                onPress={() => createWallet()}
               >
-                <Text
-                  style={[
-                    styles.confirmText,
-                    {
-                      color: confirmEnable
-                        ? Resources.Colors.black
-                        : Resources.Colors.greyishBrown,
-                    },
-                  ]}
-                >
-                  {translations.recoverSeedView.confirm}
-                </Text>
-              </ThrottleButton>
-              <Animated.View style={{ height: bottomMargin }} />
-            </>
+                {translations.recoverSeedView.confirm}
+              </Text>
+            </ThrottleButton>
+            <Animated.View style={{ height: bottomMargin }} />
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
         {isAwait && (
@@ -274,10 +284,10 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: Resources.Colors.darkGreyTwo,
     marginHorizontal: 24,
+    lineHeight: 20,
 
     paddingHorizontal: 24,
     paddingTop: 24,
-    paddingBottom: 24,
     textAlignVertical: 'top',
     color: Resources.Colors.veryLightPink,
     fontSize: 14,
@@ -286,7 +296,6 @@ const styles = StyleSheet.create({
   confirmButton: {
     borderRadius: 30,
     height: 48,
-    marginTop: 40,
     marginHorizontal: 24,
 
     alignItems: 'center',
@@ -294,7 +303,6 @@ const styles = StyleSheet.create({
   },
   confirmButtonWithoutRadius: {
     height: 48,
-    marginTop: 40,
 
     alignItems: 'center',
     justifyContent: 'center',

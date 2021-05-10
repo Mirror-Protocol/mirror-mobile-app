@@ -1,6 +1,5 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import {
-  Alert,
   Image,
   ImageSourcePropType,
   Platform,
@@ -19,6 +18,7 @@ import {
   PERMISSIONS,
   request,
 } from 'react-native-permissions'
+import { PopupView } from '../common/PopupView'
 
 type PermissionResult =
   | 'unavailable'
@@ -52,6 +52,7 @@ export const RecoverWalletView = (props: { navigation: any; route: any }) => {
     return statuses[permissions.CAMERA]
   }
 
+  const [showPermissionPopup, setShowPermissionPopup] = useState(false)
   const onQrPress = async (): Promise<void> => {
     const requestResult = await requestPermission()
     if (requestResult === 'granted') {
@@ -62,15 +63,7 @@ export const RecoverWalletView = (props: { navigation: any; route: any }) => {
       }
     }
 
-    Alert.alert(
-      'Camera not authorized',
-      'Move to settings to enable camera permissions?',
-      [
-        { text: 'Cancel', onPress: () => {} },
-        { text: 'OK', onPress: () => openPermissionSettings() },
-      ],
-      { cancelable: true }
-    )
+    setShowPermissionPopup(true)
   }
 
   return (
@@ -93,31 +86,49 @@ export const RecoverWalletView = (props: { navigation: any; route: any }) => {
             marginBottom: 28,
             color: Resources.Colors.white,
           }}
-        >{`Restore wallet`}</Text>
+        >
+          {translations.recoverWalletView.title}
+        </Text>
         <Item
-          image={undefined}
-          title={`Seed phrase`}
+          image={Resources.Images.iconSeed}
+          title={translations.recoverWalletView.recoverSeed}
           onPress={() => {
             props.navigation.navigate('RecoverSeedView')
           }}
         />
         <Separator />
         <Item
-          image={undefined}
-          title={`QR code`}
+          image={Resources.Images.iconQr}
+          title={translations.recoverWalletView.recoverQr}
           onPress={() => {
             onQrPress()
           }}
         />
         <Separator />
         <Item
-          image={undefined}
-          title={`Private key`}
+          image={Resources.Images.iconPrivateKey}
+          title={translations.recoverWalletView.recoverPrivateKey}
           onPress={() => {
             props.navigation.navigate('RecoverPrivateKeyView')
           }}
         />
       </View>
+
+      {showPermissionPopup && (
+        <PopupView
+          title={translations.recoverWalletView.cameraPermissionPopupTitle}
+          content={translations.recoverWalletView.cameraPermissionPopupContent}
+          okText={translations.recoverWalletView.cameraPermissionOk}
+          cancelText={translations.recoverWalletView.cameraPermissionCancel}
+          onCancelPressed={() => {
+            setShowPermissionPopup(false)
+          }}
+          onOkPressed={() => {
+            setShowPermissionPopup(false)
+            openPermissionSettings()
+          }}
+        />
+      )}
     </View>
   )
 }
@@ -142,9 +153,13 @@ const Item = (props: {
           height: 56,
           borderRadius: 12,
           backgroundColor: Resources.Colors.darkGrey,
+          alignItems: 'center',
+          justifyContent: 'center',
         }}
       >
-        {/** IMAGE */}
+        {props.image && (
+          <Image source={props.image} style={{ width: 34, height: 34 }} />
+        )}
       </View>
       <Text
         style={{
@@ -165,29 +180,6 @@ const Item = (props: {
     </TouchableOpacity>
   )
 }
-
-// const Separator = (props: {}) => {
-//   return (
-//     <>
-//       <View
-//         style={{
-//           flex: 1,
-//           height: 1,
-//           borderRadius: 100,
-//           borderColor: 'rgb(9, 9, 10)',
-//         }}
-//       />
-//       <View
-//         style={{
-//           flex: 1,
-//           height: 1,
-//           borderRadius: 100,
-//           borderColor: 'rgb(40, 40, 42)',
-//         }}
-//       />
-//     </>
-//   )
-// }
 
 const styles = StyleSheet.create({
   container: {

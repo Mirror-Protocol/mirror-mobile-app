@@ -263,6 +263,12 @@ export function stringNumberWithoutComma(n: string) {
   return n.replace(/,/g, '')
 }
 
+export const toHexString = (bytes: any) => {
+  return Array.from(bytes, (b: any) => {
+    return ('0' + (b & 0xff).toString(16)).slice(-2)
+  }).join('')
+}
+
 export function contactUs() {
   const supportEmail = 'support@mirrorwallet.com'
   try {

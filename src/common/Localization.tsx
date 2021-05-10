@@ -335,6 +335,17 @@ export const en = {
     step3Content:
       'Users will be airdropped prizes prorated by their total trading volume.',
   },
+  recoverWalletView: {
+    title: 'Restore wallet',
+    recoverSeed: 'Seed phrase',
+    recoverQr: 'QR code',
+    recoverPrivateKey: 'Private key',
+    cameraPermissionPopupTitle: 'Camera not authorized',
+    cameraPermissionPopupContent:
+      'Move to settings to enable camera permissions?',
+    cameraPermissionOk: 'OK',
+    cameraPermissionCancel: 'Cancel',
+  },
   recoverSeedView: {
     title: 'Seed phrase',
     subTitle:
@@ -356,6 +367,11 @@ export const en = {
     subTitle: 'Confirm your Terra wallet password',
     inputPlaceHolder: 'Enter your password here',
     confirm: 'Confirm',
+    incorrectPassword: 'Incorrect password',
+  },
+  recoverQrView: {
+    title: 'Scan QR code',
+    error: 'Not a QR code for recovering wallets',
   },
   rampQrView: {
     notice: `NOTICE`,
@@ -701,6 +717,17 @@ export const ko = {
     step3Content:
       'Users will be airdropped prizes prorated by their total trading volume.',
   },
+  recoverWalletView: {
+    title: 'Restore wallet',
+    recoverSeed: 'Seed phrase',
+    recoverQr: 'QR code',
+    recoverPrivateKey: 'Private key',
+    cameraPermissionPopupTitle: 'Camera not authorized',
+    cameraPermissionPopupContent:
+      'Move to settings to enable camera permissions?',
+    cameraPermissionOk: 'OK',
+    cameraPermissionCancel: 'Cancel',
+  },
   recoverSeedView: {
     title: 'Seed phrase',
     subTitle:
@@ -722,6 +749,11 @@ export const ko = {
     subTitle: 'Confirm your Terra wallet password',
     inputPlaceHolder: 'Enter your password here',
     confirm: 'Confirm',
+    incorrectPassword: 'Incorrect password',
+  },
+  recoverQrView: {
+    title: 'Scan QR code',
+    error: 'Not a QR code for recovering wallets',
   },
   rampQrView: {
     notice: `NOTICE`,

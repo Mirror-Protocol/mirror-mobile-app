@@ -14,7 +14,6 @@ import BtnBack from '../../component/BtnBack'
 export const SelectWalletView = (props: { navigation: any; route: any }) => {
   const { translations } = useContext(ConfigContext)
   const safeInsetTop = Resources.getSafeLayoutInsets().top
-  const safeInsetBottom = Resources.getSafeLayoutInsets().bottom
 
   const addr118 = props.route.params.keys[118].mnemonicKey.accAddress
   const addr330 = props.route.params.keys[330].mnemonicKey.accAddress
@@ -45,12 +44,6 @@ export const SelectWalletView = (props: { navigation: any; route: any }) => {
     !empty118 && selectWallet(330)
   }, [empty118])
 
-  const toHexString = (bytes: any) => {
-    return Array.from(bytes, (b: any) => {
-      return ('0' + (b & 0xff).toString(16)).slice(-2)
-    }).join('')
-  }
-
   const selectWallet = async (bip: number) => {
     const wallet = props.route.params.keys[bip].mnemonicKey
 
@@ -58,7 +51,7 @@ export const SelectWalletView = (props: { navigation: any; route: any }) => {
     const authParams = {
       accessToken: '',
       email: '',
-      privateKey: toHexString(
+      privateKey: Utils.toHexString(
         props.route.params.keys[bip].mnemonicKey.privateKey
       ),
       typeOfLogin: '',
