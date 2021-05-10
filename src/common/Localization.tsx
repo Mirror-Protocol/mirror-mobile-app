@@ -340,10 +340,10 @@ export const en = {
     recoverSeed: 'Seed phrase',
     recoverQr: 'QR code',
     recoverPrivateKey: 'Private key',
-    cameraPermissionPopupTitle: 'Camera not authorized',
+    cameraPermissionPopupTitle: 'Camera Access',
     cameraPermissionPopupContent:
-      'Move to settings to enable camera permissions?',
-    cameraPermissionOk: 'OK',
+      'To recover your wallet by QR code, please enable camera access in Settings.',
+    cameraPermissionOk: 'Open Settings',
     cameraPermissionCancel: 'Cancel',
   },
   recoverSeedView: {
@@ -722,10 +722,10 @@ export const ko = {
     recoverSeed: 'Seed phrase',
     recoverQr: 'QR code',
     recoverPrivateKey: 'Private key',
-    cameraPermissionPopupTitle: 'Camera not authorized',
+    cameraPermissionPopupTitle: 'Camera Access',
     cameraPermissionPopupContent:
-      'Move to settings to enable camera permissions?',
-    cameraPermissionOk: 'OK',
+      'To recover your wallet by QR code, please enable camera access in Settings.',
+    cameraPermissionOk: 'Open Settings',
     cameraPermissionCancel: 'Cancel',
   },
   recoverSeedView: {
