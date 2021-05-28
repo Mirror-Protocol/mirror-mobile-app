@@ -1,7 +1,14 @@
-import React, { useState, useCallback, useRef, useContext } from 'react'
-import { Text, View, Image, Animated, Platform } from 'react-native'
+import React, {
+  useState,
+  useCallback,
+  useRef,
+  useContext,
+  useEffect,
+} from 'react'
+import { Text, View, Image, Animated, Platform, ScrollView } from 'react-native'
 import * as Resources from '../../common/Resources'
 import * as Api from '../../common/Apis/Api'
+import * as Utils from '../../common/Utils'
 import { useFocusEffect } from '@react-navigation/native'
 import { TouchableOpacity, RectButton } from 'react-native-gesture-handler'
 import { MainTab1 } from './MainTab1'
@@ -10,9 +17,15 @@ import { BlurView } from '@react-native-community/blur'
 import { ConfigContext } from '../../common/provider/ConfigProvider'
 import { Search } from './Search'
 import ThrottleButton from '../../component/ThrottleButton'
+import { getAssetBalances, readDelistMAssets } from '../../common/Apis/Api'
+import {
+  checkDoNotShowDelistNotice,
+  setDoNotShowDelistNotice,
+} from '../../common/Keychain'
 
 export function Main(props: { navigation: any; route: any }) {
   const safeInsetTop = Resources.getSafeLayoutInsets().top
+  const safeInsetBottom = Resources.getSafeLayoutInsets().bottom
   const { translations } = useContext(ConfigContext)
   const [selectedTab, setTab] = useState(0)
   const [chartLongPressed, setChartLongPressed] = useState(false)
@@ -64,6 +77,33 @@ export function Main(props: { navigation: any; route: any }) {
     }
   })
 
+  const [myDelistAssets, setMyDelistAssets] = useState<DelistMAssetModel[]>([])
+  const [showNotice, setShowNotice] = useState(false)
+  const [doNotShowAgain, setDoNotShowAgain] = useState(false)
+  useEffect(() => {
+    const checkDelistItems = async () => {
+      const assetBalances = await getAssetBalances()
+      const delistAssets = await readDelistMAssets()
+
+      const findAssets = delistAssets.filter((a) => {
+        return assetBalances.find((b) => a.token === b.token)
+      })
+
+      if (findAssets.length > 0) {
+        const delistTokens = findAssets.map((i) => {
+          return i.token
+        })
+        const doNotShow = await checkDoNotShowDelistNotice(delistTokens)
+
+        if (!doNotShow) {
+          setShowNotice(true)
+          setMyDelistAssets(findAssets)
+        }
+      }
+    }
+    checkDelistItems()
+  }, [])
+
   useFocusEffect(
     useCallback(() => {
       Api.assetList(true, true).then((list) => {
@@ -77,6 +117,311 @@ export function Main(props: { navigation: any; route: any }) {
     outputRange: [0, -32],
     extrapolate: 'clamp',
   })
+
+  const noticePopup = () => {
+    const DelistSymbols = myDelistAssets
+      .map((i) => {
+        return i.symbol
+      })
+      .join(', ')
+
+    const DelistItem = ({ symbol, date }: { symbol: string; date: string }) => {
+      const convertDate = Utils.getDateFormat1(new Date(date))
+      return (
+        <Text
+          style={{
+            fontFamily: Resources.Fonts.book,
+            fontSize: 16,
+            color: Resources.Colors.brightTeal,
+            textAlign: 'center',
+          }}
+        >
+          {symbol}
+          <Text
+            style={{
+              fontFamily: Resources.Fonts.book,
+              fontSize: 12,
+              color: Resources.Colors.brownishGrey,
+            }}
+          >{` (${convertDate})`}</Text>
+        </Text>
+      )
+    }
+
+    return (
+      <View
+        style={{
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          backgroundColor: Resources.Colors.darkBackground,
+          flexDirection: 'column',
+        }}
+      >
+        <ScrollView
+          style={{ flex: 1, paddingHorizontal: 24 }}
+          overScrollMode={'never'}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={{ flex: 1 }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                marginTop: safeInsetTop + 60,
+                marginBottom: 8,
+              }}
+            >
+              <Image
+                source={Resources.Images.iconNoticeB}
+                style={{ width: 14.8, height: 13, marginRight: 4 }}
+              />
+              <Text
+                style={{
+                  fontFamily: Resources.Fonts.medium,
+                  fontSize: 14,
+                  letterSpacing: -0.04,
+                  color: Resources.Colors.brownishGrey,
+                  includeFontPadding: false,
+                }}
+              >
+                {`NOTICE`}
+              </Text>
+            </View>
+            <Text
+              style={{
+                fontFamily: Resources.Fonts.medium,
+                fontSize: 32,
+                color: Resources.Colors.veryLightPinkTwo,
+                marginBottom: 8,
+                includeFontPadding: false,
+              }}
+            >
+              {`Stock Split`}
+            </Text>
+            <Text
+              style={{
+                fontFamily: Resources.Fonts.book,
+                fontSize: 12,
+                lineHeight: 18,
+                color: Resources.Colors.brownishGrey,
+                marginBottom: 24,
+                includeFontPadding: false,
+              }}
+            >
+              {`Below asset will be affected by a stock split / merge on the dates below:`}
+            </Text>
+            <View
+              style={{
+                borderRadius: 16,
+                backgroundColor: Resources.Colors.darkGrey,
+                justifyContent: 'center',
+                alignContent: 'center',
+                marginBottom: 24,
+                paddingTop: 24,
+                paddingBottom: 9,
+              }}
+            >
+              {myDelistAssets.map((i) => {
+                return (
+                  <>
+                    <DelistItem symbol={i.symbol} date={i.date} />
+                    <View style={{ height: 15 }} />
+                  </>
+                )
+              })}
+            </View>
+            <Text
+              style={{
+                fontFamily: Resources.Fonts.book,
+                fontSize: 12,
+                lineHeight: 18,
+                color: Resources.Colors.brownishGrey,
+                marginBottom: 24,
+              }}
+            >
+              {`These assets will be `}
+              <Text
+                style={{
+                  fontFamily: Resources.Fonts.medium,
+                  fontSize: 12,
+                  lineHeight: 18,
+                  color: Resources.Colors.brownishGrey,
+                }}
+              >{`DELISTED`}</Text>
+              {` as soon as the market closes on the last trading day before the stock split / merge.`}
+            </Text>
+            <Text
+              style={{
+                fontFamily: Resources.Fonts.medium,
+                fontSize: 16,
+                lineHeight: 24,
+                color: Resources.Colors.brightTeal,
+                marginBottom: 12,
+              }}
+            >{`You have 2 options:`}</Text>
+            <View style={{ flexDirection: 'row' }}>
+              <Text
+                style={{
+                  width: 15,
+                  fontFamily: Resources.Fonts.book,
+                  fontSize: 14,
+                  lineHeight: 21,
+                  color: Resources.Colors.veryLightPinkTwo,
+                }}
+              >{`1. `}</Text>
+              <Text
+                style={{
+                  fontFamily: Resources.Fonts.book,
+                  fontSize: 14,
+                  lineHeight: 21,
+                  color: Resources.Colors.veryLightPinkTwo,
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: Resources.Fonts.medium,
+                    fontSize: 14,
+                    lineHeight: 21,
+                    color: Resources.Colors.brightTeal,
+                  }}
+                >
+                  {`Sell`}
+                </Text>
+                {` ${DelistSymbols} before the split date`}
+              </Text>
+            </View>
+            <View style={{ flexDirection: 'row', marginBottom: 24 }}>
+              <Text
+                style={{
+                  width: 15,
+                  fontFamily: Resources.Fonts.book,
+                  fontSize: 14,
+                  lineHeight: 21,
+                  color: Resources.Colors.veryLightPinkTwo,
+                }}
+              >{`2. `}</Text>
+              <Text
+                style={{
+                  fontFamily: Resources.Fonts.book,
+                  fontSize: 14,
+                  lineHeight: 21,
+                  color: Resources.Colors.veryLightPinkTwo,
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: Resources.Fonts.medium,
+                    fontSize: 14,
+                    lineHeight: 21,
+                    color: Resources.Colors.brightTeal,
+                  }}
+                >
+                  {`Burn`}
+                </Text>
+                {` ${DelistSymbols} after the split date at a fixed oracle price`}
+              </Text>
+            </View>
+            <View
+              style={{
+                width: '100%',
+                height: 1,
+                backgroundColor: 'rgb(9, 9, 10)',
+              }}
+            />
+            <View
+              style={{
+                width: '100%',
+                height: 1,
+                backgroundColor: 'rgb(40, 40, 42)',
+                marginBottom: 24,
+              }}
+            />
+            <Text
+              style={{
+                fontFamily: Resources.Fonts.book,
+                fontSize: 14,
+                lineHeight: 21,
+                color: Resources.Colors.veryLightPinkTwo,
+                marginBottom: 16,
+              }}
+            >
+              {`You will be able to repurchase these assets shortly after the stock split`}
+            </Text>
+          </View>
+        </ScrollView>
+        <View
+          style={{
+            height: 114,
+            paddingHorizontal: 24,
+            marginBottom: safeInsetBottom,
+          }}
+        >
+          <TouchableOpacity
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginBottom: 26,
+            }}
+            onPress={() => {
+              setDoNotShowAgain((old) => !old)
+            }}
+          >
+            <View
+              style={{
+                width: 20,
+                height: 20,
+                borderRadius: 4,
+                backgroundColor: doNotShowAgain
+                  ? Resources.Colors.brightTeal
+                  : Resources.Colors.darkGrey,
+                marginRight: 8,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Image
+                source={Resources.Images.iconCheckB}
+                style={{ width: 11, height: 8.5 }}
+              />
+            </View>
+            <Text
+              style={{
+                fontFamily: Resources.Fonts.book,
+                fontSize: 12,
+                lineHeight: 18,
+                color: Resources.Colors.brownishGrey,
+              }}
+            >{`Do not show again`}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              height: 48,
+              borderRadius: 31,
+              backgroundColor: Resources.Colors.brightTeal,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+            onPress={() => {
+              if (doNotShowAgain === true) {
+                setDoNotShowDelistNotice(
+                  myDelistAssets.map((asset) => asset.token)
+                )
+              }
+              setShowNotice(false)
+            }}
+          >
+            <Text
+              style={{
+                fontFamily: Resources.Fonts.medium,
+                fontSize: 18,
+                color: Resources.Colors.black,
+              }}
+            >{`I UNDERSTAND`}</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    )
+  }
 
   return (
     <View
@@ -250,13 +595,14 @@ export function Main(props: { navigation: any; route: any }) {
           onDismissPressed={() => {
             setShowSearchView(false)
           }}
-          onItemPressed={(symbol) => {
-            props.navigation.push('InvestedDetail', { symbol: symbol })
+          onItemPressed={(token) => {
+            props.navigation.push('InvestedDetail', { token })
           }}
         />
       ) : (
         <View />
       )}
+      {showNotice && noticePopup()}
     </View>
   )
 }

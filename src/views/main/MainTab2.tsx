@@ -55,7 +55,7 @@ export function MainTab2(props: {
 
   return (
     <View style={{ flex: 1, width: Resources.windowSize().width }}>
-      {stockList.length > 0 ? (
+      {stockList.length > 0 && (
         <Animated.FlatList
           style={{ flex: 1 }}
           onScroll={Animated.event(
@@ -86,8 +86,8 @@ export function MainTab2(props: {
           renderItem={(item) => {
             return (
               <MainTab2ItemView
-                detailPressed={(symbol: string) => {
-                  props.navigation.push('InvestedDetail', { symbol: symbol })
+                detailPressed={(token) => {
+                  props.navigation.push('InvestedDetail', { token })
                 }}
                 _item={item}
                 setShowPercent={setShowPercent}
@@ -97,8 +97,6 @@ export function MainTab2(props: {
           }}
           showsVerticalScrollIndicator={false}
         />
-      ) : (
-        <View />
       )}
     </View>
   )

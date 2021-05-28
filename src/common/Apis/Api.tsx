@@ -201,6 +201,7 @@ export async function getBalances(): Promise<
     return {
       amount: new BigNumber(item.Amount),
       denom: item.Denom,
+      token: item.to,
     }
   })
 
@@ -316,26 +317,44 @@ export async function getAssetBalances(): Promise<GQL_AssetList1[]> {
     const assetMetas = assets.filter((item) => {
       return item.token == asset.token
     })
+
     if (assetMetas.length == 0) {
       continue
     } else {
       assetMeta = assetMetas[0]
     }
 
-    const priceMeta = priceList.filter((item: any) => {
+    let priceMeta = priceList.filter((item: any) => {
       return item.token == asset.token
-    })[0]
+    })
+
+    let price = undefined
+    if (priceMeta.length < 1) {
+      price = await getEndPrice(asset.token)
+    } else {
+      price = priceMeta[0].prices.price
+    }
+
+    let status: AssetStatus = 'LISTED'
+    for (let j = 0; j < assets.length; j++) {
+      if (assets[j].token === assetMeta.token) {
+        status = assets[j].status
+        break
+      }
+    }
 
     const obj: GQL_AssetList1 = {
+      token: asset.token,
       symbol: assetMeta.symbol,
       name: assetMeta.name,
       category: '',
-      price: priceMeta.prices.price,
+      price: price,
       amount: asset.balance,
       yesterday: '0',
       dayDiff: '0',
       averagePrice: asset.averagePrice,
       ret: '0',
+      status,
     }
     list.push(obj)
   }
@@ -358,9 +377,9 @@ export async function assetList(
   return list
 }
 
-export async function assetInfo(symbol: string) {
+export async function assetInfo(token: string) {
   const assetList = (await readMAssets()).filter((item) => {
-    return item.symbol == symbol
+    return item.token === token
   })
   return await assetItem(assetList[0], true)
 }
@@ -392,11 +411,16 @@ async function assetItem(
     amount = balance.balance
 
     prices = await terraPriceQuery(token_contract, address, closeBalance)
+    if (item.status === 'DELISTED') {
+      const endPrice = await getEndPrice(token_contract)
+      prices.price = new BigNumber(endPrice!)
+      prices.averagePrice = prices.price
+    }
   }
 
   const newItem: GQL_AssetList1 = {
+    token: item.token,
     symbol: item.symbol,
-
     category: 'STOCK',
     name: item.name,
     amount: amount,
@@ -405,6 +429,7 @@ async function assetItem(
     dayDiff: prices.dayDiff.toString(),
     averagePrice: prices.averagePrice.toString(),
     ret: prices.ret.toString(),
+    status: item.status,
   }
 
   return newItem
@@ -464,9 +489,9 @@ export enum ChartDataType {
   year = 'ONE_YEAR',
 }
 
-export async function assetOther(symbol: string) {
+export async function assetOther(token: string) {
   const contract = (await readMAssets()).filter((item) => {
-    return item.symbol == symbol
+    return item.token === token
   })[0]
 
   const response = await gql.getAssetInfo(contract.token)
@@ -505,13 +530,13 @@ export async function assetOther(symbol: string) {
 }
 
 export async function assetChart(
-  symbol: string,
+  token: string,
   range: ChartDataType
 ): Promise<GQL_AssetChartList> {
   const info = getChartRange(range)
 
   const contract = (await readMAssets()).filter((item) => {
-    return item.symbol == symbol
+    return item.token === token
   })[0]
 
   const response = await gql.getPriceHistory(
@@ -555,7 +580,11 @@ export async function summaryChart(
 
 function getChartRange(
   range: ChartDataType
-): { to: BigNumber; from: BigNumber; interval: number } {
+): {
+  to: BigNumber
+  from: BigNumber
+  interval: number
+} {
   const DAY = new BigNumber(60 * 60 * 24 * 1000)
 
   const now = new Date()
@@ -667,9 +696,28 @@ async function readMAssets(): Promise<MAssetModel[]> {
       token: json[key].token,
       pair: json[key].pair,
       lptoken: json[key].lpToken,
+      status: json[key].status,
     }
     result.push(obj)
   }
+  return result
+}
+
+export async function readDelistMAssets(): Promise<DelistMAssetModel[]> {
+  const response = await get(Config.assetsAddress)
+
+  const json = response.data.delist
+  let result: DelistMAssetModel[] = []
+  for (const key in json) {
+    const obj: DelistMAssetModel = {
+      token: key,
+      symbol: json[key].symbol,
+      date: json[key].date,
+      ratio: json[key].ratio,
+    }
+    result.push(obj)
+  }
+
   return result
 }
 
@@ -683,7 +731,7 @@ export async function buysellSimulate(
   commission_amount: string
 }> {
   const contract = (await readMAssets()).filter((item) => {
-    return item.symbol == symbol
+    return item.symbol === symbol && item.status === 'LISTED'
   })[0]
 
   const info = isBuy
@@ -740,7 +788,7 @@ export async function buy(
   tax: BigNumber
 ) {
   const contract = (await readMAssets()).filter((item) => {
-    return item.symbol == symbol
+    return item.symbol === symbol && item.status === 'LISTED'
   })[0]
 
   const wallet = await getWallet(pw)
@@ -783,7 +831,7 @@ export async function sell(
   fee: BigNumber
 ) {
   const contract = (await readMAssets()).filter((item) => {
-    return item.symbol == symbol
+    return item.symbol === symbol && item.status === 'LISTED'
   })[0]
 
   const wallet = await getWallet(pw)
@@ -808,6 +856,59 @@ export async function sell(
     msgs: [msg],
     memo: '',
     fee: new StdFee(gas.toNumber(), [
+      new Coin(Keychain.baseCurrency, fee.toNumber()),
+    ]),
+  })
+
+  const response = await terra.tx.broadcast(tx)
+  if (response.code) {
+    throw new Error(response.raw_log)
+  } else {
+    return response
+  }
+}
+
+export async function burn(
+  pw: string,
+  positions: {
+    position: string
+    amount: string
+    collateralToken: string
+  }[],
+  symbol: string,
+  fee: BigNumber
+) {
+  const contract = (await readMAssets()).filter((item) => {
+    return item.symbol === symbol && item.status === 'DELISTED'
+  })[0]
+  const whitelist = await get(Config.assetsAddress)
+  const wallet = await getWallet(pw)
+
+  const msg = positions.map((i) => {
+    return new MsgExecuteContract(
+      wallet.key.accAddress,
+      contract.token,
+      {
+        send: {
+          amount: i.amount.toString(),
+          contract: whitelist.data.contracts.mint,
+          msg: base64.encode(
+            JSON.stringify({
+              burn: {
+                position_idx: i.position,
+              },
+            })
+          ),
+        },
+      },
+      []
+    )
+  })
+
+  const tx = await wallet.createAndSignTx({
+    msgs: msg,
+    memo: '',
+    fee: new StdFee(gas.times(positions.length).toNumber(), [
       new Coin(Keychain.baseCurrency, fee.toNumber()),
     ]),
   })
@@ -1047,4 +1148,26 @@ export async function getHaveBalanceHistory(): Promise<boolean> {
 export async function setConnect(email?: string) {
   const address = await getAddress()
   return await gql.setConnect(address, email)
+}
+
+export async function getEndPrice(token: string): Promise<string | null> {
+  const whitelist = await get(Config.assetsAddress)
+
+  const response = await terraWasmQuery(whitelist.data.contracts.mint, {
+    asset_config: {
+      asset_token: token,
+    },
+  })
+
+  return response.end_price
+}
+
+export async function getDelistedCollateralPositions(token: string) {
+  const contract = (await readMAssets()).filter((item) => {
+    return item.token === token
+  })[0]
+
+  const response = gql.getCdps([contract.token])
+
+  return response
 }

@@ -42,8 +42,7 @@
     "crypto-js": "^4.0.0",
     "graphql": "^15.3.0",
     "lodash": "^4.17.21",
-    "lottie-ios": "^3.1.3",
-    "lottie-react-native": "^3.4.0",
+    "lottie-react-native": "^4.0.2",
     "multicoin-address-validator": "^0.4.16",
     "node-libs-react-native": "^1.2.1",
     "ramda": "^0.27.1",
@@ -79,6 +78,7 @@
     "react-native-webview": "^11.0.3",
     "scrypt-js": "^3.0.1",
     "socketcluster-client": "^16.0.1",
+    "tweetnacl": "^0.14.3",
     "url": "^0.11.0"
   },
   "devDependencies": {

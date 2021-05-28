@@ -26,7 +26,7 @@ export function MainTab1AssetView(props: {
   chartLongPressed: boolean
   chartDataType: Api.ChartDataType
   setChartDataType: (t: Api.ChartDataType) => void
-  itemPressed: (symbol: string) => void
+  itemPressed: (token: string) => void
 }) {
   const { translations } = useContext(ConfigContext)
   const safeInsetTop = Resources.getSafeLayoutInsets().top
@@ -97,7 +97,7 @@ export function MainTab1AssetView(props: {
               backgroundColor: Resources.Colors.dummydown,
             }}
           />
-          {props.info.balance.isGreaterThan(0) ? (
+          {props.info.balance.isGreaterThan(0) || props.info.list.length > 0 ? (
             <>
               <View
                 style={{
@@ -226,8 +226,8 @@ export function MainTab1AssetView(props: {
                   return (
                     <ItemView
                       key={index}
-                      itemPressed={(symbol: string) => {
-                        props.itemPressed(symbol)
+                      itemPressed={(token: string) => {
+                        props.itemPressed(token)
                       }}
                       item={item}
                     />
@@ -568,23 +568,21 @@ function ProgressBar(props: { percent: BigNumber }) {
 }
 
 function ItemView(props: {
-  itemPressed: (symbol: string) => void
+  itemPressed: (token: string) => void
   item: GQL_AssetList1
 }) {
   const item = props.item
 
-  //내 가치.
   const value = new BigNumber(item.price)
     .multipliedBy(new BigNumber(item.amount))
     .dividedBy(1000000)
 
-  const symbol = item.symbol
+  const token = item.token
+  const status = item.status
 
-  //정수, 소수
   const value1 = Utils.getFormatted(value, 2, true).split('.')[0]
   const value2 = Utils.getFormatted(value, 2, true).split('.')[1]
 
-  //수익률
   const avgPrice = new BigNumber(item.averagePrice)
   let rate = new BigNumber(0)
   if (!avgPrice.isEqualTo(0)) {
@@ -604,19 +602,33 @@ function ItemView(props: {
         justifyContent: 'center',
       }}
       onPress={() => {
-        props.itemPressed(symbol)
+        props.itemPressed(token)
       }}
     >
-      <Text
-        style={{
-          color: Resources.Colors.greyishBrown,
-          fontFamily: Resources.Fonts.bold,
-          fontSize: 42,
-          letterSpacing: -1.43,
-        }}
-      >
-        {Utils.getDenom(symbol)}
-      </Text>
+      <View>
+        {status === 'DELISTED' && (
+          <Text
+            style={{
+              fontFamily: Resources.Fonts.medium,
+              fontSize: 10,
+              letterSpacing: -0.3,
+              color: Resources.Colors.brownishGrey,
+              marginBottom: 2,
+            }}
+          >{`DELISTED`}</Text>
+        )}
+        <Text
+          style={{
+            color: Resources.Colors.greyishBrown,
+            fontFamily: Resources.Fonts.bold,
+            fontSize: 42,
+            letterSpacing: -1.43,
+            includeFontPadding: false,
+          }}
+        >
+          {Utils.getDenom(item.symbol)}
+        </Text>
+      </View>
       <View
         style={{
           position: 'absolute',

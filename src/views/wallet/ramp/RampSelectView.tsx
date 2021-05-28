@@ -146,7 +146,7 @@ const TabAll = (props: {
             {<Separator style={{ marginVertical: SEPARATOR_MARGIN }} />}
           </View>
         ))}
-        <View>
+        <View style={{ marginBottom: 24 }}>
           <Text
             style={{
               fontFamily: Resources.Fonts.book,

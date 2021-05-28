@@ -22,7 +22,10 @@ interface GQL_TxModel {
   timestamp: string
 }
 
+type AssetStatus = 'LISTED' | 'DELISTED'
+
 interface GQL_AssetList1 {
+  token: string
   symbol: string
   name: string
   category: string
@@ -32,6 +35,7 @@ interface GQL_AssetList1 {
   dayDiff: string
   averagePrice: string
   ret: string
+  status: AssetStatus
 }
 
 interface GQL_AssetChartData {
@@ -46,6 +50,17 @@ interface GQL_AssetChartList {
   maxValue: string
 }
 
+interface DoNotShowDelistToken {
+  token: string
+}
+
+interface DelistMAssetModel {
+  token: string
+  symbol: string
+  date: string
+  ratio: string
+}
+
 interface MAssetModel {
   symbol: string
   name: string
@@ -53,6 +68,7 @@ interface MAssetModel {
   token: string
   pair: string
   lptoken: string
+  status: AssetStatus
 }
 
 interface AssetNewsModel {
@@ -62,4 +78,14 @@ interface AssetNewsModel {
   source: string
   summary: string
   image: string
+}
+
+interface CDP {
+  address: string
+  collateralAmount: string
+  collateralRatio: string
+  collateralToken: string
+  id: string
+  mintAmount: string
+  token: string
 }

@@ -86,7 +86,7 @@ export function WalletSummaryView(props: { navigation: any; route: any }) {
     assets = assets.map((item) => {
       for (let i = 0; i < assetBalances.length; i++) {
         const assetBalance = assetBalances[i]
-        if (item.symbol == assetBalance.symbol) {
+        if (item.token == assetBalance.token) {
           item.amount = assetBalance.amount
           break
         }
@@ -127,8 +127,8 @@ export function WalletSummaryView(props: { navigation: any; route: any }) {
     })
   }
 
-  function itemPressed(symbol: string) {
-    props.navigation.push('WalletDetailView', { symbol: symbol })
+  function itemPressed(symbol: string, token?: string) {
+    props.navigation.push('WalletDetailView', { symbol, token })
   }
 
   function swapPressed(symbol: string) {

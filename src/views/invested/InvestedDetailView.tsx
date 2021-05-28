@@ -19,6 +19,7 @@ import * as Resources from '../../common/Resources'
 import * as Utils from '../../common/Utils'
 import * as Api from '../../common/Apis/Api'
 import * as Keychain from '../../common/Keychain'
+import * as Config from '../../common/Apis/Config'
 import {
   TouchableOpacity,
   ScrollView,
@@ -36,12 +37,12 @@ export function InvestedDetailView(props: { route: any; navigation: any }) {
   const safeInsetBottom = Resources.getSafeLayoutInsets().bottom
   const [chartLongPressed, setChartLongPressed] = useState(false)
 
-  const symbol = props.route.params.symbol
+  const token = props.route.params.token
 
   const [loaded, setLoaded] = useState(false)
-  const [isFavorite, setFavorite] = useState(false)
   const [investedInfo, setInvestedInfo] = useState({
     symbol: '',
+    token: '',
     name: '',
     price: new BigNumber(0),
     dayDiff: new BigNumber(0),
@@ -51,6 +52,7 @@ export function InvestedDetailView(props: { route: any; navigation: any }) {
     amount: new BigNumber(0),
     ret: new BigNumber(0),
     unrealizedPL: new BigNumber(0),
+    status: '',
   })
 
   const [otherInfo, setOtherInfo] = useState({
@@ -81,8 +83,6 @@ export function InvestedDetailView(props: { route: any; navigation: any }) {
   const scrolling = useRef(false)
 
   useEffect(() => {
-    checkFavorite()
-
     Keychain.getMainChartType().then((type) => {
       setChartDataType(type)
     })
@@ -96,11 +96,11 @@ export function InvestedDetailView(props: { route: any; navigation: any }) {
 
   useFocusEffect(
     useCallback(() => {
-      loadOthers(symbol)
+      loadOthers(token)
         .then((v) => {})
         .catch((error) => {})
 
-      load(symbol)
+      load(token)
         .then((v) => {
           setLoaded(true)
         })
@@ -112,7 +112,7 @@ export function InvestedDetailView(props: { route: any; navigation: any }) {
 
   useFocusEffect(
     useCallback(() => {
-      loadChartData(symbol)
+      loadChartData(token)
         .then((v) => {
           setChartLoading(false)
         })
@@ -126,10 +126,10 @@ export function InvestedDetailView(props: { route: any; navigation: any }) {
 
   const onRefresh = React.useCallback(() => {
     setRefresh(true)
-    load(symbol)
+    load(token)
       .then(() => {
         setLoaded(true)
-        loadChartData(symbol)
+        loadChartData(token)
       })
       .then(() => {
         setChartLoading(false)
@@ -142,8 +142,8 @@ export function InvestedDetailView(props: { route: any; navigation: any }) {
       })
   }, [isRefresh, chartInfo, investedInfo])
 
-  async function loadOthers(symbol: string) {
-    const response = await Api.assetOther(symbol)
+  async function loadOthers(token: string) {
+    const response = await Api.assetOther(token)
 
     const news = response.news
     const about = response.desc
@@ -154,8 +154,8 @@ export function InvestedDetailView(props: { route: any; navigation: any }) {
     })
   }
 
-  async function load(symbol: string) {
-    const item: GQL_AssetList1 = await Api.assetInfo(symbol)
+  async function load(token: string) {
+    const item: GQL_AssetList1 = await Api.assetInfo(token)
     const price = new BigNumber(item.price)
     const amount = new BigNumber(item.amount)
     const dayDiff = new BigNumber(item.dayDiff)
@@ -168,6 +168,7 @@ export function InvestedDetailView(props: { route: any; navigation: any }) {
 
     setInvestedInfo({
       symbol: item.symbol,
+      token: item.token,
       name: item.name,
       price: price,
       dayDiff: dayDiff,
@@ -177,10 +178,11 @@ export function InvestedDetailView(props: { route: any; navigation: any }) {
       amount: amount.dividedBy(1000000),
       ret: ret,
       unrealizedPL: unrealizedPL.dividedBy(1000000),
+      status: item.status,
     })
   }
 
-  async function loadChartData(symbol: string) {
+  async function loadChartData(token: string) {
     if (chartLoading) {
       return
     }
@@ -188,7 +190,7 @@ export function InvestedDetailView(props: { route: any; navigation: any }) {
     setChartLoading(true)
 
     const type = await Keychain.getMainChartType()
-    const info: GQL_AssetChartList = await Api.assetChart(symbol, type)
+    const info: GQL_AssetChartList = await Api.assetChart(token, type)
 
     let firstPrice = new BigNumber(0)
     if (info.list.length > 0) {
@@ -248,12 +250,6 @@ export function InvestedDetailView(props: { route: any; navigation: any }) {
       list: list,
       minValue: new BigNumber(info.minValue),
       maxValue: new BigNumber(info.maxValue),
-    })
-  }
-
-  function checkFavorite() {
-    Keychain.isFavorite(symbol).then((f) => {
-      setFavorite(f)
     })
   }
 
@@ -396,21 +392,32 @@ export function InvestedDetailView(props: { route: any; navigation: any }) {
 
       <NavigationView navigation={props.navigation} />
 
-      <ButtonView
-        info={investedInfo}
-        buyPressed={() => {
-          props.navigation.navigate('TradeInput', {
-            type: 'buy',
-            symbol: investedInfo.symbol,
-          })
-        }}
-        sellPressed={() => {
-          props.navigation.navigate('TradeInput', {
-            type: 'sell',
-            symbol: investedInfo.symbol,
-          })
-        }}
-      />
+      {!Config.hideBuysellButton && (
+        <ButtonView
+          info={investedInfo}
+          buyPressed={() => {
+            props.navigation.navigate('TradeInput', {
+              type: 'buy',
+              symbol: investedInfo.symbol,
+              token: investedInfo.token,
+            })
+          }}
+          sellPressed={() => {
+            props.navigation.navigate('TradeInput', {
+              type: 'sell',
+              symbol: investedInfo.symbol,
+              token: investedInfo.token,
+            })
+          }}
+          burnPressed={() => {
+            props.navigation.navigate('TradeInput', {
+              type: 'burn',
+              symbol: investedInfo.symbol,
+              token: investedInfo.token,
+            })
+          }}
+        />
+      )}
     </View>
   )
 }
@@ -494,9 +501,8 @@ function SummaryView(props: {
               : Resources.Colors.brightTeal,
           }}
         >
-          {!(props.chartLongPressed
-            ? draggedPrice.rate
-            : props.chartInfo.rate
+          {!(
+            props.chartLongPressed ? draggedPrice.rate : props.chartInfo.rate
           ).isFinite() ? (
             <View
               style={{
@@ -1036,14 +1042,18 @@ function ButtonView(props: {
   info: any
   buyPressed: () => void
   sellPressed: () => void
+  burnPressed: () => void
 }) {
   const { translations } = useContext(ConfigContext)
   const safeInsetBottom = Resources.getSafeLayoutInsets().bottom
   const sellAvailable = props.info.amount.isGreaterThan(new BigNumber('0'))
 
   if (props.info.symbol == '') {
-    return <View />
+    return null
   }
+
+  const info = props.info as GQL_AssetList1
+  const delistEnable = true
 
   return (
     <View
@@ -1051,71 +1061,47 @@ function ButtonView(props: {
         height: 93 + safeInsetBottom,
         backgroundColor: Resources.Colors.darkGreyFour,
         flexDirection: 'row',
-        paddingTop: 23,
+        paddingTop: info.status === 'DELISTED' ? 12 : 23,
         paddingLeft: 24,
         paddingRight: 24,
       }}
     >
-      <RectButton
-        style={{ flex: 1, height: 48 }}
-        onPress={() => {
-          props.buyPressed()
-        }}
-      >
-        <View
-          style={{
-            height: 48,
-            borderRadius: 24,
-            backgroundColor: Resources.Colors.brightTeal,
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}
-        >
-          <Text
-            style={{
-              color: Resources.Colors.black,
-              fontFamily: Resources.Fonts.bold,
-              fontSize: 16,
-              letterSpacing: -0.3,
-              textAlign: 'center',
-              flex: 1,
+      {info.status === 'DELISTED' ? (
+        <View style={{ flexDirection: 'column', flex: 1 }}>
+          <RectButton
+            style={{ flex: 1, height: 48 }}
+            onPress={() => {
+              props.burnPressed()
             }}
+            enabled={delistEnable}
           >
-            {translations.investedDetailView.buy}
-          </Text>
-        </View>
-      </RectButton>
-
-      {sellAvailable ? <View style={{ width: 9 }} /> : <View />}
-
-      {sellAvailable ? (
-        <RectButton
-          style={{ flex: 1, height: 48 }}
-          onPress={() => {
-            props.sellPressed()
-          }}
-        >
-          <View
-            style={{
-              height: 48,
-              borderRadius: 24,
-              backgroundColor: Resources.Colors.brightTeal,
-            }}
-          >
+            {!delistEnable && (
+              <Text
+                style={{
+                  color: Resources.Colors.veryLightPinkTwo,
+                  fontFamily: Resources.Fonts.bold,
+                  fontSize: 14,
+                  letterSpacing: -0.3,
+                  textAlign: 'center',
+                  marginBottom: 12,
+                  includeFontPadding: false,
+                }}
+              >{`Available Soon`}</Text>
+            )}
             <View
               style={{
-                backgroundColor: Resources.Colors.darkGreyFour,
-                height: 44,
-                borderRadius: 22,
-                margin: 2,
-                flex: 1,
+                height: 48,
+                borderRadius: 24,
+                backgroundColor: delistEnable
+                  ? Resources.Colors.brightTeal
+                  : Resources.Colors.darkGrey,
                 flexDirection: 'row',
                 alignItems: 'center',
               }}
             >
               <Text
                 style={{
-                  color: Resources.Colors.brightTeal,
+                  color: Resources.Colors.black,
                   fontFamily: Resources.Fonts.bold,
                   fontSize: 16,
                   letterSpacing: -0.3,
@@ -1123,13 +1109,88 @@ function ButtonView(props: {
                   flex: 1,
                 }}
               >
-                {translations.investedDetailView.sell}
+                {`Burn`}
               </Text>
             </View>
-          </View>
-        </RectButton>
+          </RectButton>
+        </View>
       ) : (
-        <View />
+        <>
+          <RectButton
+            style={{ flex: 1, height: 48 }}
+            onPress={() => {
+              props.buyPressed()
+            }}
+          >
+            <View
+              style={{
+                height: 48,
+                borderRadius: 24,
+                backgroundColor: Resources.Colors.brightTeal,
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}
+            >
+              <Text
+                style={{
+                  color: Resources.Colors.black,
+                  fontFamily: Resources.Fonts.bold,
+                  fontSize: 16,
+                  letterSpacing: -0.3,
+                  textAlign: 'center',
+                  flex: 1,
+                }}
+              >
+                {translations.investedDetailView.buy}
+              </Text>
+            </View>
+          </RectButton>
+
+          {sellAvailable && (
+            <>
+              <View style={{ width: 9 }} />
+              <RectButton
+                style={{ flex: 1, height: 48 }}
+                onPress={() => {
+                  props.sellPressed()
+                }}
+              >
+                <View
+                  style={{
+                    height: 48,
+                    borderRadius: 24,
+                    backgroundColor: Resources.Colors.brightTeal,
+                  }}
+                >
+                  <View
+                    style={{
+                      backgroundColor: Resources.Colors.darkGreyFour,
+                      height: 44,
+                      borderRadius: 22,
+                      margin: 2,
+                      flex: 1,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: Resources.Colors.brightTeal,
+                        fontFamily: Resources.Fonts.bold,
+                        fontSize: 16,
+                        letterSpacing: -0.3,
+                        textAlign: 'center',
+                        flex: 1,
+                      }}
+                    >
+                      {translations.investedDetailView.sell}
+                    </Text>
+                  </View>
+                </View>
+              </RectButton>
+            </>
+          )}
+        </>
       )}
     </View>
   )

@@ -2,6 +2,7 @@ import React from 'react'
 import { Text, View, Image } from 'react-native'
 import * as Resources from '../../../common/Resources'
 import * as Utils from '../../../common/Utils'
+import * as Config from '../../../common/Apis/Config'
 import { FlatList } from 'react-native-gesture-handler'
 import BigNumber from 'bignumber.js'
 import ThrottleButton from '../../../component/ThrottleButton'
@@ -9,7 +10,7 @@ import ThrottleButton from '../../../component/ThrottleButton'
 export function WalletSummaryTab2(props: {
   topupPressed: () => void
   assets: GQL_AssetList1[]
-  itemPressed: (symbol: string) => void
+  itemPressed: (symbol: string, token: string) => void
 }) {
   const safeInsetTop = Resources.getSafeLayoutInsets().top
   const safeInsetBottom = Resources.getSafeLayoutInsets().bottom
@@ -45,14 +46,17 @@ export function WalletSummaryTab2(props: {
 
 function ItemView(props: {
   _item: any
-  itemPressed: (symbol: string) => void
+  itemPressed: (symbol: string, token: string) => void
 }) {
   const item: GQL_AssetList1 = props._item.item
   const symbol = item.symbol
+  const token = item.token
   const name = item.name
   const amount = new BigNumber(item.amount)
 
   if (symbol.toLowerCase() === 'mir' && amount.isEqualTo(0)) return null
+
+  if (item.status === 'DELISTED') return null
 
   return (
     <ThrottleButton
@@ -67,7 +71,7 @@ function ItemView(props: {
         alignItems: 'center',
       }}
       onPress={() => {
-        props.itemPressed(symbol)
+        if (!Config.hideMassetDetail) props.itemPressed(symbol, token)
       }}
     >
       <View style={{ flex: 1 }}>

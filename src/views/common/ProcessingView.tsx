@@ -15,6 +15,7 @@ export enum ProcessingType {
   Sell = 1,
   Withdraw = 2,
   Swap = 3,
+  Burn = 4,
 }
 
 export function ProcessingView(props: { route: any; navigation: any }) {
@@ -27,6 +28,7 @@ export function ProcessingView(props: { route: any; navigation: any }) {
   const symbol = props.route.params.symbol
   const displayAmount = new BigNumber(props.route.params.displayAmount)
   const displaySymbol = props.route.params.displaySymbol
+  const burnPositions = props.route.params.positions
 
   const rampPair = props.route.params.rampPair
 
@@ -99,24 +101,35 @@ export function ProcessingView(props: { route: any; navigation: any }) {
         .catch((error) => {
           fail(error)
         })
+    } else if (type === ProcessingType.Burn) {
+      const fee = new BigNumber(props.route.params.fee)
+      Api.burn(pw, burnPositions, symbol, fee)
+        .then((result) => {
+          success()
+        })
+        .catch((error) => {
+          fail(error)
+        })
     }
   }, [])
 
   function success() {
     setConfirmEnable(1)
     setSubMessageColor(
-      type == ProcessingType.Sell
+      type === ProcessingType.Sell
         ? Resources.Colors.brightTeal
         : Resources.Colors.black
     )
     if (type == ProcessingType.Buy) {
       setSubMessage(translations.processingView.buySuccess)
-    } else if (type == ProcessingType.Sell) {
+    } else if (type === ProcessingType.Sell) {
       setSubMessage(translations.processingView.sellSuccess)
-    } else if (type == ProcessingType.Withdraw) {
+    } else if (type === ProcessingType.Withdraw) {
       setSubMessage(translations.processingView.withdrawSuccess)
-    } else if (type == ProcessingType.Swap) {
+    } else if (type === ProcessingType.Swap) {
       setSubMessage(translations.processingView.swapSuccess)
+    } else if (type === ProcessingType.Burn) {
+      setSubMessage(`Burn success`)
     }
   }
 
@@ -143,6 +156,8 @@ export function ProcessingView(props: { route: any; navigation: any }) {
       }
     } else if (type == ProcessingType.Swap) {
       props.navigation.navigate('WalletSummary')
+    } else if (type === ProcessingType.Burn) {
+      props.navigation.navigate('Main')
     }
   }
 

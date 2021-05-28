@@ -26,17 +26,19 @@ import { LoadingContext } from '../../common/provider/LoadingProvider'
 export function WalletDetailView(props: {
   navigation: any
   route: any
-  swapPressed: (symbol: string) => void
+  swapPressed: (symbol: string, token: string) => void
 }) {
   return AssetActivityView(
     props.route.params.symbol,
+    props.route.params.token,
     props.route.params.swapPressed
   )
 }
 
 function AssetActivityView(
   symbol: string,
-  swapPressed: (symbol: string) => void
+  token: string,
+  swapPressed: (symbol: string, token: string) => void
 ) {
   const navigation = useNavigation()
 
@@ -61,7 +63,7 @@ function AssetActivityView(
   useFocusEffect(
     useCallback(() => {
       if (symbol.startsWith('m') || symbol.toLowerCase() === 'mir') {
-        Api.assetInfo(symbol)
+        Api.assetInfo(token)
           .then((item) => {
             setBalance({
               amount: new BigNumber(item.amount),
@@ -101,7 +103,7 @@ function AssetActivityView(
     setLoaded(false)
     offset.current = 0
     loadEnd.current = false
-    load(filterSelected, [], symbol)
+    load(filterSelected, [])
       .then(() => {
         setLoaded(true)
         setLoading(false)
@@ -113,7 +115,7 @@ function AssetActivityView(
   }, [filterSelected])
 
   function loadMore() {
-    load(filterSelected, list, symbol)
+    load(filterSelected, list)
       .then(() => {
         setLoaded(true)
         setLoading(false)
@@ -124,11 +126,7 @@ function AssetActivityView(
       })
   }
 
-  async function load(
-    filter: Api.HistoryType,
-    oldlist: GQL_TxModel[],
-    symbol?: string
-  ) {
+  async function load(filter: Api.HistoryType, oldlist: GQL_TxModel[]) {
     if (isLoading || loadEnd.current) {
       return
     }
@@ -138,7 +136,7 @@ function AssetActivityView(
     const pageSize = 30
     const tag: string =
       symbol?.startsWith('m') || symbol?.toLowerCase() === 'mir'
-        ? await Api.getAssetTokens(symbol!)
+        ? token
         : symbol!.toString()
 
     let loaded = await Api.get_history(offset.current * pageSize, pageSize, tag)
@@ -192,6 +190,7 @@ function AssetActivityView(
             <HeaderView
               balance={balance}
               symbol={symbol}
+              token={token}
               filterSelected={filterSelected}
               setFilterPopupShow={setFilterPopupShow}
               setShowAddressView={setShowAddressView}
@@ -334,6 +333,7 @@ function ButtonView(props: {
 function HeaderView(props: {
   balance: { amount: BigNumber; converted: BigNumber }
   symbol: string
+  token: string
   filterSelected: Api.HistoryType
   setFilterPopupShow: (v: boolean) => void
   setShowAddressView: (v: boolean) => void
@@ -445,7 +445,10 @@ function HeaderView(props: {
                     screen: 'RampSelectView',
                     params: { withdraw: true },
                   })
-                : navigation.navigate('WithdrawView', { symbol: props.symbol })
+                : navigation.navigate('WithdrawView', {
+                    symbol: props.symbol,
+                    token: props.token,
+                  })
             }}
             depositPressed={() => {
               props.setShowAddressView(true)

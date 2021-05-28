@@ -27,7 +27,7 @@ import { ConfigContext } from '../../common/provider/ConfigProvider'
 
 export function Search(props: {
   onDismissPressed: () => void
-  onItemPressed: (symbol: string) => void
+  onItemPressed: (token: string) => void
 }) {
   const safeInsetBottom = Resources.getSafeLayoutInsets().bottom
 
@@ -81,6 +81,10 @@ export function Search(props: {
     } else {
       let filtered = list.filter((_item, index) => {
         const item = _item as GQL_AssetList1
+        if (item.symbol.toLowerCase() === 'mir' || item.status === 'DELISTED') {
+          return false
+        }
+
         if (
           item.symbol.toLowerCase().includes(keyword.toLowerCase()) ||
           item.name.toLowerCase().includes(keyword.toLowerCase())
@@ -375,7 +379,7 @@ function Field(props: {
 }
 
 function ItemView(props: {
-  onItemPressed: (symbol: string) => void
+  onItemPressed: (token: string) => void
   _item: GQL_AssetList1
 }) {
   const item = props._item
@@ -391,7 +395,7 @@ function ItemView(props: {
         alignItems: 'center',
       }}
       onPress={() => {
-        props.onItemPressed(symbol)
+        props.onItemPressed(item.token)
       }}
     >
       <View

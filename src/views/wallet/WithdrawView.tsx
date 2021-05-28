@@ -29,6 +29,7 @@ export function WithdrawView(props: { route: any; navigation: any }) {
   const { isPrevent, setPreventEvent } = useGestureHandlerEventPrevent()
 
   const symbol = props.route.params.symbol
+  const token = props.route.params.token
 
   const [address, setAddress] = useState('')
   const [amount, setAmount] = useState('')
@@ -110,7 +111,7 @@ export function WithdrawView(props: { route: any; navigation: any }) {
       }
       fee = Api.fee
     } else {
-      const item = await Api.assetInfo(symbol)
+      const item = await Api.assetInfo(token)
       balance = new BigNumber(item.amount)
       fee = new BigNumber(0)
     }

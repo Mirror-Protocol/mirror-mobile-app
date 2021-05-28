@@ -5,15 +5,7 @@ import React, {
   useRef,
   useEffect,
 } from 'react'
-import {
-  Text,
-  View,
-  Image,
-  StyleSheet,
-  Platform,
-  Alert,
-  Linking,
-} from 'react-native'
+import { Text, View, Image, StyleSheet, Platform, Alert } from 'react-native'
 import * as Resources from '../../../common/Resources'
 import * as BioAuth from '../../../common/BioAuth'
 import * as Keychain from '../../../common/Keychain'
@@ -25,6 +17,7 @@ import { useFocusEffect } from '@react-navigation/native'
 import { NavigationView } from '../../common/NavigationView'
 import { ConfigContext } from '../../../common/provider/ConfigProvider'
 import ReactNativePickerModule from 'react-native-picker-module'
+// @ts-ignore
 import RNRestart from 'react-native-restart'
 import ThrottleButton from '../../../component/ThrottleButton'
 import DeviceInfo from 'react-native-device-info'
@@ -168,8 +161,8 @@ export function SettingView(props: { navigation: any }) {
           }}
         />
         <Version
-          onPressed={() => {
-            props.navigation.navigate('VersionView')
+          onPressed={(version) => {
+            props.navigation.navigate('VersionView', { version })
           }}
         />
         <ContactUs
@@ -335,13 +328,15 @@ function Privacy(props: { onPressed: () => void }) {
   )
 }
 
-function Version(props: { onPressed: () => void }) {
+function Version(props: { onPressed: (version: string) => void }) {
   const { translations } = useContext(ConfigContext)
+
+  const [version, setVersion] = useState<string>(DeviceInfo.getVersion())
   return (
     <RectButton
       style={styles.buttonbg}
       onPress={() => {
-        props.onPressed()
+        props.onPressed(version)
       }}
     >
       <Image source={Resources.Images.version} style={styles.buttonimg} />
@@ -355,7 +350,7 @@ function Version(props: { onPressed: () => void }) {
           marginRight: 6,
         }}
       >
-        {'v' + DeviceInfo.getVersion()}
+        {'v' + version}
       </Text>
       <Image
         source={Resources.Images.details}

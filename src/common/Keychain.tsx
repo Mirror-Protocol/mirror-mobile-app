@@ -42,6 +42,7 @@ enum PrefKeys {
   lastMoonpayStatus = 'lastMoonpayStatus',
   lastMoonpayOpen = 'lastMoonpayOpen',
   switchainStatus = 'switchainStatus',
+  doNotShowDelistNotice = 'doNotShowDelistNotice',
 }
 
 export const baseCurrency = 'uusd'
@@ -542,6 +543,7 @@ export async function reset() {
     await preferences.remove(PrefKeys.MainChartType)
     await preferences.remove(PrefKeys.InvestDetailChartType)
     await preferences.remove(PrefKeys.welcomePageShow)
+    await preferences.remove(PrefKeys.doNotShowDelistNotice)
 
     await preferences.remove(PrefKeys.PasswordLock)
 
@@ -642,5 +644,42 @@ async function decryptData(
     return Buffer.from(clearData).toString('utf-8')
   } else {
     throw new InvalidAlgorithmError('Unsupported crypto algorithm')
+  }
+}
+
+export async function getDoNotShowDelistNotice(): Promise<
+  DoNotShowDelistToken[]
+> {
+  const response = await preferences.getString(PrefKeys.doNotShowDelistNotice)
+  if (response === null || response === undefined || response === '') {
+    return []
+  }
+  return JSON.parse(response)
+}
+
+export async function setDoNotShowDelistNotice(
+  tokens: string[]
+): Promise<void> {
+  const delistTokens = await getDoNotShowDelistNotice()
+  tokens.map((i) => delistTokens.push({ token: i }))
+
+  await preferences.setString(
+    PrefKeys.doNotShowDelistNotice,
+    JSON.stringify(delistTokens)
+  )
+}
+
+export async function checkDoNotShowDelistNotice(
+  tokens: string[]
+): Promise<boolean> {
+  try {
+    const doNotShowTokens = await getDoNotShowDelistNotice()
+
+    const ret = doNotShowTokens.filter((a) => {
+      return tokens.find((b) => a.token === b)
+    })
+    return ret.length > 0 ? true : false
+  } catch (e) {
+    return false
   }
 }

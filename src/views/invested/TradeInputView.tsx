@@ -9,27 +9,25 @@ import { TradeStep2View } from './TradeStep2View'
 export function TradeInputView(props: { route: any; navigation: any }) {
   const safeInsetTop = Resources.getSafeLayoutInsets().top
 
-  const [type, setType] = useState('')
-  const [symbol, setSymbol] = useState('')
-  const [step, setStep] = useState(0)
+  const type = props.route.params.type
+  const symbol = props.route.params.symbol
+  const token = props.route.params.token
+  const [step, setStep] = useState(props.route.params.type === 'burn' ? 1 : 0)
 
   const [amount, setAmount] = useState(new BigNumber(0))
 
   useEffect(() => {
-    setType(props.route.params.type)
-    setSymbol(props.route.params.symbol)
-  }, [])
-
-  useEffect(() => {
-    if (step == 0) {
+    if (step === 0) {
       setAmount(new BigNumber(0))
     }
   }, [step])
 
   const bgColor =
-    type == 'buy' ? Resources.Colors.brightTeal : Resources.Colors.darkGreyThree
+    type === 'buy'
+      ? Resources.Colors.brightTeal
+      : Resources.Colors.darkGreyThree
   const navIcon =
-    type == 'buy' ? Resources.Images.btnCloseG10 : Resources.Images.btnCloseB10
+    type === 'buy' ? Resources.Images.btnCloseG10 : Resources.Images.btnCloseB10
 
   return (
     <View
@@ -83,11 +81,12 @@ export function TradeInputView(props: { route: any; navigation: any }) {
           </View>
         </TouchableOpacity>
       </View>
-      {type != '' ? (
-        step == 0 ? (
+      {type !== '' &&
+        (step === 0 ? (
           <TradeStep1View
             type={type}
             symbol={symbol}
+            token={token}
             setStep={setStep}
             setSend={setAmount}
           />
@@ -95,14 +94,12 @@ export function TradeInputView(props: { route: any; navigation: any }) {
           <TradeStep2View
             type={type}
             symbol={symbol}
+            token={token}
             setStep={setStep}
             navigation={props.navigation}
             amount={amount}
           />
-        )
-      ) : (
-        <View />
-      )}
+        ))}
     </View>
   )
 }

@@ -101,6 +101,7 @@ export const en = {
     noticedesc:
       'Mirror Assets do not afford any rights of the underlying asset to Mirror Asset holders. Tracking error may also arise between the underlying asset and its Mirror counterpart.',
     confirm: 'Confirm',
+    insufficientFunds: 'Insufficient Funds',
 
     exceed: 'Fees exceed total trade value.',
   },
@@ -483,6 +484,7 @@ export const ko = {
     noticedesc:
       'Mirror Assets do not afford any rights of the underlying asset to Mirror Asset holders. Tracking error may also arise between the underlying asset and its Mirror counterpart.',
     confirm: 'Confirm',
+    insufficientFunds: 'Insufficient Funds',
 
     exceed: 'Fees exceed total trade value.',
   },

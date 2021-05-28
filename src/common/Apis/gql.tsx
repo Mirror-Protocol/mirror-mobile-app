@@ -462,3 +462,28 @@ export async function getTradingVolume(
 
   return result.data
 }
+
+export async function getCdps(tokens: string[]) {
+  const query = gql`
+    query($tokens: [String!]) {
+      cdps(maxRatio: 9999, tokens: $tokens) {
+        id
+        address
+        token
+        mintAmount
+        collateralToken
+        collateralAmount
+        collateralRatio
+      }
+    }
+  `
+
+  const result = await gqlPriceClient.query({
+    query: query,
+    variables: {
+      tokens,
+    },
+  })
+
+  return result.data
+}

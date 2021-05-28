@@ -17,6 +17,7 @@ import { NextButton } from './TradeInputView'
 export function TradeStep1View(props: {
   type: string
   symbol: string
+  token: string
   setStep: (step: number) => void
   setSend: (amount: BigNumber) => void
 }) {
@@ -72,7 +73,7 @@ export function TradeStep1View(props: {
       amount = amount.minus(remain)
       maxAmount = amount.dividedBy(1000000)
     } else {
-      const amount = new BigNumber((await Api.assetInfo(props.symbol)).amount)
+      const amount = new BigNumber((await Api.assetInfo(props.token)).amount)
       maxAmount = amount.dividedBy(1000000)
     }
     setMaxAmount(BigNumber.max(maxAmount, new BigNumber('0')))

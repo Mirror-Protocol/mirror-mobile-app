@@ -9,13 +9,24 @@ import BigNumber from 'bignumber.js'
 import ThrottleButton from '../../component/ThrottleButton'
 
 export function MainTab2ItemView(props: {
-  detailPressed: (symbol: string) => void
+  detailPressed: (token: string) => void
   _item: any
   setShowPercent: (b: boolean) => void
   showPercent: boolean
 }) {
   const item = props._item.item as GQL_AssetList1
-  if (item.symbol.toLowerCase() === 'mir') return null
+  if (item.symbol.toLowerCase() === 'mir') {
+    return null
+  }
+  if (item.status === 'DELISTED') {
+    return null
+  }
+  if (item.price === 'NaN') {
+    return null
+  }
+  if (item.price === '0') {
+    return null
+  }
 
   const disable = item.price === 'NaN' ? true : false
 
@@ -37,7 +48,7 @@ export function MainTab2ItemView(props: {
           flexDirection: 'row',
         }}
         onPress={() => {
-          disable === false && props.detailPressed(item.symbol)
+          disable === false && props.detailPressed(item.token)
         }}
       >
         <IconView symbol={item.symbol} disable={disable} />

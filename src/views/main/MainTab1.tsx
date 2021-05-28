@@ -262,8 +262,8 @@ export function MainTab1(props: {
                 chartInfo={chartInfo}
                 chartDataType={chartDataType}
                 setChartDataType={setChartDataType}
-                itemPressed={(symbol) => {
-                  props.navigation.push('InvestedDetail', { symbol: symbol })
+                itemPressed={(token) => {
+                  props.navigation.push('InvestedDetail', { token })
                 }}
               />
             )}

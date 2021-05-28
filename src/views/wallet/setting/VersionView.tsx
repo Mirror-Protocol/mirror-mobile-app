@@ -6,15 +6,11 @@ import { NavigationView } from '../../common/NavigationView'
 import { ConfigContext } from '../../../common/provider/ConfigProvider'
 import DeviceInfo from 'react-native-device-info'
 
-export function VersionView(props: { navigation: any }) {
+export function VersionView(props: { route: any; navigation: any }) {
   const { translations } = useContext(ConfigContext)
   const safeInsetTop = Resources.getSafeLayoutInsets().top
 
-  const [currentVersion, setCurrentVersion] = useState('')
-
-  useEffect(() => {
-    setCurrentVersion(DeviceInfo.getVersion())
-  }, [])
+  const currentVersion = props.route.params.version
 
   return (
     <View
