@@ -323,9 +323,22 @@ export async function getAssetTokens() {
   return result.data
 }
 
-export async function getAssetBalances(address: string) {
+export async function getAssetBalances(
+  address: string,
+  close: boolean = false
+) {
+  const now = new Date()
+  let yesterday = now.setDate(now.getDate() - 1)
+
+  if (close) {
+    const day = 60 * 60 * 24 * 1000
+    const min = now.getMinutes() - (now.getMinutes() % 10) + 10
+    const close = new Date().setHours(now.getHours(), min, 0, 0) - day
+    yesterday = close
+  }
+
   const query = gql`
-    query($address: String!) {
+    query($address: String!, $yesterday: Float!) {
       balances(address: $address) {
         token
         balance
@@ -336,6 +349,7 @@ export async function getAssetBalances(address: string) {
         token
         prices {
           price
+          priceAt(timestamp: $yesterday)
         }
       }
     }
@@ -343,7 +357,8 @@ export async function getAssetBalances(address: string) {
   const result = await gqlPriceClient.query({
     query: query,
     variables: {
-      address: address,
+      address,
+      yesterday,
     },
   })
 

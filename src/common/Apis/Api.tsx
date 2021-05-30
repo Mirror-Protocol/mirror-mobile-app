@@ -377,6 +377,101 @@ export async function assetList(
   return list
 }
 
+export async function assetList2(
+  needBalance: boolean,
+  closeBalance: boolean = false
+) {
+  const assetList = await readMAssets()
+  const address = await getAddress()
+  const assetBalances = await gql.getAssetBalances(address, closeBalance)
+
+  const list = []
+  for (let i = 0; i < assetList.length; ++i) {
+    const asset = assetList[i]
+
+    let amount = '0'
+    let prices = {
+      averagePrice: new BigNumber(0),
+      ret: new BigNumber(0),
+      price: new BigNumber(0),
+      yesterday: new BigNumber(0),
+      dayDiff: new BigNumber(0),
+    }
+
+    if (needBalance) {
+      const findAssetBalance = assetBalances.balances.find(
+        (assetBalance: any) => {
+          return assetBalance.token === asset.token
+        }
+      )
+      const findAssetPrice = assetBalances.assets.find((assetPrice: any) => {
+        return assetPrice.token === asset.token
+      })
+
+      amount = findAssetBalance === undefined ? '0' : findAssetBalance.balance
+      if (asset.status === 'DELISTED') {
+        const endPrice = await getEndPrice(asset.token)
+        prices.price = new BigNumber(endPrice!)
+        prices.averagePrice = prices.price
+      } else if (findAssetPrice) {
+        let averagePrice = new BigNumber(0)
+        if (
+          findAssetBalance &&
+          findAssetBalance.balance.balance &&
+          findAssetBalance.balance.averagePrice
+        ) {
+          averagePrice = new BigNumber(findAssetBalance.balance.averagePrice)
+        }
+
+        let priceAt = new BigNumber(0)
+        if (findAssetPrice.prices.priceAt) {
+          priceAt = new BigNumber(findAssetPrice.prices.priceAt)
+        }
+
+        const price = new BigNumber(findAssetPrice.prices.price)
+
+        let dayDiff = new BigNumber(0)
+        if (!priceAt.isEqualTo(new BigNumber(0))) {
+          dayDiff = Utils.getCutNumber(price.dividedBy(priceAt).minus(1), 3)
+        }
+
+        let ret = new BigNumber(0)
+        if (!averagePrice.isEqualTo(new BigNumber(0))) {
+          prices.ret = Utils.getCutNumber(
+            price.dividedBy(averagePrice).minus(1),
+            4
+          )
+        }
+
+        prices = {
+          averagePrice,
+          ret,
+          price,
+          yesterday: priceAt,
+          dayDiff,
+        }
+      }
+    }
+
+    const newItem: GQL_AssetList1 = {
+      token: asset.token,
+      symbol: asset.symbol,
+      category: 'STOCK',
+      name: asset.name,
+      amount: amount,
+      price: prices.price.toString(),
+      yesterday: prices.yesterday.toString(),
+      dayDiff: prices.dayDiff.toString(),
+      averagePrice: prices.averagePrice.toString(),
+      ret: prices.ret.toString(),
+      status: asset.status,
+    }
+    list.push(newItem)
+  }
+
+  return list
+}
+
 export async function assetInfo(token: string) {
   const assetList = (await readMAssets()).filter((item) => {
     return item.token === token

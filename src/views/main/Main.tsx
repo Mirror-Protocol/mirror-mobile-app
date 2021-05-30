@@ -106,7 +106,7 @@ export function Main(props: { navigation: any; route: any }) {
 
   useFocusEffect(
     useCallback(() => {
-      Api.assetList(true, true).then((list) => {
+      Api.assetList2(true, true).then((list) => {
         setAssetList(list)
       })
     }, [selectedTab])
