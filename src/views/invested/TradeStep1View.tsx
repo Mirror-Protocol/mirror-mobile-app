@@ -168,10 +168,7 @@ export function TradeStep1View(props: {
   )
 
   function setValues(value: string) {
-    const parsed = parseFloat(
-      (value + '.0').replace('..', '.').split(',').join('')
-    )
-    const n = new BigNumber(parsed)
+    const n = new BigNumber(value.replace(/,/g, ''))
     if (n.isGreaterThan(maxAmount)) {
       startShake()
       VibrationHelper.Vibrate()
