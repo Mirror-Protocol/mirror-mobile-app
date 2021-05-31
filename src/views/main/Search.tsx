@@ -17,6 +17,7 @@ import {
 import * as Resources from '../../common/Resources'
 import * as Utils from '../../common/Utils'
 import * as Api from '../../common/Apis/Api'
+import * as Config from '../../common/Apis/Config'
 import {
   TouchableOpacity,
   TextInput,
@@ -81,6 +82,10 @@ export function Search(props: {
     } else {
       let filtered = list.filter((_item, index) => {
         const item = _item as GQL_AssetList1
+        if (Config.hideAppleAsset && item.symbol === 'mAAPL') {
+          return false
+        }
+
         if (item.symbol.toLowerCase() === 'mir' || item.status === 'DELISTED') {
           return false
         }
@@ -127,8 +132,9 @@ export function Search(props: {
 
   const fieldWidthFrom = useRef(Resources.windowSize().width - 99)
   const fieldWidthTo = useRef(Resources.windowSize().width - 48)
-  const fieldSizeAnim1 = useRef(new Animated.Value(fieldWidthTo.current))
-    .current
+  const fieldSizeAnim1 = useRef(
+    new Animated.Value(fieldWidthTo.current)
+  ).current
   const fieldWidth = fieldSizeAnim1.interpolate({
     inputRange: [fieldWidthFrom.current, fieldWidthTo.current],
     outputRange: [fieldWidthFrom.current, fieldWidthTo.current],
