@@ -64,9 +64,7 @@ import { RecoverWalletView } from './src/views/init/RecoverWalletView'
 
 const App = () => {
   const [isLoadingChainConfig, setLoadingChainConfig] = useState(false)
-  const [isRooted, setRooted] = useState<boolean | undefined>(
-    Config.isDev ? false : undefined
-  )
+  const [isRooted, setRooted] = useState(Config.isDev ? false : undefined)
 
   const initChain = async () => {
     Keychain.getCurrentChain().then((chain) => {
