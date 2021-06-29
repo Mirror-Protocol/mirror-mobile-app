@@ -18,7 +18,9 @@ import io.kysenpool.mirror.android.RnKeystoreLib.RnKeystorePackage;
 import io.kysenpool.mirror.android.RnPreferencesLib.RnPreferencesPackage;
 import io.kysenpool.mirror.android.TerraWalletLib.TerraWalletPackage;
 import io.kysenpool.mirror.android.UtilLib.RootCheckerPackage;
+import io.michaelrocks.paranoid.Obfuscate;
 
+@Obfuscate
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost =

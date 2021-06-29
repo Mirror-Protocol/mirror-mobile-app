@@ -10,7 +10,10 @@ import com.facebook.react.bridge.ReactMethod;
 
 import java.util.Set;
 
-public class RnPreferences extends ReactContextBaseJavaModule {
+import io.michaelrocks.paranoid.Obfuscate;
+
+@Obfuscate
+public class FlutterPreferences extends ReactContextBaseJavaModule {
     private final SharedPreferences preferences;
     private static final String SHARED_PREFERENCES_NAME = "RnSharedPreferences";
     private static final String DOUBLE_PREFIX = "VGhpcyBpcyB0aGUgcHJlZml4IGZvciBEb3VibGUu";

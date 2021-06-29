@@ -11,7 +11,10 @@ import com.facebook.react.bridge.ReactMethod;
 
 import java.nio.charset.Charset;
 
-public class RnKeystore extends ReactContextBaseJavaModule {
+import io.michaelrocks.paranoid.Obfuscate;
+
+@Obfuscate
+public class FlutterKeystore extends ReactContextBaseJavaModule {
     private final SharedPreferences preferences;
     private final Charset charset;
     private StorageCipher storageCipher = null;
