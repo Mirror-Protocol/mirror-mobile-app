@@ -673,9 +673,7 @@ export async function summaryChart(
   return refineChartData(list)
 }
 
-function getChartRange(
-  range: ChartDataType
-): {
+function getChartRange(range: ChartDataType): {
   to: BigNumber
   from: BigNumber
   interval: number
@@ -1265,4 +1263,20 @@ export async function getDelistedCollateralPositions(token: string) {
   const response = gql.getCdps([contract.token])
 
   return response
+}
+
+export async function getMAsset(
+  token: string
+): Promise<MAssetModel | undefined> {
+  const mAssets = await readMAssets()
+
+  const ret = mAssets.find((value) => {
+    return value.token === token
+  })
+
+  return ret
+}
+
+export async function getSymbol(token: string): Promise<string> {
+  return (await getMAsset(token))?.symbol ?? ''
 }

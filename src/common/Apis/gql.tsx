@@ -33,7 +33,7 @@ export function setGql() {
 
 export async function getBankBalancesAddress(address: string) {
   const query = gql`
-    query($address: String!) {
+    query ($address: String!) {
       BankBalancesAddress(Address: $address) {
         Result {
           Amount
@@ -86,7 +86,7 @@ export async function getOracleDenomsExchangeRates() {
 
 export async function getMarketSwap(offer: string, ask: string) {
   const query = gql`
-    query($offer: String!, $ask: String!) {
+    query ($offer: String!, $ask: String!) {
       MarketSwap(OfferCoin: $offer, AskDenom: $ask) {
         Result {
           Amount
@@ -108,7 +108,7 @@ export async function getMarketSwap(offer: string, ask: string) {
 
 export async function getTreasuryTaxCapDenom(denom: string) {
   const query = gql`
-    query($denom: String!) {
+    query ($denom: String!) {
       TreasuryTaxCapDenom(Denom: $denom) {
         Result
       }
@@ -129,7 +129,7 @@ export async function getWasmContractsContractAddressStore(
   msg: string
 ) {
   const query = gql`
-    query($contract: String!, $msg: String!) {
+    query ($contract: String!, $msg: String!) {
       WasmContractsContractAddressStore(
         ContractAddress: $contract
         QueryMsg: $msg
@@ -166,7 +166,7 @@ export async function getPrice(
   }
 
   const query = gql`
-    query($contract: String!, $address: String!, $yesterday: Float!) {
+    query ($contract: String!, $address: String!, $yesterday: Float!) {
       asset(token: $contract) {
         prices {
           price
@@ -196,7 +196,7 @@ export async function getPriceAt(contract: string, timestamp: number) {
   // const yesterday = Date.now() - DAY
 
   const query = gql`
-    query($contract: String!, $timestamp: Float!) {
+    query ($contract: String!, $timestamp: Float!) {
       asset(token: $contract) {
         prices {
           priceAt(timestamp: $timestamp)
@@ -224,7 +224,7 @@ export async function getPriceHistory(
   const DAY = 60 * 60 * 24 * 1000
 
   const query = gql`
-    query($contract: String!, $interval: Float!, $from: Float!, $to: Float!) {
+    query ($contract: String!, $interval: Float!, $from: Float!, $to: Float!) {
       asset(token: $contract) {
         prices {
           history(interval: $interval, from: $from, to: $to) {
@@ -255,7 +255,7 @@ export async function getBalanceHistory(
   interval: string
 ) {
   const query = gql`
-    query($address: String!, $from: Float!, $to: Float!, $interval: Float!) {
+    query ($address: String!, $from: Float!, $to: Float!, $interval: Float!) {
       balanceHistory(
         address: $address
         from: $from
@@ -283,7 +283,7 @@ export async function getBalanceHistory(
 
 export async function getAssetInfo(contract: string) {
   const query = gql`
-    query($contract: String!) {
+    query ($contract: String!) {
       asset(token: $contract) {
         symbol
         name
@@ -338,7 +338,7 @@ export async function getAssetBalances(
   }
 
   const query = gql`
-    query($address: String!, $yesterday: Float!) {
+    query ($address: String!, $yesterday: Float!) {
       balances(address: $address) {
         token
         balance
@@ -372,7 +372,7 @@ export async function getTxs(
   tag: string
 ) {
   const query = gql`
-    query($address: String!, $offset: Float!, $tag: String!, $limit: Float!) {
+    query ($address: String!, $offset: Float!, $tag: String!, $limit: Float!) {
       txs(account: $address, offset: $offset, tag: $tag, limit: $limit) {
         id
         height
@@ -403,7 +403,7 @@ export async function getTxs(
 
 export async function getAccount(address: string) {
   const query = gql`
-    query($address: String!) {
+    query ($address: String!) {
       account(address: $address) {
         address
         haveBalanceHistory
@@ -422,7 +422,7 @@ export async function getAccount(address: string) {
 
 export async function setConnect(address: string, email?: string) {
   const query = gql`
-    mutation($address: String!, $email: String) {
+    mutation ($address: String!, $email: String) {
       connect(address: $address, isAppUser: true, email: $email) {
         address
       }
@@ -442,7 +442,7 @@ export async function setConnect(address: string, email?: string) {
 
 export async function getMoonpayHistory(address: string) {
   const query = gql`
-    query($address: String!) {
+    query ($address: String!) {
       moonpayHistory(transactionId: $address, limit: 1)
     }
   `
@@ -462,7 +462,7 @@ export async function getTradingVolume(
   to: number
 ) {
   const query = gql`
-    query($address: String!, $from: Float!, $to: Float!) {
+    query ($address: String!, $from: Float!, $to: Float!) {
       tradingVolume(address: $address, from: $from, to: $to)
     }
   `
@@ -480,7 +480,7 @@ export async function getTradingVolume(
 
 export async function getCdps(tokens: string[]) {
   const query = gql`
-    query($tokens: [String!]) {
+    query ($tokens: [String!]) {
       cdps(maxRatio: 9999, tokens: $tokens) {
         id
         address

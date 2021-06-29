@@ -1053,7 +1053,6 @@ function ButtonView(props: {
   }
 
   const info = props.info as GQL_AssetList1
-  const delistEnable = true
 
   return (
     <View
@@ -1073,28 +1072,12 @@ function ButtonView(props: {
             onPress={() => {
               props.burnPressed()
             }}
-            enabled={delistEnable}
           >
-            {!delistEnable && (
-              <Text
-                style={{
-                  color: Resources.Colors.veryLightPinkTwo,
-                  fontFamily: Resources.Fonts.bold,
-                  fontSize: 14,
-                  letterSpacing: -0.3,
-                  textAlign: 'center',
-                  marginBottom: 12,
-                  includeFontPadding: false,
-                }}
-              >{`Available Soon`}</Text>
-            )}
             <View
               style={{
                 height: 48,
                 borderRadius: 24,
-                backgroundColor: delistEnable
-                  ? Resources.Colors.brightTeal
-                  : Resources.Colors.darkGrey,
+                backgroundColor: Resources.Colors.brightTeal,
                 flexDirection: 'row',
                 alignItems: 'center',
               }}

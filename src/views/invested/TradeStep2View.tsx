@@ -1,4 +1,10 @@
-import React, { useState, useContext, useEffect, useRef } from 'react'
+import React, {
+  useState,
+  useContext,
+  useEffect,
+  useRef,
+  ReactNode,
+} from 'react'
 import { Text, View, StyleSheet, Image, Platform } from 'react-native'
 import * as Resources from '../../common/Resources'
 import * as Utils from '../../common/Utils'
@@ -10,6 +16,7 @@ import { NextButton } from './TradeInputView'
 import { ProcessingType } from '../common/ProcessingView'
 import { ConfigContext } from '../../common/provider/ConfigProvider'
 import { SpreadPopupView } from '../common/SpreadPopupView'
+import _ from 'lodash'
 
 export function TradeStep2View(props: {
   navigation: any
@@ -31,6 +38,7 @@ export function TradeStep2View(props: {
           position: string
           amount: string
           collateralToken: string
+          symbol: string
         }[]
       | undefined
     >(undefined)
@@ -50,11 +58,7 @@ export function TradeStep2View(props: {
 
   useEffect(() => {
     if (props.type === 'burn') {
-      setSectionTitle([
-        `BURN AMOUNT`,
-        `PRICE`,
-        translations.tradeStep2View.fees,
-      ])
+      setSectionTitle([`BURN AMOUNT`, ``, translations.tradeStep2View.fees])
     } else {
       const titles = isBuy
         ? [
@@ -108,20 +112,29 @@ export function TradeStep2View(props: {
         let amount = maxAmount
         for (let i = 0; i < sortedCdps.length; ++i) {
           const position = sortedCdps[i].id
-          const mintAmount = new BigNumber(sortedCdps[i].mintAmount)
           const collateralToken = sortedCdps[i].collateralToken
+          const symbol =
+            collateralToken === Keychain.baseCurrency
+              ? Keychain.baseCurrencyDenom
+              : await Api.getSymbol(sortedCdps[i].collateralToken)
+          const mintAmount =
+            collateralToken === Keychain.baseCurrency
+              ? new BigNumber(sortedCdps[i].mintAmount)
+              : new BigNumber(0)
 
           if (mintAmount.gte(amount)) {
             positions.push({
               position,
               amount: amount.toString(),
               collateralToken,
+              symbol,
             })
           } else {
             positions.push({
               position,
               amount: mintAmount.toString(),
               collateralToken,
+              symbol,
             })
           }
           amount = amount.minus(mintAmount)
@@ -321,13 +334,20 @@ export function TradeStep2View(props: {
             )}
             denom={Keychain.baseCurrencyDenom}
           />
-          <SectionResult
-            isBuy={isBuy}
-            type={props.type}
-            sum={info.sum}
-            loaded={loaded}
-            denom={Keychain.baseCurrencyDenom}
-          />
+          {props.type === 'burn' ? (
+            <SectionBurnResult
+              loaded={loaded}
+              price={info.price}
+              burnPositions={burnPositions}
+            />
+          ) : (
+            <SectionResult
+              isBuy={isBuy}
+              sum={info.sum}
+              loaded={loaded}
+              denom={Keychain.baseCurrencyDenom}
+            />
+          )}
         </View>
 
         {props.type !== 'burn' && (
@@ -547,10 +567,145 @@ function Section(props: {
     </View>
   )
 }
+function SectionBurnResult(props: {
+  loaded: boolean
+  price: BigNumber
+  burnPositions?: {
+    position: string
+    amount: string
+    collateralToken: string
+    symbol: string
+  }[]
+}) {
+  if (props.burnPositions === undefined || props.price.isEqualTo(0)) {
+    return null
+  }
+
+  const { translations } = useContext(ConfigContext)
+  const color1 = Resources.Colors.white
+  const color2 = Resources.Colors.dark
+
+  const styles = StyleSheet.create({
+    box2: {
+      height: 60,
+      flexDirection: 'row',
+    },
+    icon: {
+      marginTop: 21,
+      marginLeft: 16,
+      width: 18,
+      height: 18,
+    },
+    amount: {
+      fontFamily: Resources.Fonts.medium,
+      fontSize: 18,
+      letterSpacing: -0.3,
+    },
+    denom: {
+      marginBottom: 1,
+      fontFamily: Resources.Fonts.medium,
+      fontSize: 10,
+      letterSpacing: -0.3,
+    },
+  })
+
+  const [calculatedPositions, setCalculatedPositions] = useState<
+    { amount: string; symbol: string; token: string }[]
+  >([])
+
+  const calculate = async () => {
+    let sum = new BigNumber(0)
+    for (
+      let i = 0;
+      props.burnPositions && i < props.burnPositions?.length;
+      ++i
+    ) {
+      sum = sum.plus(new BigNumber(props.burnPositions[i].amount))
+    }
+    sum = sum.dividedBy(1e6)
+
+    const positions: { amount: string; symbol: string; token: string }[] = []
+    for (
+      let i = 0;
+      props.burnPositions && i < props.burnPositions?.length;
+      ++i
+    ) {
+      const position = props.burnPositions[i]
+      const findPosition = positions.find((p) => p.symbol === position.symbol)
+      if (findPosition) {
+        findPosition.amount = new BigNumber(findPosition.amount)
+          .plus(new BigNumber(position.amount))
+          .toString()
+      } else {
+        positions.push({
+          amount: position.amount,
+          symbol: position.symbol,
+          token: position.collateralToken,
+        })
+      }
+    }
+
+    for (
+      let i = 0;
+      props.burnPositions && i < props.burnPositions?.length;
+      ++i
+    ) {
+      const position = positions[i]
+      let calc
+      if (position.symbol === 'UST') {
+        calc = new BigNumber(position.amount).times(props.price)
+      } else {
+        const asset = await Api.assetInfo(position.token)
+        calc = new BigNumber(props.price)
+          .dividedBy(new BigNumber(asset.price))
+          .times(position.amount)
+      }
+      position.amount = Utils.getFormatted(calc.dividedBy(1e6), 2, true)
+    }
+    setCalculatedPositions(positions)
+  }
+
+  useEffect(() => {
+    calculate()
+  }, [])
+
+  return (
+    <View style={[styles.box2, { backgroundColor: color1, marginTop: 1 }]}>
+      <View style={{ flex: 1, marginTop: 22, marginRight: 24 }}>
+        {props.loaded && (
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'flex-end',
+              alignItems: 'flex-end',
+            }}
+          >
+            {calculatedPositions.map((position, index) => {
+              return (
+                <>
+                  <Text style={[styles.amount, { color: color2 }]}>
+                    {Utils.getFormatted(new BigNumber(position.amount), 2)}
+                  </Text>
+                  <Text style={[styles.denom, { color: color2 }]}>
+                    {position.symbol}
+                  </Text>
+                  {index < calculatedPositions.length - 1 && (
+                    <Text
+                      style={[styles.amount, { color: color2 }]}
+                    >{` + `}</Text>
+                  )}
+                </>
+              )
+            })}
+          </View>
+        )}
+      </View>
+    </View>
+  )
+}
 
 function SectionResult(props: {
   isBuy: boolean
-  type: string
   loaded: boolean
   sum: BigNumber
   denom: string
@@ -588,7 +743,7 @@ function SectionResult(props: {
 
   return (
     <View style={[styles.box2, { backgroundColor: color1, marginTop: 1 }]}>
-      {props.type !== 'burn' && <Image source={icon} style={styles.icon} />}
+      <Image source={icon} style={styles.icon} />
       <View style={{ flex: 1, marginTop: 22, marginRight: 24 }}>
         {props.sum.isLessThanOrEqualTo(0) && props.loaded ? (
           <Text
