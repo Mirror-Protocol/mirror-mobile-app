@@ -11,19 +11,19 @@ import java.util.List;
 
 public class RnPreferencesPackage implements ReactPackage {
 
-    @Override
-    public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
-        return Collections.emptyList();
-    }
+  @Override
+  public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
+    return Collections.emptyList();
+  }
 
-    @Override
-    public List<NativeModule> createNativeModules(
-            ReactApplicationContext reactContext) {
-        List<NativeModule> modules = new ArrayList<>();
+  @Override
+  public List<NativeModule> createNativeModules(
+          ReactApplicationContext reactContext) {
+    List<NativeModule> modules = new ArrayList<>();
 
-        modules.add(new RnPreferences(reactContext));
+    modules.add(new FlutterPreferences(reactContext));
 
-        return modules;
-    }
+    return modules;
+  }
 
 }

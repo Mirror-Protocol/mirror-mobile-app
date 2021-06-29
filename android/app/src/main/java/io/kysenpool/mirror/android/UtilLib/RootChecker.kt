@@ -8,12 +8,14 @@ import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
+import io.michaelrocks.paranoid.Obfuscate
 import java.io.BufferedReader
 import java.io.File
 import java.io.IOException
 import java.io.InputStreamReader
 import java.util.*
 
+@Obfuscate
 class RootChecker(reactContext: ReactApplicationContext?) : ReactContextBaseJavaModule(reactContext) {
     private var context: Context? = reactContext
 
@@ -77,7 +79,7 @@ class RootChecker(reactContext: ReactApplicationContext?) : ReactContextBaseJava
         return false
     }
 
-    private fun detectApps(packages: Array<String>, additionalApps: Array<String>? = null) : Boolean {
+    private fun detectApps(packages: Array<String>, additionalApps: Array<String>? = null): Boolean {
         val p = ArrayList<String>()
         p.addAll(packages)
 
@@ -87,14 +89,11 @@ class RootChecker(reactContext: ReactApplicationContext?) : ReactContextBaseJava
         return isAnyPackageFromListInstalled(p)
     }
 
-    private fun detectRootManagementApps(additionalRootManagementApps: Array<String>? = null)
-            = detectApps(Constants.knownRootAppsPackages, additionalRootManagementApps)
+    private fun detectRootManagementApps(additionalRootManagementApps: Array<String>? = null) = detectApps(Constants.knownRootAppsPackages, additionalRootManagementApps)
 
-    private fun detectPotentiallyDangerousApps(additionalDangerousApps: Array<String>? = null)
-            = detectApps(Constants.knownDangerousAppsPackages, additionalDangerousApps)
+    private fun detectPotentiallyDangerousApps(additionalDangerousApps: Array<String>? = null) = detectApps(Constants.knownDangerousAppsPackages, additionalDangerousApps)
 
-    private fun detectRootCloakingApps(additionalRootCloakingApps: Array<String>? = null)
-            = detectApps(Constants.knownRootCloakingPackages, additionalRootCloakingApps)
+    private fun detectRootCloakingApps(additionalRootCloakingApps: Array<String>? = null) = detectApps(Constants.knownRootCloakingPackages, additionalRootCloakingApps)
 
     /**
      * Binary check
@@ -197,8 +196,7 @@ class RootChecker(reactContext: ReactApplicationContext?) : ReactContextBaseJava
         } finally {
             try {
                 process?.exitValue()
-            }
-            catch (e: IllegalThreadStateException) {
+            } catch (e: IllegalThreadStateException) {
                 process?.destroy()
             }
         }

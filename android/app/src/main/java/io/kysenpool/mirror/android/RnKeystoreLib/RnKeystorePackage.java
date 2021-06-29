@@ -11,19 +11,19 @@ import java.util.List;
 
 public class RnKeystorePackage implements ReactPackage {
 
-    @Override
-    public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
-        return Collections.emptyList();
-    }
+  @Override
+  public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
+    return Collections.emptyList();
+  }
 
-    @Override
-    public List<NativeModule> createNativeModules(
-            ReactApplicationContext reactContext) {
-        List<NativeModule> modules = new ArrayList<>();
+  @Override
+  public List<NativeModule> createNativeModules(
+          ReactApplicationContext reactContext) {
+    List<NativeModule> modules = new ArrayList<>();
 
-        modules.add(new RnKeystore(reactContext));
+    modules.add(new FlutterKeystore(reactContext));
 
-        return modules;
-    }
+    return modules;
+  }
 
 }
