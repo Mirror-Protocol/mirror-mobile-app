@@ -21,7 +21,7 @@ public class StorageCipher18Implementation implements StorageCipher {
   private static final int keySize = 16;
   private static final String KEY_ALGORITHM = "AES";
   private static final String AES_PREFERENCES_KEY = "VGhpcyBpcyB0aGUga2V5IGZvciBhIHNlY3VyZSBzdG9yYWdlIEFFUyBLZXkK";
-  private static final String SHARED_PREFERENCES_NAME = "RnSecureKeyStorage";
+  private static final String SHARED_PREFERENCES_NAME = "FlutterSecureKeyStorage";
 
   private Key secretKey;
   private final Cipher cipher;

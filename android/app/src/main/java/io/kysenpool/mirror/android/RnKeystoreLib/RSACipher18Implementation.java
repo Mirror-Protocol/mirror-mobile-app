@@ -31,7 +31,7 @@ class RSACipher18Implementation {
 
 
   public RSACipher18Implementation(Context context) throws Exception {
-    KEY_ALIAS = context.getPackageName() + ".RnSecureStoragePluginKey";
+    KEY_ALIAS = context.getPackageName() + ".FlutterSecureStoragePluginKey";
     createRSAKeysIfNeeded(context);
   }
 
