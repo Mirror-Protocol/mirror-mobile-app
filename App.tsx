@@ -176,14 +176,14 @@ function ContainerView() {
 
 const androidTransition = Platform.OS === 'android' && {
   ...TransitionPresets.RevealFromBottomAndroid,
+  cardStyle: { backgroundColor: Resources.Colors.black },
 }
 
 function SplashScreenStack() {
   const SplashStack = createStackNavigator()
 
-  const [skipOnboarding, setOnboarding] = useState<boolean | undefined>(
-    undefined
-  )
+  const [skipOnboarding, setOnboarding] =
+    useState<boolean | undefined>(undefined)
   Keychain.getSkipOnboarding().then((ret) => {
     setOnboarding(ret)
   })
