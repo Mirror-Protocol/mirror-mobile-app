@@ -68,12 +68,14 @@ const TabAll = (props: {
     denom,
     pending,
     withdraw,
+    enabled,
   }: {
     logo: ImageSourcePropType
     title: string
     denom: string
     pending?: boolean
     withdraw?: boolean
+    enabled: boolean
   }) => (
     <RampItem
       key={`RampItem-${title}-${logo}`}
@@ -85,6 +87,7 @@ const TabAll = (props: {
       onPress={() => navigateSwitchain(props.navigation, denom, props.withdraw)}
       pending={pending}
       withdraw={withdraw}
+      enabled={enabled}
     />
   )
 
@@ -115,6 +118,7 @@ const TabAll = (props: {
                 props.navigation.push('WithdrawView', { symbol: 'uusd' })
               }}
               pending={false}
+              enabled={true}
             />
           ) : (
             <RampItem
@@ -126,6 +130,7 @@ const TabAll = (props: {
               pending={
                 props.enableMoonpay !== undefined && !props.enableMoonpay
               }
+              enabled={true}
             />
           )}
           <Separator style={{ marginVertical: SEPARATOR_MARGIN }} />
@@ -137,6 +142,7 @@ const TabAll = (props: {
               title={crypto.label}
               denom={crypto.value}
               withdraw={props.withdraw}
+              enabled={false}
               pending={_.some(
                 props.pendingData?.find(
                   (i) => i.key === getPairName(crypto.value, props.withdraw)

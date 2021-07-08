@@ -60,6 +60,7 @@ const RampItem = ({
   subTitle,
   pending,
   withdraw,
+  enabled,
   onPress,
 }: {
   logo: ImageSourcePropType
@@ -68,11 +69,13 @@ const RampItem = ({
   subTitle: string
   pending?: boolean
   withdraw?: boolean
+  enabled: boolean
   onPress: () => void
 }) => {
   return (
     <RectButton
-      style={{ flexDirection: 'row' }}
+      style={{ flexDirection: 'row', opacity: enabled ? 1 : 0.25 }}
+      enabled={enabled}
       onPress={() => !pending && onPress()}
     >
       <View
