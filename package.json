@@ -55,7 +55,7 @@
     "react-native-exit-app": "^1.1.0",
     "react-native-gesture-handler": "^1.8.0",
     "react-native-haptic-feedback": "^1.11.0",
-    "react-native-inappbrowser-reborn": "^3.5.1",
+    "react-native-inappbrowser-reborn": "^3.6.3",
     "react-native-keychain": "git+https://git@github.com/Zo2m4bie/react-native-keychain.git#2c3aee65991044b9842b88085c5382102c3581f4",
     "react-native-localization": "^2.1.6",
     "react-native-modal": "^11.5.6",
