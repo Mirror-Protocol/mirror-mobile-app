@@ -471,8 +471,9 @@ function UstView(props: {
               alignItems: 'center',
             }}
             onPress={() => {
-              props.topupPressed()
-              //props.depositPressed(props.denom)
+              Config.hideMoonpay
+                ? props.depositPressed(Keychain.baseCurrency)
+                : props.topupPressed()
             }}
           >
             <Text
