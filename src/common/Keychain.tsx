@@ -51,6 +51,12 @@ export const baseCurrencyDenom = 'UST'
 const preferences = NativeModules.Preferences
 const keystore = NativeModules.Keystore
 
+export async function migratePreferences() {
+  await NativeModules.Keystore.migratePreferences(KeychainKeys.Wallet)
+  await NativeModules.Keystore.migratePreferences(KeychainKeys.Address)
+  await NativeModules.Keystore.migratePreferences(KeychainKeys.Email)
+}
+
 export async function setCurrentTorusNet(net: string) {
   await preferences.setString(PrefKeys.currentTorusNet, net)
 }

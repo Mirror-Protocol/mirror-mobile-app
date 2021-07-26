@@ -1,6 +1,5 @@
 //
 //  Preferences.m
-//  Harvest
 //
 //  Created by Felix on 2020/04/09.
 //

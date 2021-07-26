@@ -4,3 +4,4 @@
 
 #import <React/RCTBridgeModule.h>
 #import <TrezorCrypto/TrezorCrypto.h>
+#import "NSData+AES.h"

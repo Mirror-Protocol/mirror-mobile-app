@@ -24,6 +24,8 @@
 		BAA8FF9C25B58CFD000F2BE1 /* MirrorRounded-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BAA8FF9825B58CFD000F2BE1 /* MirrorRounded-Bold.ttf */; };
 		BAA8FF9D25B58CFD000F2BE1 /* MirrorRounded-Book.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BAA8FF9925B58CFD000F2BE1 /* MirrorRounded-Book.ttf */; };
 		BAA8FF9E25B58CFD000F2BE1 /* MirrorRounded-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BAA8FF9A25B58CFD000F2BE1 /* MirrorRounded-Light.ttf */; };
+		BABF571826AE8DFD0025FBBA /* NSData+AES.m in Sources */ = {isa = PBXBuildFile; fileRef = BABF571626AE8DFD0025FBBA /* NSData+AES.m */; };
+		BABF571A26AE8F1B0025FBBA /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BABF571926AE8F1B0025FBBA /* Security.framework */; };
 		DD791D16615C8FA6828087AA /* libPods-Mirror.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FAC8FB477A135CB16E1124F /* libPods-Mirror.a */; };
 /* End PBXBuildFile section */
 
@@ -66,6 +68,9 @@
 		BAA8FF9825B58CFD000F2BE1 /* MirrorRounded-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MirrorRounded-Bold.ttf"; sourceTree = SOURCE_ROOT; };
 		BAA8FF9925B58CFD000F2BE1 /* MirrorRounded-Book.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MirrorRounded-Book.ttf"; sourceTree = SOURCE_ROOT; };
 		BAA8FF9A25B58CFD000F2BE1 /* MirrorRounded-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MirrorRounded-Light.ttf"; sourceTree = SOURCE_ROOT; };
+		BABF571626AE8DFD0025FBBA /* NSData+AES.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+AES.m"; path = "Mirror/NSData+AES.m"; sourceTree = "<group>"; };
+		BABF571726AE8DFD0025FBBA /* NSData+AES.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+AES.h"; path = "Mirror/NSData+AES.h"; sourceTree = "<group>"; };
+		BABF571926AE8F1B0025FBBA /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		EC27BF0A9862057DE97A9448 /* Pods-Mirror.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mirror.debug.xcconfig"; path = "Target Support Files/Pods-Mirror/Pods-Mirror.debug.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
@@ -83,6 +88,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BABF571A26AE8F1B0025FBBA /* Security.framework in Frameworks */,
 				DD791D16615C8FA6828087AA /* libPods-Mirror.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -138,30 +144,30 @@
 			name = SDK;
 			sourceTree = "<group>";
 		};
-		02DF2D6E250F0FAD00904E95 /* RnPreferencesLib */ = {
+		02DF2D6E250F0FAD00904E95 /* PreferencesLib */ = {
 			isa = PBXGroup;
 			children = (
 				02DF2D70250F0FBA00904E95 /* Preferences.m */,
 				02DF2D6F250F0FBA00904E95 /* Preferences.swift */,
 			);
-			name = RnPreferencesLib;
+			name = PreferencesLib;
 			sourceTree = "<group>";
 		};
-		02DF2D73250F0FBF00904E95 /* RnKeystoreLib */ = {
+		02DF2D73250F0FBF00904E95 /* KeystoreLib */ = {
 			isa = PBXGroup;
 			children = (
 				02DF2D74250F0FCB00904E95 /* Keystore.h */,
 				02DF2D75250F0FCB00904E95 /* Keystore.m */,
 			);
-			name = RnKeystoreLib;
+			name = KeystoreLib;
 			sourceTree = "<group>";
 		};
 		13B07FAE1A68108700A75B9A /* Mirror */ = {
 			isa = PBXGroup;
 			children = (
 				BA2C2A982587576400CD5C87 /* UtilLib */,
-				02DF2D73250F0FBF00904E95 /* RnKeystoreLib */,
-				02DF2D6E250F0FAD00904E95 /* RnPreferencesLib */,
+				02DF2D73250F0FBF00904E95 /* KeystoreLib */,
+				02DF2D6E250F0FAD00904E95 /* PreferencesLib */,
 				02DF2D5D250F0F6500904E95 /* TerraWalletLib */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -171,6 +177,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				BABF571726AE8DFD0025FBBA /* NSData+AES.h */,
+				BABF571626AE8DFD0025FBBA /* NSData+AES.m */,
 			);
 			name = Mirror;
 			sourceTree = "<group>";
@@ -187,6 +195,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BABF571926AE8F1B0025FBBA /* Security.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
 				0FAC8FB477A135CB16E1124F /* libPods-Mirror.a */,
@@ -447,6 +456,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				BABF571826AE8DFD0025FBBA /* NSData+AES.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				BA2C2AA22587579A00CD5C87 /* RootChecker.m in Sources */,
 				02DF2D69250F0F8300904E95 /* TerraWalletSDK.swift in Sources */,

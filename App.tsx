@@ -66,21 +66,6 @@ const App = () => {
   const [isLoadingChainConfig, setLoadingChainConfig] = useState(false)
   const [isRooted, setRooted] = useState(Config.isDev ? false : undefined)
 
-  const initChain = async () => {
-    Keychain.getCurrentChain().then((chain) => {
-      Config.setCurrentChain(chain)
-
-      Keychain.getCurrentTorusNet().then((net) => {
-        Config.setTorusNetwork(net)
-
-        api.setGasPrice()
-        api.setTerra()
-        gql.setGql()
-        setLoadingChainConfig(true)
-      })
-    })
-  }
-
   useEffect(() => {
     SplashScreen.hide()
 
@@ -101,6 +86,19 @@ const App = () => {
       })
     }
 
+    const initChain = async () => {
+      const chain = await Keychain.getCurrentChain()
+      Config.setCurrentChain(chain)
+
+      const net = await Keychain.getCurrentTorusNet()
+      Config.setTorusNetwork(net)
+
+      await api.setGasPrice()
+      api.setTerra()
+      gql.setGql()
+      setLoadingChainConfig(true)
+    }
+
     const connectUser = async () => {
       try {
         if (await Keychain.isHaveAddress()) {
@@ -109,11 +107,14 @@ const App = () => {
       } catch (e) {}
     }
 
-    if (isRooted === false) {
-      initChain().then(() => {
-        connectUser()
-      })
+    const init = async () => {
+      try {
+        await Keychain.migratePreferences()
+        await initChain()
+        await connectUser()
+      } catch (e) {}
     }
+    isRooted === false && init()
   }, [isRooted])
 
   return !isLoadingChainConfig ? (

@@ -1,6 +1,5 @@
 //
 //  RootCheck.h
-//  RootCheckTest
 //
 //  Created by Henry on 2020/12/14.
 //
