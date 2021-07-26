@@ -39,8 +39,8 @@ android {
         applicationId "io.kysenpool.mirror.android"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 10100002
-        versionName "1.1.0"
+        versionCode 10200000
+        versionName "1.2.0"
         multiDexEnabled true
         missingDimensionStrategy 'react-native-camera', 'general'
     }
