@@ -1,5 +1,6 @@
 package io.kysenpool.mirror.android.KeystoreLib;
 
+@Deprecated
 public interface StorageCipher {
   byte[] encrypt(byte[] input) throws Exception;
 

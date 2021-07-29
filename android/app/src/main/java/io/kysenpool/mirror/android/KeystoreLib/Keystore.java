@@ -22,7 +22,7 @@ public class Keystore extends ReactContextBaseJavaModule {
   private SharedPreferences preferences;
   private final Charset charset = Charset.forName("UTF-8");
   private StorageCipher storageCipher = null;
-  private static final String ELEMENT_PREFERENCES_KEY_PREFIX = "VGhpcyBpcyB0aGUgcHJlZml4IGZvciBhIHNlY3VyZSBzdG9yYWdlCg";
+  @Deprecated private static final String ELEMENT_PREFERENCES_KEY_PREFIX = "VGhpcyBpcyB0aGUgcHJlZml4IGZvciBhIHNlY3VyZSBzdG9yYWdlCg";
   private static final String SHARED_PREFERENCES_NAME = "FlutterSecureStorage";
 
   public Keystore(ReactApplicationContext context) {
@@ -96,11 +96,11 @@ public class Keystore extends ReactContextBaseJavaModule {
     }
   }
 
-  private String addPrefixToKey(String key) {
+  @Deprecated private String addPrefixToKey(String key) {
     return ELEMENT_PREFERENCES_KEY_PREFIX + "_" + key;
   }
 
-  private String decodeRawValue(String value) throws Exception {
+  @Deprecated private String decodeRawValue(String value) throws Exception {
     if (value == null) {
       return null;
     }
