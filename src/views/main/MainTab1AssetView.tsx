@@ -241,15 +241,15 @@ export function MainTab1AssetView(props: {
                 navigation={props.navigation}
                 route={props.route}
                 topupPressed={() => {
-                  props.navigation.push('WalletTopupView')
-                  // navigation.navigate('RampStack', {
-                  //   screen: 'RampSelectView',
-                  //   params: { withdraw: false },
-                  // })
+                  // props.navigation.push('WalletTopupView')
+                  navigation.navigate('RampStack', {
+                    screen: 'RampSelectView',
+                    params: { withdraw: false },
+                  })
                 }}
                 pendingData={pendingData}
-                title={translations.walletSummaryView.deposit}
-                titleIcon={Resources.Images.iconBuyG}
+                title={'UST'}
+                titleIcon={Resources.Images.logoUst}
                 withdraw={false}
               />
             </>

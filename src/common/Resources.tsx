@@ -69,6 +69,7 @@ export const Images = {
   iconQuestion: require('../../assets/images/iconQuestion.png'),
   iconBuyG: require('../../assets/images/iconBuyG.png'),
   iconSwitch: require('../../assets/images/iconSwitch.png'),
+  iconDeposit: require('../../assets/images/iconDeposit.png'),
   iconCreditCard: require('../../assets/images/iconCreditCard.png'),
   iconExchange: require('../../assets/images/iconExchange.png'),
   iconSupport: require('../../assets/images/iconSupport.png'),

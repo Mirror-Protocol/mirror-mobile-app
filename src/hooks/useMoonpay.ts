@@ -17,13 +17,11 @@ export type MoonpayProps = {
 }
 
 const useMoonpay = () => {
-  const [enableMoonpay, setEnableMoonpay] = useState<boolean | undefined>(
-    undefined
-  )
+  const [enableMoonpay, setEnableMoonpay] =
+    useState<boolean | undefined>(undefined)
   const [showMoonpayDepositPopup, setShowMoonpayDepositPopup] = useState(false)
-  const [moonpayStatus, setMoonpayStatus] = useState<'completed' | 'failed'>(
-    'completed'
-  )
+  const [moonpayStatus, setMoonpayStatus] =
+    useState<'completed' | 'failed'>('completed')
   const [moonpayAmount, setMoonpayAmount] = useState('')
   const [moonpayQuoteAmount, setMoonpayQuoteAmount] = useState('')
 
@@ -36,10 +34,10 @@ const useMoonpay = () => {
       Keychain.clearMoonpayLastStatus()
     }
 
-    const checkStatus = async (status: string) => {
+    const checkStatus = async (status: string, id?: string) => {
       if (status === null || status === undefined) {
         setEnableMoonpay(true)
-      } else if (status === 'failed' || status === 'completed') {
+      } else if (status === 'completed' || status === 'failed') {
         setEnableMoonpay(true)
 
         const lastStatus = await Keychain.getMoonpayLastStatus()
@@ -86,7 +84,7 @@ const useMoonpay = () => {
         setMoonpayAmount(amount)
         setMoonpayQuoteAmount(quoteAmount)
         await checkCompleteDate(status, data.moonpayHistory[0]?.createdAt)
-        await checkStatus(status)
+        await checkStatus(status, data.moonpayHistory[0]?.cryptoTransactionId)
       })
     })
   }

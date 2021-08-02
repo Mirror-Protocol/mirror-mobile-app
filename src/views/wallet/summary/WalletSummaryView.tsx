@@ -121,11 +121,11 @@ export function WalletSummaryView(props: { navigation: any; route: any }) {
   }
 
   function topupPressed() {
-    props.navigation.push('WalletTopupView')
-    // props.navigation.navigate('RampStack', {
-    //   screen: 'RampSelectView',
-    //   params: { withdraw: false },
-    // })
+    // props.navigation.push('WalletTopupView')
+    props.navigation.navigate('RampStack', {
+      screen: 'RampSelectView',
+      params: { withdraw: false },
+    })
   }
 
   function itemPressed(symbol: string, token?: string) {
@@ -240,17 +240,15 @@ export function WalletSummaryView(props: { navigation: any; route: any }) {
         }}
       />
 
-      {showAddressView ? (
+      {showAddressView && (
         <AddressPopupView
           onDismissPressed={() => {
             setShowAddressView(false)
           }}
         />
-      ) : (
-        <View />
       )}
 
-      {moonpay.showMoonpayDepositPopup && (
+      {/* {moonpay.showMoonpayDepositPopup && (
         <MoonpayPopupView
           onDismissPressed={() => {
             moonpay.setShowMoonpayDepositPopup(false)
@@ -260,7 +258,7 @@ export function WalletSummaryView(props: { navigation: any; route: any }) {
           navigation={props.navigation}
           route={props.route}
         />
-      )}
+      )} */}
       {completeData.length > 0 &&
         completeData.map((i) => {
           return (

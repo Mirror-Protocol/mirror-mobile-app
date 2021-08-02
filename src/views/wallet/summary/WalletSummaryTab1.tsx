@@ -143,7 +143,10 @@ function EmptyView(props: {
             alignItems: 'center',
             justifyContent: 'center',
           }}
-          onPress={() => props.depositPressed(Keychain.baseCurrency)}
+          onPress={() => {
+            props.topupPressed()
+            //props.depositPressed(Keychain.baseCurrency)
+          }}
         >
           <Text
             style={{
@@ -155,19 +158,19 @@ function EmptyView(props: {
               color: Resources.Colors.black,
             }}
           >
-            {'DEPOSIT'}
+            {'GET UST'}
           </Text>
         </ThrottleButton>
       </View>
-      <BuyButton
+      {/* <BuyButton
         navigation={props.navigation}
         route={props.route}
         topupPressed={props.topupPressed}
         pendingData={props.pendingData}
-        title={translations.walletSummaryView.deposit}
-        titleIcon={Resources.Images.iconBuyG}
+        title={'UST'}
+        titleIcon={Resources.Images.logoUst}
         withdraw={false}
-      />
+      /> */}
       {props.withdrawData.length > 0 && (
         <BuyButton
           navigation={props.navigation}
@@ -465,7 +468,10 @@ function UstView(props: {
               justifyContent: 'center',
               alignItems: 'center',
             }}
-            onPress={() => props.depositPressed(props.denom)}
+            onPress={() => {
+              props.topupPressed()
+              //props.depositPressed(props.denom)
+            }}
           >
             <Text
               style={{
@@ -475,20 +481,20 @@ function UstView(props: {
                 color: Resources.Colors.black,
               }}
             >
-              {'DEPOSIT'}
+              {'GET UST'}
             </Text>
           </ThrottleButton>
         </View>
       </View>
-      <BuyButton
+      {/* <BuyButton
         navigation={props.navigation}
         route={props.route}
         topupPressed={props.topupPressed}
         pendingData={props.pendingData}
-        title={translations.walletSummaryView.deposit}
-        titleIcon={Resources.Images.iconBuyG}
+        title={'UST'}
+        titleIcon={Resources.Images.logoUst}
         withdraw={false}
-      />
+      /> */}
       {props.withdrawData.length > 0 && (
         <BuyButton
           navigation={props.navigation}

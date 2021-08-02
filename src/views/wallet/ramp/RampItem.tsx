@@ -66,7 +66,7 @@ const RampItem = ({
   logo: ImageSourcePropType
   logoStyle?: StyleProp<ImageStyle>
   title: string
-  subTitle: string
+  subTitle?: string
   pending?: boolean
   withdraw?: boolean
   enabled: boolean
@@ -102,7 +102,7 @@ const RampItem = ({
         >
           {title}
         </Text>
-        <Text style={styles.subTitleText}>{subTitle}</Text>
+        {!!subTitle && <Text style={styles.subTitleText}>{subTitle}</Text>}
       </View>
       <View style={{ justifyContent: 'center', marginRight: 30 }}>
         <Image

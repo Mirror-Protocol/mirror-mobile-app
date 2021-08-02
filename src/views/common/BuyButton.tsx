@@ -90,7 +90,7 @@ function BuyButton(props: {
                 Platform.OS === 'android' && { marginBottom: 3 },
               ]}
             >
-              {translations.walletSummaryView.buyNow}
+              {'Deposit Now'}
             </Text>
             <Image
               style={{

@@ -239,15 +239,15 @@ export function MainTab1(props: {
       {loaded && (
         <>
           <View style={{ flex: 1 }}>
-            {!welcomePageDone ? (
+            {!welcomePageDone && false ? (
               <MainTab1NoAssetView
                 balance={investedInfo.balance}
                 topupPressed={() => {
-                  props.navigation.push('WalletTopupView')
-                  // props.navigation.navigate('RampStack', {
-                  //   screen: 'RampSelectView',
-                  //   params: { withdraw: false },
-                  // })
+                  // props.navigation.push('WalletTopupView')
+                  props.navigation.navigate('RampStack', {
+                    screen: 'RampSelectView',
+                    params: { withdraw: false },
+                  })
                 }}
               />
             ) : (

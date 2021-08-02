@@ -26,13 +26,15 @@ import { MoonpayPopupView } from '../../common/MoonpayPopupView'
 import usePending, { PendingData } from '../../../hooks/usePending'
 import _ from 'lodash'
 import { SwitchainPopupView } from '../../common/SwitchainPopupView'
+import { AddressPopupView } from '../../common/AddressPopupView'
 
-const cryptoList: SelectItem[] = [
-  { label: 'Bitcoin', value: 'BTC', logo: Resources.Images.logoBtc },
-  { label: 'Ethereum', value: 'ETH', logo: Resources.Images.logoEth },
-  { label: 'Tether', value: 'USDT', logo: Resources.Images.logoUsdt },
-  { label: 'USD Coin', value: 'USDC', logo: Resources.Images.logoUsdc },
-]
+const cryptoList: SelectItem[] = []
+// [
+//   { label: 'Bitcoin', value: 'BTC', logo: Resources.Images.logoBtc },
+//   { label: 'Ethereum', value: 'ETH', logo: Resources.Images.logoEth },
+//   { label: 'Tether', value: 'USDT', logo: Resources.Images.logoUsdt },
+//   { label: 'USD Coin', value: 'USDC', logo: Resources.Images.logoUsdc },
+// ]
 
 const DEVICE_WIDTH = Dimensions.get('window').width
 const SLIDER_MARGIN = 12
@@ -58,6 +60,7 @@ const TabAll = (props: {
   moonpayDeposit: () => void
   enableMoonpay?: boolean
   pendingData?: PendingData[]
+  onPressDeposit?: () => void
   withdraw?: boolean
 }) => {
   const { marketInfo } = useSwitchainMarketInfo()
@@ -121,17 +124,29 @@ const TabAll = (props: {
               enabled={true}
             />
           ) : (
-            <RampItem
-              logo={Resources.Images.iconCreditCard}
-              logoStyle={{ width: 26, height: 18 }}
-              title={'Credit Card'}
-              subTitle={'MoonPay'}
-              onPress={() => props.moonpayDeposit()}
-              pending={
-                props.enableMoonpay !== undefined && !props.enableMoonpay
-              }
-              enabled={true}
-            />
+            <>
+              <RampItem
+                logo={Resources.Images.iconDeposit}
+                logoStyle={{ width: 26, height: 26 }}
+                title={'Deposit'}
+                subTitle={''}
+                onPress={() => props.onPressDeposit && props.onPressDeposit()}
+                pending={false}
+                enabled={true}
+              />
+              <Separator style={{ marginVertical: SEPARATOR_MARGIN }} />
+              <RampItem
+                logo={Resources.Images.iconCreditCard}
+                logoStyle={{ width: 26, height: 18 }}
+                title={'Credit Card'}
+                subTitle={'MoonPay'}
+                onPress={() => props.moonpayDeposit()}
+                pending={
+                  props.enableMoonpay !== undefined && !props.enableMoonpay
+                }
+                enabled={true}
+              />
+            </>
           )}
           <Separator style={{ marginVertical: SEPARATOR_MARGIN }} />
         </>
@@ -202,6 +217,7 @@ const Tab1 = (props: {
           subTitle={'MoonPay'}
           onPress={() => props.moonpayDeposit()}
           pending={props.enableMoonpay !== undefined && !props.enableMoonpay}
+          enabled={true}
         />
         {/* <Separator style={{ marginVertical: 20 }} /> */}
       </View>
@@ -230,6 +246,7 @@ const Tab2 = (props: { navigation: any }) => {
         marketInfo ? getCryptoQuote(marketInfo, denom, withdraw) : `0`
       } ${Keychain.baseCurrencyDenom}`}
       onPress={() => navigateSwitchain(props.navigation, denom)}
+      enabled={false}
     />
   )
 
@@ -291,21 +308,21 @@ const RampSelectView = (props: { route: any; navigation: any }) => {
 
   const isWithdraw = props.route.params.withdraw ? true : false
 
-  const viewArray = [
-    <TabAll
-      navigation={props.navigation}
-      moonpayDeposit={moonpay.moonpayDeposit}
-      enableMoonpay={moonpay.enableMoonpay}
-      pendingData={isWithdraw ? withdrawData : pendingData}
-      withdraw={isWithdraw}
-    />,
-    // <Tab1
-    //   navigation={props.navigation}
-    //   moonpayDeposit={moonpay.moonpayDeposit}
-    //   enableMoonpay={moonpay.enableMoonpay}
-    // />,
-    // <Tab2 navigation={props.navigation} />,
-  ]
+  // const viewArray = [
+  //   <TabAll
+  //     navigation={props.navigation}
+  //     moonpayDeposit={moonpay.moonpayDeposit}
+  //     enableMoonpay={moonpay.enableMoonpay}
+  //     pendingData={isWithdraw ? withdrawData : pendingData}
+  //     withdraw={isWithdraw}
+  //   />,
+  //   <Tab1
+  //     navigation={props.navigation}
+  //     moonpayDeposit={moonpay.moonpayDeposit}
+  //     enableMoonpay={moonpay.enableMoonpay}
+  //   />,
+  //   <Tab2 navigation={props.navigation} />,
+  // ]
 
   const [layoutY, setLayoutY] = useState<number>(0)
 
@@ -359,6 +376,8 @@ const RampSelectView = (props: { route: any; navigation: any }) => {
     }
   }
 
+  const [showAddressView, setShowAddressView] = useState<boolean>(false)
+
   return (
     <>
       <View
@@ -398,7 +417,14 @@ const RampSelectView = (props: { route: any; navigation: any }) => {
               {isWithdraw ? `Withdraw UST` : `Buy UST`}
               {/* {'Buy UST with'} */}
             </Text>
-            {viewArray}
+            <TabAll
+              navigation={props.navigation}
+              moonpayDeposit={moonpay.moonpayDeposit}
+              enableMoonpay={moonpay.enableMoonpay}
+              pendingData={isWithdraw ? withdrawData : pendingData}
+              onPressDeposit={() => setShowAddressView(true)}
+              withdraw={isWithdraw}
+            />
           </ScrollView>
         </Animated.ScrollView>
 
@@ -495,6 +521,13 @@ const RampSelectView = (props: { route: any; navigation: any }) => {
 
       <NavigationView navigation={props.navigation} />
 
+      {showAddressView && (
+        <AddressPopupView
+          onDismissPressed={() => {
+            setShowAddressView(false)
+          }}
+        />
+      )}
       {moonpay.showMoonpayDepositPopup && (
         <MoonpayPopupView
           onDismissPressed={() => {
