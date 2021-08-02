@@ -1,4 +1,4 @@
-package io.kysenpool.mirror.android.RnKeystoreLib;
+package io.kysenpool.mirror.android.KeystoreLib;
 
 import android.content.Context;
 import android.content.SharedPreferences;

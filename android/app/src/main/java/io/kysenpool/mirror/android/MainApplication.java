@@ -14,8 +14,8 @@ import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-import io.kysenpool.mirror.android.RnKeystoreLib.RnKeystorePackage;
-import io.kysenpool.mirror.android.RnPreferencesLib.RnPreferencesPackage;
+import io.kysenpool.mirror.android.KeystoreLib.KeystorePackage;
+import io.kysenpool.mirror.android.PreferencesLib.PreferencesPackage;
 import io.kysenpool.mirror.android.TerraWalletLib.TerraWalletPackage;
 import io.kysenpool.mirror.android.UtilLib.RootCheckerPackage;
 import io.michaelrocks.paranoid.Obfuscate;
@@ -34,10 +34,10 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
           @SuppressWarnings("UnnecessaryLocalVariable")
           List<ReactPackage> packages = new PackageList(this).getPackages();
-            packages.add(new RnKeystorePackage());
-            packages.add(new RnPreferencesPackage());
-            packages.add(new TerraWalletPackage());
-            packages.add(new RootCheckerPackage());
+          packages.add(new KeystorePackage());
+          packages.add(new PreferencesPackage());
+          packages.add(new TerraWalletPackage());
+          packages.add(new RootCheckerPackage());
           return packages;
         }
 
@@ -55,9 +55,9 @@ public class MainApplication extends Application implements ReactApplication {
   @Override
   public void onCreate() {
     super.onCreate();
-      WebView.setWebContentsDebuggingEnabled(true);
+    WebView.setWebContentsDebuggingEnabled(true);
     SoLoader.init(this, /* native exopackage */ false);
-        initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
+    initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
   }
 
   /**
@@ -68,7 +68,7 @@ public class MainApplication extends Application implements ReactApplication {
    * @param reactInstanceManager
    */
   private static void initializeFlipper(
-      Context context, ReactInstanceManager reactInstanceManager) {
+          Context context, ReactInstanceManager reactInstanceManager) {
     if (BuildConfig.DEBUG) {
       try {
         /*
@@ -77,8 +77,8 @@ public class MainApplication extends Application implements ReactApplication {
         */
         Class<?> aClass = Class.forName("io.kysenpool.mirror.android.ReactNativeFlipper");
         aClass
-            .getMethod("initializeFlipper", Context.class, ReactInstanceManager.class)
-            .invoke(null, context, reactInstanceManager);
+                .getMethod("initializeFlipper", Context.class, ReactInstanceManager.class)
+                .invoke(null, context, reactInstanceManager);
       } catch (ClassNotFoundException e) {
         e.printStackTrace();
       } catch (NoSuchMethodException e) {

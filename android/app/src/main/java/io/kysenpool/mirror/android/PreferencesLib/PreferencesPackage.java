@@ -1,4 +1,4 @@
-package io.kysenpool.mirror.android.RnPreferencesLib;
+package io.kysenpool.mirror.android.PreferencesLib;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
@@ -9,8 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class RnPreferencesPackage implements ReactPackage {
-
+public class PreferencesPackage implements ReactPackage {
   @Override
   public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
     return Collections.emptyList();
@@ -21,7 +20,7 @@ public class RnPreferencesPackage implements ReactPackage {
           ReactApplicationContext reactContext) {
     List<NativeModule> modules = new ArrayList<>();
 
-    modules.add(new FlutterPreferences(reactContext));
+    modules.add(new Preferences(reactContext));
 
     return modules;
   }

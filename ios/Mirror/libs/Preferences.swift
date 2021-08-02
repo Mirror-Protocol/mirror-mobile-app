@@ -1,5 +1,5 @@
 //
-//  RnPreferences.swift
+//  Preferences.swift
 //  Harvest
 //
 //  Created by Felix on 2020/04/09.
@@ -7,10 +7,10 @@
 
 import Foundation
 
-@objc(RnPreferences)
-class RnPreferences: NSObject {
+@objc(Preferences)
+class Preferences: NSObject {
   static func moduleName() -> String! {
-      return "RnPreferences";
+      return "Preferences";
   }
 
   static func requiresMainQueueSetup() -> Bool {

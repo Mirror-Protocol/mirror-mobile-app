@@ -1,5 +1,5 @@
 //
-//  RnKeystore.h
+//  Keystore.h
 //  Harvest
 //
 //  Created by Felix on 2020/04/09.
@@ -7,7 +7,7 @@
 
 #import <React/RCTBridgeModule.h>
 
-@interface RnKeystore : NSObject <RCTBridgeModule>
+@interface Keystore : NSObject <RCTBridgeModule>
 
 @end
   

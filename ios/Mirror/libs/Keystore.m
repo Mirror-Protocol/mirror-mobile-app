@@ -1,13 +1,13 @@
 //
-//  RnKeystore.m
+//  Keystore.m
 //  Harvest
 //
 //  Created by Felix on 2020/04/09.
 //
 
-#import "RnKeystore.h"
+#import "Keystore.h"
 
-@implementation RnKeystore
+@implementation Keystore
 
 RCT_EXPORT_MODULE()
 

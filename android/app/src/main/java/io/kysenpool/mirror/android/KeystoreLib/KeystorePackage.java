@@ -1,4 +1,4 @@
-package io.kysenpool.mirror.android.RnKeystoreLib;
+package io.kysenpool.mirror.android.KeystoreLib;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
@@ -9,8 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class RnKeystorePackage implements ReactPackage {
-
+public class KeystorePackage implements ReactPackage {
   @Override
   public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
     return Collections.emptyList();
@@ -21,7 +20,7 @@ public class RnKeystorePackage implements ReactPackage {
           ReactApplicationContext reactContext) {
     List<NativeModule> modules = new ArrayList<>();
 
-    modules.add(new FlutterKeystore(reactContext));
+    modules.add(new Keystore(reactContext));
 
     return modules;
   }

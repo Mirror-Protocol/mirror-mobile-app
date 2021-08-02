@@ -1,4 +1,4 @@
-package io.kysenpool.mirror.android.RnKeystoreLib;
+package io.kysenpool.mirror.android.KeystoreLib;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

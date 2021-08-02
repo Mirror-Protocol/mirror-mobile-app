@@ -1,4 +1,4 @@
-package io.kysenpool.mirror.android.RnKeystoreLib;
+package io.kysenpool.mirror.android.KeystoreLib;
 
 public interface StorageCipher {
   byte[] encrypt(byte[] input) throws Exception;

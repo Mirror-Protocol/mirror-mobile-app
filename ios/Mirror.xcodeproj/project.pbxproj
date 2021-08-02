@@ -12,9 +12,9 @@
 		02DF2D69250F0F8300904E95 /* TerraWalletSDK.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DF2D64250F0F8300904E95 /* TerraWalletSDK.swift */; };
 		02DF2D6C250F0FA600904E95 /* TerraWallet.m in Sources */ = {isa = PBXBuildFile; fileRef = 02DF2D6A250F0FA600904E95 /* TerraWallet.m */; };
 		02DF2D6D250F0FA600904E95 /* TerraWallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DF2D6B250F0FA600904E95 /* TerraWallet.swift */; };
-		02DF2D71250F0FBA00904E95 /* RnPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DF2D6F250F0FBA00904E95 /* RnPreferences.swift */; };
-		02DF2D72250F0FBA00904E95 /* RnPreferences.m in Sources */ = {isa = PBXBuildFile; fileRef = 02DF2D70250F0FBA00904E95 /* RnPreferences.m */; };
-		02DF2D76250F0FCB00904E95 /* RnKeystore.m in Sources */ = {isa = PBXBuildFile; fileRef = 02DF2D75250F0FCB00904E95 /* RnKeystore.m */; };
+		02DF2D71250F0FBA00904E95 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DF2D6F250F0FBA00904E95 /* Preferences.swift */; };
+		02DF2D72250F0FBA00904E95 /* Preferences.m in Sources */ = {isa = PBXBuildFile; fileRef = 02DF2D70250F0FBA00904E95 /* Preferences.m */; };
+		02DF2D76250F0FCB00904E95 /* Keystore.m in Sources */ = {isa = PBXBuildFile; fileRef = 02DF2D75250F0FCB00904E95 /* Keystore.m */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -47,10 +47,10 @@
 		02DF2D64250F0F8300904E95 /* TerraWalletSDK.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TerraWalletSDK.swift; path = Mirror/TerraWalletSDK.swift; sourceTree = "<group>"; };
 		02DF2D6A250F0FA600904E95 /* TerraWallet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TerraWallet.m; path = Mirror/libs/TerraWallet.m; sourceTree = "<group>"; };
 		02DF2D6B250F0FA600904E95 /* TerraWallet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TerraWallet.swift; path = Mirror/libs/TerraWallet.swift; sourceTree = "<group>"; };
-		02DF2D6F250F0FBA00904E95 /* RnPreferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RnPreferences.swift; path = Mirror/libs/RnPreferences.swift; sourceTree = "<group>"; };
-		02DF2D70250F0FBA00904E95 /* RnPreferences.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RnPreferences.m; path = Mirror/libs/RnPreferences.m; sourceTree = "<group>"; };
-		02DF2D74250F0FCB00904E95 /* RnKeystore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RnKeystore.h; path = Mirror/libs/RnKeystore.h; sourceTree = "<group>"; };
-		02DF2D75250F0FCB00904E95 /* RnKeystore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RnKeystore.m; path = Mirror/libs/RnKeystore.m; sourceTree = "<group>"; };
+		02DF2D6F250F0FBA00904E95 /* Preferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Preferences.swift; path = Mirror/libs/Preferences.swift; sourceTree = "<group>"; };
+		02DF2D70250F0FBA00904E95 /* Preferences.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Preferences.m; path = Mirror/libs/Preferences.m; sourceTree = "<group>"; };
+		02DF2D74250F0FCB00904E95 /* Keystore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Keystore.h; path = Mirror/libs/Keystore.h; sourceTree = "<group>"; };
+		02DF2D75250F0FCB00904E95 /* Keystore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Keystore.m; path = Mirror/libs/Keystore.m; sourceTree = "<group>"; };
 		0FAC8FB477A135CB16E1124F /* libPods-Mirror.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Mirror.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07F961A680F5B00A75B9A /* Mirror.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mirror.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Mirror/AppDelegate.h; sourceTree = "<group>"; };
@@ -141,8 +141,8 @@
 		02DF2D6E250F0FAD00904E95 /* RnPreferencesLib */ = {
 			isa = PBXGroup;
 			children = (
-				02DF2D70250F0FBA00904E95 /* RnPreferences.m */,
-				02DF2D6F250F0FBA00904E95 /* RnPreferences.swift */,
+				02DF2D70250F0FBA00904E95 /* Preferences.m */,
+				02DF2D6F250F0FBA00904E95 /* Preferences.swift */,
 			);
 			name = RnPreferencesLib;
 			sourceTree = "<group>";
@@ -150,8 +150,8 @@
 		02DF2D73250F0FBF00904E95 /* RnKeystoreLib */ = {
 			isa = PBXGroup;
 			children = (
-				02DF2D74250F0FCB00904E95 /* RnKeystore.h */,
-				02DF2D75250F0FCB00904E95 /* RnKeystore.m */,
+				02DF2D74250F0FCB00904E95 /* Keystore.h */,
+				02DF2D75250F0FCB00904E95 /* Keystore.m */,
 			);
 			name = RnKeystoreLib;
 			sourceTree = "<group>";
@@ -451,9 +451,9 @@
 				BA2C2AA22587579A00CD5C87 /* RootChecker.m in Sources */,
 				02DF2D69250F0F8300904E95 /* TerraWalletSDK.swift in Sources */,
 				02DF2D6D250F0FA600904E95 /* TerraWallet.swift in Sources */,
-				02DF2D71250F0FBA00904E95 /* RnPreferences.swift in Sources */,
-				02DF2D72250F0FBA00904E95 /* RnPreferences.m in Sources */,
-				02DF2D76250F0FCB00904E95 /* RnKeystore.m in Sources */,
+				02DF2D71250F0FBA00904E95 /* Preferences.swift in Sources */,
+				02DF2D72250F0FBA00904E95 /* Preferences.m in Sources */,
+				02DF2D76250F0FCB00904E95 /* Keystore.m in Sources */,
 				02DF2D66250F0F8300904E95 /* Utils.swift in Sources */,
 				02DF2D6C250F0FA600904E95 /* TerraWallet.m in Sources */,
 			);

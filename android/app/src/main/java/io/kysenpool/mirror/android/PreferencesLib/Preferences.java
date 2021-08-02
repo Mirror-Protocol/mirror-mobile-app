@@ -1,4 +1,4 @@
-package io.kysenpool.mirror.android.RnPreferencesLib;
+package io.kysenpool.mirror.android.PreferencesLib;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -13,12 +13,12 @@ import java.util.Set;
 import io.michaelrocks.paranoid.Obfuscate;
 
 @Obfuscate
-public class FlutterPreferences extends ReactContextBaseJavaModule {
+public class Preferences extends ReactContextBaseJavaModule {
   private final SharedPreferences preferences;
   private static final String SHARED_PREFERENCES_NAME = "FlutterSharedPreferences";
   private static final String DOUBLE_PREFIX = "VGhpcyBpcyB0aGUgcHJlZml4IGZvciBEb3VibGUu";
 
-  public FlutterPreferences(ReactApplicationContext context) {
+  public Preferences(ReactApplicationContext context) {
     super(context);
 
     preferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
@@ -26,7 +26,7 @@ public class FlutterPreferences extends ReactContextBaseJavaModule {
 
   @Override
   public String getName() {
-    return "FlutterPreferences";
+    return "Preferences";
   }
 
   @ReactMethod
@@ -58,7 +58,6 @@ public class FlutterPreferences extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void setInt(String key, int value) {
-    //1.0에서 int를 long으로 처리하고 있음.
     preferences.edit().putLong(key, value).apply();
   }
 

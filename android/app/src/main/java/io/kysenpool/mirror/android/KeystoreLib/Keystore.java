@@ -1,4 +1,4 @@
-package io.kysenpool.mirror.android.RnKeystoreLib;
+package io.kysenpool.mirror.android.KeystoreLib;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -14,14 +14,14 @@ import java.nio.charset.Charset;
 import io.michaelrocks.paranoid.Obfuscate;
 
 @Obfuscate
-public class FlutterKeystore extends ReactContextBaseJavaModule {
+public class Keystore extends ReactContextBaseJavaModule {
   private final SharedPreferences preferences;
   private final Charset charset;
   private StorageCipher storageCipher = null;
   private static final String ELEMENT_PREFERENCES_KEY_PREFIX = "VGhpcyBpcyB0aGUgcHJlZml4IGZvciBhIHNlY3VyZSBzdG9yYWdlCg";
   private static final String SHARED_PREFERENCES_NAME = "FlutterSecureStorage";
 
-  public FlutterKeystore(ReactApplicationContext context) {
+  public Keystore(ReactApplicationContext context) {
     super(context);
 
     preferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
@@ -37,7 +37,7 @@ public class FlutterKeystore extends ReactContextBaseJavaModule {
 
   @Override
   public String getName() {
-    return "FlutterKeystore";
+    return "Keystore";
   }
 
   @ReactMethod

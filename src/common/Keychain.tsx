@@ -48,8 +48,8 @@ enum PrefKeys {
 export const baseCurrency = 'uusd'
 export const baseCurrencyDenom = 'UST'
 
-const preferences = NativeModules.RnPreferences
-const keystore = NativeModules.RnKeystore
+const preferences = NativeModules.Preferences
+const keystore = NativeModules.Keystore
 
 export async function setCurrentTorusNet(net: string) {
   await preferences.setString(PrefKeys.currentTorusNet, net)

@@ -1,5 +1,5 @@
 //
-//  RnPreferences.m
+//  Preferences.m
 //  Harvest
 //
 //  Created by Felix on 2020/04/09.
@@ -7,7 +7,7 @@
 
 #import <React/RCTBridgeModule.h>
 
-@interface RCT_EXTERN_MODULE(RnPreferences, NSObject)
+@interface RCT_EXTERN_MODULE(Preferences, NSObject)
 
 + (BOOL)requiresMainQueueSetup
 {
