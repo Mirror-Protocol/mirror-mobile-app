@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import {
   View,
   Text,
@@ -27,6 +27,7 @@ import usePending, { PendingData } from '../../../hooks/usePending'
 import _ from 'lodash'
 import { SwitchainPopupView } from '../../common/SwitchainPopupView'
 import { AddressPopupView } from '../../common/AddressPopupView'
+import { LoadingContext } from '../../../common/provider/LoadingProvider'
 
 const cryptoList: SelectItem[] = []
 // [
@@ -294,6 +295,7 @@ const Tab2 = (props: { navigation: any }) => {
 }
 
 const RampSelectView = (props: { route: any; navigation: any }) => {
+  const { setLoading } = useContext(LoadingContext)
   const insets = useSafeAreaInsets()
   const {
     pendingData,
@@ -352,6 +354,10 @@ const RampSelectView = (props: { route: any; navigation: any }) => {
       }
     })
   }, [])
+
+  useEffect(() => {
+    setLoading(moonpay.moonpayLoading)
+  }, [moonpay.moonpayLoading])
 
   const sX = scrollX.interpolate({
     inputRange: [0, WIDTH_THRESHOLD],

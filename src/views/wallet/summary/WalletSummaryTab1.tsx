@@ -3,6 +3,7 @@ import { Text, View, Image, Platform } from 'react-native'
 import * as Resources from '../../../common/Resources'
 import * as Utils from '../../../common/Utils'
 import * as Keychain from '../../../common/Keychain'
+import * as Config from '../../../common/Apis/Config'
 import { ScrollView, RectButton } from 'react-native-gesture-handler'
 import BigNumber from 'bignumber.js'
 import { ConfigContext } from '../../../common/provider/ConfigProvider'
@@ -144,8 +145,9 @@ function EmptyView(props: {
             justifyContent: 'center',
           }}
           onPress={() => {
-            props.topupPressed()
-            //props.depositPressed(Keychain.baseCurrency)
+            Config.hideMoonpay
+              ? props.depositPressed(Keychain.baseCurrency)
+              : props.topupPressed()
           }}
         >
           <Text

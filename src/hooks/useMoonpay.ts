@@ -17,13 +17,17 @@ export type MoonpayProps = {
 }
 
 const useMoonpay = () => {
-  const [enableMoonpay, setEnableMoonpay] =
-    useState<boolean | undefined>(undefined)
+  const [enableMoonpay, setEnableMoonpay] = useState<boolean | undefined>(
+    undefined
+  )
   const [showMoonpayDepositPopup, setShowMoonpayDepositPopup] = useState(false)
-  const [moonpayStatus, setMoonpayStatus] =
-    useState<'completed' | 'failed'>('completed')
+  const [moonpayStatus, setMoonpayStatus] = useState<'completed' | 'failed'>(
+    'completed'
+  )
   const [moonpayAmount, setMoonpayAmount] = useState('')
   const [moonpayQuoteAmount, setMoonpayQuoteAmount] = useState('')
+
+  const [moonpayLoading, setMoonpayLoading] = useState(false)
 
   const getMoonpayStatus = async () => {
     const showPopup = (status: 'completed' | 'failed') => {
@@ -91,27 +95,20 @@ const useMoonpay = () => {
 
   const moonpayDeposit = _.debounce(() => {
     try {
-      Api.getMoonpayUrl(null).then((url) => {
-        launchBrowser(url).then(() => {
-          getMoonpayStatus()
+      setMoonpayLoading(true)
+      Api.getMoonpayUrl(null)
+        .then((url) => {
+          launchBrowser(url).then(() => {
+            getMoonpayStatus()
+          })
+          const openDate = new Date().getTime()
+          Keychain.setMoonpayLastOpen(openDate.toString())
         })
-        const openDate = new Date().getTime()
-        Keychain.setMoonpayLastOpen(openDate.toString())
-      })
-    } catch {}
+        .finally(() => setMoonpayLoading(false))
+    } catch (e) {
+      setMoonpayLoading(false)
+    }
   }, 500)
-
-  // const moonpayDeposit = () => {
-  //   try {
-  //     Api.getMoonpayUrl(null).then((url) => {
-  //       launchBrowser(url).then(() => {
-  //         getMoonpayStatus()
-  //       })
-  //       const openDate = new Date().getTime()
-  //       Keychain.setMoonpayLastOpen(openDate.toString())
-  //     })
-  //   } catch {}
-  // }
 
   useEffect(() => {
     getMoonpayStatus()
@@ -135,6 +132,7 @@ const useMoonpay = () => {
     moonpayAmount,
     moonpayQuoteAmount,
     moonpayDeposit,
+    moonpayLoading,
     setShowMoonpayDepositPopup,
   }
 }
