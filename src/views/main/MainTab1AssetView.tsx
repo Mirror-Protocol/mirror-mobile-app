@@ -241,10 +241,11 @@ export function MainTab1AssetView(props: {
                 navigation={props.navigation}
                 route={props.route}
                 topupPressed={() => {
-                  navigation.navigate('RampStack', {
-                    screen: 'RampSelectView',
-                    params: { withdraw: false },
-                  })
+                  props.navigation.push('WalletTopupView')
+                  // navigation.navigate('RampStack', {
+                  //   screen: 'RampSelectView',
+                  //   params: { withdraw: false },
+                  // })
                 }}
                 pendingData={pendingData}
                 title={translations.walletSummaryView.deposit}
@@ -345,9 +346,8 @@ function SummaryView(props: {
               : Resources.Colors.brightTeal,
           }}
         >
-          {!(props.chartLongPressed
-            ? draggedPrice.rate
-            : props.chartInfo.rate
+          {!(
+            props.chartLongPressed ? draggedPrice.rate : props.chartInfo.rate
           ).isFinite() ? (
             <View
               style={{

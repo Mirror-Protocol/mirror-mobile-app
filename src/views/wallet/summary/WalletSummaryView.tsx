@@ -121,10 +121,11 @@ export function WalletSummaryView(props: { navigation: any; route: any }) {
   }
 
   function topupPressed() {
-    props.navigation.navigate('RampStack', {
-      screen: 'RampSelectView',
-      params: { withdraw: false },
-    })
+    props.navigation.push('WalletTopupView')
+    // props.navigation.navigate('RampStack', {
+    //   screen: 'RampSelectView',
+    //   params: { withdraw: false },
+    // })
   }
 
   function itemPressed(symbol: string, token?: string) {
@@ -145,10 +146,11 @@ export function WalletSummaryView(props: { navigation: any; route: any }) {
   }
 
   function withdrawPressed(symbol: string) {
-    props.navigation.navigate('RampStack', {
-      screen: 'RampSelectView',
-      params: { withdraw: true },
-    })
+    props.navigation.push('WithdrawView', { symbol: symbol })
+    // props.navigation.navigate('RampStack', {
+    //   screen: 'RampSelectView',
+    //   params: { withdraw: true },
+    // })
   }
 
   function withdrawOtherBalancePressed(symbol: string) {

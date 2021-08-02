@@ -243,10 +243,11 @@ export function MainTab1(props: {
               <MainTab1NoAssetView
                 balance={investedInfo.balance}
                 topupPressed={() => {
-                  props.navigation.navigate('RampStack', {
-                    screen: 'RampSelectView',
-                    params: { withdraw: false },
-                  })
+                  props.navigation.push('WalletTopupView')
+                  // props.navigation.navigate('RampStack', {
+                  //   screen: 'RampSelectView',
+                  //   params: { withdraw: false },
+                  // })
                 }}
               />
             ) : (
