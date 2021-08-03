@@ -32,7 +32,7 @@ import * as Config from '../../../common/Apis/Config'
 import * as Api from '../../../common/Apis/Api'
 import * as Utils from '../../../common/Utils'
 import BigNumber from 'bignumber.js'
-import RampInputForm from './RampInputForm'
+import OnRampInputForm from './OnRampInputForm'
 import _ from 'lodash'
 import { NotificationPopupView } from '../../common/NotificationPopupView'
 import useGestureHandlerEventPrevent from '../../../hooks/useGestureHandlerPreventEvent'
@@ -58,7 +58,7 @@ const validateAddress = (address: string, denom: string): boolean => {
   return valid
 }
 
-const RampInputView = (props: { navigation: any; route: any }) => {
+const OnRampInputView = (props: { navigation: any; route: any }) => {
   const insets = useSafeAreaInsets()
 
   const isWithdraw = props.route.params.withdraw
@@ -116,7 +116,7 @@ const RampInputView = (props: { navigation: any; route: any }) => {
   )
 
   const refScrollView = useRef<ScrollView>(null)
-  const expireTimer = useRef<NodeJS.Timeout>()
+  const expireTimer = useRef<number>()
 
   const { isPrevent, setPreventEvent } = useGestureHandlerEventPrevent()
 
@@ -412,7 +412,7 @@ const RampInputView = (props: { navigation: any; route: any }) => {
                 }}
                 setPreventEvent={setPreventEvent}
               />
-              <RampInputForm
+              <OnRampInputForm
                 onLayout={(e) => {
                   setPositionPay({
                     y: e.nativeEvent.layout.y,
@@ -468,7 +468,7 @@ const RampInputView = (props: { navigation: any; route: any }) => {
         nextPressed={() => {
           if (nextEnable) {
             isWithdraw
-              ? props.navigation.replace('RampOfferView', {
+              ? props.navigation.replace('OnRampOfferView', {
                   denom: selected.value,
                   refundAddress,
                   memo,
@@ -479,7 +479,7 @@ const RampInputView = (props: { navigation: any; route: any }) => {
                   signature,
                   withdraw: true,
                 })
-              : props.navigation.replace('RampOfferView', {
+              : props.navigation.replace('OnRampOfferView', {
                   denom: selected.value,
                   refundAddress,
                   memo,
@@ -564,4 +564,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default RampInputView
+export default OnRampInputView

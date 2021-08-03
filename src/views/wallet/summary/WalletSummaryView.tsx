@@ -122,8 +122,8 @@ export function WalletSummaryView(props: { navigation: any; route: any }) {
 
   function topupPressed() {
     // props.navigation.push('WalletTopupView')
-    props.navigation.navigate('RampStack', {
-      screen: 'RampSelectView',
+    props.navigation.navigate('OnRampStack', {
+      screen: 'OnRampSelectView',
       params: { withdraw: false },
     })
   }
@@ -147,8 +147,8 @@ export function WalletSummaryView(props: { navigation: any; route: any }) {
 
   function withdrawPressed(symbol: string) {
     props.navigation.push('WithdrawView', { symbol: symbol })
-    // props.navigation.navigate('RampStack', {
-    //   screen: 'RampSelectView',
+    // props.navigation.navigate('OnRampStack', {
+    //   screen: 'OnRampSelectView',
     //   params: { withdraw: true },
     // })
   }

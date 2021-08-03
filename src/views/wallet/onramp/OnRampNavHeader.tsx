@@ -11,7 +11,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import * as Resources from '../../../common/Resources'
 
-const RampNavHeader = (props: {
+const OnRampNavHeader = (props: {
   navigation: any
   showBack: boolean
   onClosePress?: () => void
@@ -95,4 +95,4 @@ const navHeaderStyles = StyleSheet.create({
   },
 })
 
-export default RampNavHeader
+export default OnRampNavHeader

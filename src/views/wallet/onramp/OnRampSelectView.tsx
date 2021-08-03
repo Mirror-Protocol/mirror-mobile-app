@@ -14,10 +14,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { getCryptoQuote } from '../../../common/Apis/Switchain'
 import * as Resources from '../../../common/Resources'
 import * as Keychain from '../../../common/Keychain'
+import * as Config from '../../../common/Apis/Config'
+import * as Api from '../../../common/Apis/Api'
 import { NavigationView } from '../../common/NavigationView'
 import { SelectItem } from '../../common/SelectPopup'
 import Separator from '../../common/Separator'
-import RampItem from './RampItem'
+import OnRampItem from './OnRampItem'
 import {
   getPairName,
   useSwitchainMarketInfo,
@@ -28,6 +30,9 @@ import _ from 'lodash'
 import { SwitchainPopupView } from '../../common/SwitchainPopupView'
 import { AddressPopupView } from '../../common/AddressPopupView'
 import { LoadingContext } from '../../../common/provider/LoadingProvider'
+import { launchBrowser } from '../../../common/InAppBrowserHelper'
+import { encodeQueryData } from '../../../common/Utils'
+import { AccAddress } from '@terra-money/terra.js'
 
 const cryptoList: SelectItem[] = []
 // [
@@ -47,7 +52,7 @@ const navigateSwitchain = (
   denom: string,
   withdraw?: boolean
 ) => {
-  navigation.navigate('RampInputView', {
+  navigation.navigate('OnRampInputView', {
     cryptoList: cryptoList,
     selected: cryptoList.find((i) => i.value === denom),
     withdraw,
@@ -66,7 +71,9 @@ const TabAll = (props: {
 }) => {
   const { marketInfo } = useSwitchainMarketInfo()
 
-  const RenderRampItem = ({
+  const { setLoading } = useContext(LoadingContext)
+
+  const RenderOnRampItem = ({
     logo,
     title,
     denom,
@@ -81,8 +88,8 @@ const TabAll = (props: {
     withdraw?: boolean
     enabled: boolean
   }) => (
-    <RampItem
-      key={`RampItem-${title}-${logo}`}
+    <OnRampItem
+      key={`OnRampItem-${title}-${logo}`}
       logo={logo}
       title={title}
       subTitle={`1 ${denom} ≈ ${
@@ -97,14 +104,14 @@ const TabAll = (props: {
 
   return (
     <View
-      key={`RampSelect-Tab${0}`}
+      key={`OnRampSelect-Tab${0}`}
       style={[
         { backgroundColor: Resources.Colors.darkBackground },
         { width: DEVICE_WIDTH - SLIDER_MARGIN },
       ]}
     >
       <View
-        key={`RampSelect-Tab-View${0}`}
+        key={`OnRampSelect-Tab-View${0}`}
         style={{
           // marginTop: TAB_ABS_TOP,
           marginLeft: SLIDER_MARGIN * 2,
@@ -113,7 +120,7 @@ const TabAll = (props: {
       >
         <>
           {props.withdraw ? (
-            <RampItem
+            <OnRampItem
               logo={Resources.Images.logoUst}
               logoStyle={{ width: 30, height: 30 }}
               title={'UST'}
@@ -126,7 +133,7 @@ const TabAll = (props: {
             />
           ) : (
             <>
-              <RampItem
+              <OnRampItem
                 logo={Resources.Images.iconDeposit}
                 logoStyle={{ width: 26, height: 26 }}
                 title={'Deposit'}
@@ -136,11 +143,10 @@ const TabAll = (props: {
                 enabled={true}
               />
               <Separator style={{ marginVertical: SEPARATOR_MARGIN }} />
-              <RampItem
+              <OnRampItem
                 logo={Resources.Images.iconCreditCard}
                 logoStyle={{ width: 26, height: 18 }}
-                title={'Credit Card'}
-                subTitle={'MoonPay'}
+                title={'MoonPay'}
                 onPress={() => props.moonpayDeposit()}
                 pending={
                   props.enableMoonpay !== undefined && !props.enableMoonpay
@@ -153,7 +159,7 @@ const TabAll = (props: {
         </>
         {_.map(cryptoList, (crypto, idx) => (
           <View key={`Crypto-${idx}`}>
-            <RenderRampItem
+            <RenderOnRampItem
               logo={crypto.logo}
               title={crypto.label}
               denom={crypto.value}
@@ -199,7 +205,7 @@ const Tab1 = (props: {
 }) => {
   return (
     <View
-      key={`RampSelect-Tab${1}`}
+      key={`OnRampSelect-Tab${1}`}
       style={[
         { backgroundColor: Resources.Colors.darkBackground },
         { width: DEVICE_WIDTH - SLIDER_MARGIN },
@@ -212,7 +218,7 @@ const Tab1 = (props: {
           marginRight: SLIDER_MARGIN / 2,
         }}
       >
-        <RampItem
+        <OnRampItem
           logo={Resources.Images.logoMoonpay}
           title={'Credit Card'}
           subTitle={'MoonPay'}
@@ -229,7 +235,7 @@ const Tab1 = (props: {
 const Tab2 = (props: { navigation: any }) => {
   const { marketInfo } = useSwitchainMarketInfo()
 
-  const RenderRampItem = ({
+  const RenderOnRampItem = ({
     logo,
     title,
     denom,
@@ -240,7 +246,7 @@ const Tab2 = (props: { navigation: any }) => {
     denom: string
     withdraw?: boolean
   }) => (
-    <RampItem
+    <OnRampItem
       logo={logo}
       title={title}
       subTitle={`1 ${denom} ≈ ${
@@ -253,7 +259,7 @@ const Tab2 = (props: { navigation: any }) => {
 
   return (
     <View
-      key={`RampSelect-Tab${2}`}
+      key={`OnRampSelect-Tab${2}`}
       style={[
         { backgroundColor: Resources.Colors.darkBackground },
         { width: DEVICE_WIDTH - SLIDER_MARGIN },
@@ -266,25 +272,25 @@ const Tab2 = (props: { navigation: any }) => {
           marginRight: SLIDER_MARGIN * 2,
         }}
       >
-        <RenderRampItem
+        <RenderOnRampItem
           logo={Resources.Images.logoBtc}
           title={'Bitcoin'}
           denom={'BTC'}
         />
         <Separator style={{ marginVertical: SEPARATOR_MARGIN }} />
-        <RenderRampItem
+        <RenderOnRampItem
           logo={Resources.Images.logoEth}
           title={'Ethereum'}
           denom={'ETH'}
         />
         <Separator style={{ marginVertical: SEPARATOR_MARGIN }} />
-        <RenderRampItem
+        <RenderOnRampItem
           logo={Resources.Images.logoUsdt}
           title={'Tether USDT'}
           denom={'USDT'}
         />
         <Separator style={{ marginVertical: SEPARATOR_MARGIN }} />
-        <RenderRampItem
+        <RenderOnRampItem
           logo={Resources.Images.logoUsdc}
           title={'Circle USDC'}
           denom={'USDC'}
@@ -294,7 +300,7 @@ const Tab2 = (props: { navigation: any }) => {
   )
 }
 
-const RampSelectView = (props: { route: any; navigation: any }) => {
+const OnRampSelectView = (props: { route: any; navigation: any }) => {
   const { setLoading } = useContext(LoadingContext)
   const insets = useSafeAreaInsets()
   const {
@@ -394,7 +400,7 @@ const RampSelectView = (props: { route: any; navigation: any }) => {
         }}
       >
         <Animated.ScrollView
-          key={`RampSelect-sv${1}`}
+          key={`OnRampSelect-sv${1}`}
           ref={scrollViewRef}
           overScrollMode={'never'}
           bounces={false}
@@ -581,4 +587,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default RampSelectView
+export default OnRampSelectView

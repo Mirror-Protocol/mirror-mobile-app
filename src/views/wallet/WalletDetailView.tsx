@@ -441,8 +441,8 @@ function HeaderView(props: {
             balance={props.balance.amount}
             withdrawPressed={() => {
               props.symbol === 'uusd'
-                ? navigation.navigate('RampStack', {
-                    screen: 'RampSelectView',
+                ? navigation.navigate('OnRampStack', {
+                    screen: 'OnRampSelectView',
                     params: { withdraw: true },
                   })
                 : navigation.navigate('WithdrawView', {

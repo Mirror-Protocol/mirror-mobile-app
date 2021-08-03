@@ -53,7 +53,7 @@ const Pending = ({ withdraw }: { withdraw?: boolean }) => {
   )
 }
 
-const RampItem = ({
+const OnRampItem = ({
   logo,
   logoStyle,
   title,
@@ -163,4 +163,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default RampItem
+export default OnRampItem

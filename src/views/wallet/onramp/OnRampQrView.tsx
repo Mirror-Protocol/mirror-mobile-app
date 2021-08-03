@@ -7,7 +7,7 @@ import * as Resources from '../../../common/Resources'
 import * as Utils from '../../../common/Utils'
 import QRCode from 'react-native-qrcode-svg'
 import RoundedButton from '../../common/RoundedButton'
-import RampNavHeader from './RampNavHeader'
+import OnRampNavHeader from './OnRampNavHeader'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const onShare = async (address: string) => {
@@ -26,7 +26,7 @@ const onShare = async (address: string) => {
   } catch (e) {}
 }
 
-const RampQrView = (props: { navigation: any; route: any }) => {
+const OnRampQrView = (props: { navigation: any; route: any }) => {
   const insets = useSafeAreaInsets()
   const { showNotification } = useContext(NotificationContext)
   const { translations } = useContext(ConfigContext)
@@ -132,7 +132,7 @@ const RampQrView = (props: { navigation: any; route: any }) => {
                 color: Resources.Colors.greyishBrown,
               }}
             >
-              {translations.rampQrView.notice}
+              {translations.onRampQrView.notice}
             </Text>
           </View>
           <TouchableOpacity
@@ -150,7 +150,7 @@ const RampQrView = (props: { navigation: any; route: any }) => {
                   marginRight: 4,
                 }}
               >
-                {translations.rampQrView.furtherInquiries}
+                {translations.onRampQrView.furtherInquiries}
               </Text>
               <Image
                 source={Resources.Images.chevronR10G}
@@ -170,7 +170,7 @@ const RampQrView = (props: { navigation: any; route: any }) => {
             marginBottom: 28,
           }}
         >
-          {translations.rampQrView.noticeContent}
+          {translations.onRampQrView.noticeContent}
         </Text>
         <View
           style={{
@@ -204,9 +204,9 @@ const RampQrView = (props: { navigation: any; route: any }) => {
           />
         </View>
       </View>
-      <RampNavHeader navigation={props.navigation} showBack={false} />
+      <OnRampNavHeader navigation={props.navigation} showBack={false} />
     </>
   )
 }
 
-export default RampQrView
+export default OnRampQrView

@@ -374,7 +374,7 @@ export const en = {
     title: 'Scan QR code',
     error: 'Not a QR code for recovering wallets',
   },
-  rampQrView: {
+  onRampQrView: {
     notice: `NOTICE`,
     noticeContent: `Please double check the deposit address as it may be different than the one utilized in previous transactions. The total deposit amount does not include fees. BEP20 asset deposits are not supported.`,
     furtherInquiries: `Further Inquiries`,
@@ -757,7 +757,7 @@ export const ko = {
     title: 'Scan QR code',
     error: 'Not a QR code for recovering wallets',
   },
-  rampQrView: {
+  onRampQrView: {
     notice: `NOTICE`,
     noticeContent: `Please double check the deposit address as it may be different than the one utilized in previous transactions. The total deposit amount does not include fees. BEP20 asset deposits are not supported.`,
     furtherInquiries: `Further Inquiries`,

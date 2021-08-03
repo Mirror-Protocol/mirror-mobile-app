@@ -20,8 +20,9 @@ export function MoonpayPopupView(props: {
 
   const duration = 200
   const bgOpacity = useRef(new Animated.Value(0)).current
-  const windowBottom = useRef(new Animated.Value(-safeInsetBottom - 260))
-    .current
+  const windowBottom = useRef(
+    new Animated.Value(-safeInsetBottom - 260)
+  ).current
 
   useEffect(() => {
     Animated.parallel([
@@ -212,7 +213,7 @@ const Content = (props: {
             onPress={() => {
               props.dismissPressed()
 
-              if (props.route.name === 'RampSelectView') {
+              if (props.route.name === 'OnRampSelectView') {
                 // props.navigation.pop()
                 props.navigation.navigate('WalletStack', {
                   screen: 'WalletDetailView',

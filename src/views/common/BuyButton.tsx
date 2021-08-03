@@ -129,7 +129,7 @@ function BuyButton(props: {
               Keychain.getMoonpayLastHistory().then((history) => {
                 if (history !== '') {
                   try {
-                    props.navigation.push('RampItemDetailView', {
+                    props.navigation.push('OnRampItemDetailView', {
                       item: history,
                       moonpay: true,
                     })
@@ -141,7 +141,7 @@ function BuyButton(props: {
               Keychain.getSwitchainOffer(i.key).then((offer) => {
                 if (offer) {
                   try {
-                    props.navigation.push('RampItemDetailView', {
+                    props.navigation.push('OnRampItemDetailView', {
                       item: offer[i.key].order,
                       withdraw: isWithdraw,
                     })

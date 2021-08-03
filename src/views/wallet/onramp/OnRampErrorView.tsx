@@ -3,9 +3,9 @@ import { Image, StyleSheet, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import * as Resources from '../../../common/Resources'
 import RoundedButton from '../../common/RoundedButton'
-import RampNavHeader from './RampNavHeader'
+import OnRampNavHeader from './OnRampNavHeader'
 
-const RampErrorView = (props: { navigation: any; route: any }) => {
+const OnRampErrorView = (props: { navigation: any; route: any }) => {
   const insets = useSafeAreaInsets()
   const message = props.route.params.message
 
@@ -50,7 +50,7 @@ const RampErrorView = (props: { navigation: any; route: any }) => {
           </View>
         </View>
       </View>
-      <RampNavHeader navigation={props.navigation} showBack={false} />
+      <OnRampNavHeader navigation={props.navigation} showBack={false} />
     </>
   )
 }
@@ -83,4 +83,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default RampErrorView
+export default OnRampErrorView

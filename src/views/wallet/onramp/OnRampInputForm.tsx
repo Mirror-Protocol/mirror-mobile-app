@@ -74,7 +74,7 @@ const inputFormStyles = StyleSheet.create({
   },
 })
 
-const RampInputForm = ({
+const OnRampInputForm = ({
   selectedItem,
   quote,
   minerFee,
@@ -424,4 +424,4 @@ const payFormStyles = StyleSheet.create({
   },
 })
 
-export default RampInputForm
+export default OnRampInputForm

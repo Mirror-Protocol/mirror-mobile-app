@@ -244,8 +244,8 @@ export function MainTab1(props: {
                 balance={investedInfo.balance}
                 topupPressed={() => {
                   // props.navigation.push('WalletTopupView')
-                  props.navigation.navigate('RampStack', {
-                    screen: 'RampSelectView',
+                  props.navigation.navigate('OnRampStack', {
+                    screen: 'OnRampSelectView',
                     params: { withdraw: false },
                   })
                 }}

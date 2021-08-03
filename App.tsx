@@ -51,12 +51,12 @@ import * as api from './src/common/Apis/Api'
 import { VersionView } from './src/views/wallet/setting/VersionView'
 import { RecoverSeedView } from './src/views/init/RecoverSeedView'
 import { SelectWalletView } from './src/views/init/SelectWalletView'
-import RampSelectView from './src/views/wallet/ramp/RampSelectView'
-import RampInputView from './src/views/wallet/ramp/RampInputView'
-import RampOfferView from './src/views/wallet/ramp/RampOfferView'
-import RampErrorView from './src/views/wallet/ramp/RampErrorView'
-import RampQrView from './src/views/wallet/ramp/RampQrView'
-import RampItemDetailView from './src/views/wallet/ramp/RampItemDetailView'
+import OnRampSelectView from './src/views/wallet/onramp/OnRampSelectView'
+import OnRampInputView from './src/views/wallet/onramp/OnRampInputView'
+import OnRampOfferView from './src/views/wallet/onramp/OnRampOfferView'
+import OnRampErrorView from './src/views/wallet/onramp/OnRampErrorView'
+import OnRampQrView from './src/views/wallet/onramp/OnRampQrView'
+import OnRampItemDetailView from './src/views/wallet/onramp/OnRampItemDetailView'
 import { RecoverQrView } from './src/views/init/RecoverQrView'
 import { RecoverPasswordView } from './src/views/init/RecoverPasswordView'
 import { RecoverPrivateKeyView } from './src/views/init/RecoverPrivateKeyView'
@@ -181,8 +181,9 @@ const androidTransition = Platform.OS === 'android' && {
 function SplashScreenStack() {
   const SplashStack = createStackNavigator()
 
-  const [skipOnboarding, setOnboarding] =
-    useState<boolean | undefined>(undefined)
+  const [skipOnboarding, setOnboarding] = useState<boolean | undefined>(
+    undefined
+  )
   Keychain.getSkipOnboarding().then((ret) => {
     setOnboarding(ret)
   })
@@ -265,8 +266,8 @@ function SplashScreenStack() {
       />
 
       <SplashStack.Screen
-        name='RampStack'
-        component={RampStack}
+        name='OnRampStack'
+        component={OnRampStack}
         options={{ headerShown: false }}
       />
 
@@ -380,8 +381,8 @@ function WalletStack() {
         options={{ headerShown: false }}
       />
       <WalletStack.Screen
-        name='RampItemDetailView'
-        component={RampItemDetailView}
+        name='OnRampItemDetailView'
+        component={OnRampItemDetailView}
         options={{ headerShown: false }}
       />
       <WalletStack.Screen
@@ -405,46 +406,46 @@ function WalletStack() {
   )
 }
 
-function RampStack() {
-  const RampStack = createStackNavigator()
+function OnRampStack() {
+  const OnRampStack = createStackNavigator()
   return (
-    <RampStack.Navigator screenOptions={{ ...androidTransition }}>
-      <RampStack.Screen
-        name='RampSelectView'
-        component={RampSelectView}
+    <OnRampStack.Navigator screenOptions={{ ...androidTransition }}>
+      <OnRampStack.Screen
+        name='OnRampSelectView'
+        component={OnRampSelectView}
         options={{ headerShown: false }}
       />
-      <RampStack.Screen
-        name='RampInputView'
-        component={RampInputView}
+      <OnRampStack.Screen
+        name='OnRampInputView'
+        component={OnRampInputView}
         options={{ headerShown: false }}
       />
-      <RampStack.Screen
-        name='RampOfferView'
-        component={RampOfferView}
+      <OnRampStack.Screen
+        name='OnRampOfferView'
+        component={OnRampOfferView}
         options={{ headerShown: false }}
       />
-      <RampStack.Screen
-        name='RampErrorView'
-        component={RampErrorView}
+      <OnRampStack.Screen
+        name='OnRampErrorView'
+        component={OnRampErrorView}
         options={{ headerShown: false }}
       />
-      <RampStack.Screen
-        name='RampQrView'
-        component={RampQrView}
+      <OnRampStack.Screen
+        name='OnRampQrView'
+        component={OnRampQrView}
         options={{ headerShown: false }}
       />
-      <RampStack.Screen
+      <OnRampStack.Screen
         name='WithdrawView'
         component={WithdrawView}
         options={{ headerShown: false }}
       />
-      <RampStack.Screen
+      <OnRampStack.Screen
         name='WithdrawConfirmView'
         component={WithdrawConfirmView}
         options={{ headerShown: false }}
       />
-    </RampStack.Navigator>
+    </OnRampStack.Navigator>
   )
 }
 

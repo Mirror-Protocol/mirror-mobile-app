@@ -6,12 +6,12 @@ import * as Config from '../../../common/Apis/Config'
 import { RectButton, ScrollView } from 'react-native-gesture-handler'
 import BigNumber from 'bignumber.js'
 import { ConfigContext } from '../../../common/provider/ConfigProvider'
-import RampNavHeader from './RampNavHeader'
+import OnRampNavHeader from './OnRampNavHeader'
 import { SwitchainOrderResponse } from '../../../hooks/useSwitchain'
 import _ from 'lodash'
 import { NotificationContext } from '../../../common/provider/NotificationProvider'
 
-function RampItemDetailView(props: { navigation: any; route: any }) {
+function OnRampItemDetailView(props: { navigation: any; route: any }) {
   const insets = Resources.getSafeLayoutInsets()
   const isWithdraw = props.route.params.withdraw
   const isMoonpay = props.route.params.moonpay
@@ -104,7 +104,7 @@ function RampItemDetailView(props: { navigation: any; route: any }) {
         </ScrollView>
       </View>
 
-      <RampNavHeader
+      <OnRampNavHeader
         navigation={props.navigation}
         showBack={false}
         onClosePress={() => {
@@ -276,4 +276,4 @@ function ItemViewText(props: {
   )
 }
 
-export default RampItemDetailView
+export default OnRampItemDetailView

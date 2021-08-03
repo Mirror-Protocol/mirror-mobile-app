@@ -242,8 +242,8 @@ export function MainTab1AssetView(props: {
                 route={props.route}
                 topupPressed={() => {
                   // props.navigation.push('WalletTopupView')
-                  navigation.navigate('RampStack', {
-                    screen: 'RampSelectView',
+                  navigation.navigate('OnRampStack', {
+                    screen: 'OnRampSelectView',
                     params: { withdraw: false },
                   })
                 }}
