@@ -69,11 +69,11 @@ const TabAll = (props: {
   onPressDeposit?: () => void
   withdraw?: boolean
 }) => {
-  const { marketInfo } = useSwitchainMarketInfo()
+  // const { marketInfo } = useSwitchainMarketInfo()
 
   const { setLoading } = useContext(LoadingContext)
 
-  const RenderOnRampItem = ({
+  const RenderSwitchainOnRampItem = ({
     logo,
     title,
     denom,
@@ -93,7 +93,7 @@ const TabAll = (props: {
       logo={logo}
       title={title}
       subTitle={`1 ${denom} ≈ ${
-        marketInfo ? getCryptoQuote(marketInfo, denom, withdraw) : `0`
+        `0` //marketInfo ? getCryptoQuote(marketInfo, denom, withdraw) : `0`
       } ${Keychain.baseCurrencyDenom}`}
       onPress={() => navigateSwitchain(props.navigation, denom, props.withdraw)}
       pending={pending}
@@ -211,7 +211,7 @@ const TabAll = (props: {
         </>
         {_.map(cryptoList, (crypto, idx) => (
           <View key={`Crypto-${idx}`}>
-            <RenderOnRampItem
+            <RenderSwitchainOnRampItem
               logo={crypto.logo}
               title={crypto.label}
               denom={crypto.value}
