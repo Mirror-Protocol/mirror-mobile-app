@@ -544,7 +544,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10200000;
+				CURRENT_PROJECT_VERSION = 10201000;
 				DEVELOPMENT_TEAM = HM9VVQ9NPG;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -560,7 +560,7 @@
 					"$(PROJECT_DIR)/ios/Pods/CocoaLibEvent/lib",
 					"$(PROJECT_DIR)/ios/Pods/OpenSSL-Universal/ios/lib",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.2.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -585,7 +585,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10200000;
+				CURRENT_PROJECT_VERSION = 10201000;
 				DEVELOPMENT_TEAM = HM9VVQ9NPG;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -601,7 +601,7 @@
 					"$(PROJECT_DIR)/ios/Pods/CocoaLibEvent/lib",
 					"$(PROJECT_DIR)/ios/Pods/OpenSSL-Universal/ios/lib",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.2.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
