@@ -85,6 +85,10 @@ export const Images = {
   onboarding04: require('../../assets/images/imgOnboarding04.png'),
   onboarding05: require('../../assets/images/imgOnboarding05.png'),
 
+  onboarding2_01: require('../../assets/images/imgOnboarding01_2.png'),
+  onboarding2_02: require('../../assets/images/imgOnboarding02_2.png'),
+  onboarding2_03: require('../../assets/images/imgOnboarding03_2.png'),
+
   faceid: require('../../assets/images/faceid.png'),
   touchid: require('../../assets/images/touchid.png'),
 

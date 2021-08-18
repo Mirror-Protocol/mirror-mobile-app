@@ -66,10 +66,15 @@ import { RecoverPasswordView } from './src/views/init/RecoverPasswordView'
 import { RecoverPrivateKeyView } from './src/views/init/RecoverPrivateKeyView'
 import { RecoverWalletView } from './src/views/init/RecoverWalletView'
 import { TransakProvider } from './src/common/provider/TransakProvider'
+import { initRemoteConfig } from './src/common/RemoteConfig'
 
 const App = () => {
   const [isLoadingChainConfig, setLoadingChainConfig] = useState(false)
   const [isRooted, setRooted] = useState(Config.isDev ? false : undefined)
+
+  useEffect(() => {
+    initRemoteConfig()
+  }, [])
 
   useEffect(() => {
     SplashScreen.hide()

@@ -17,6 +17,10 @@ import { ConfigContext } from '../../common/provider/ConfigProvider'
 import * as Resources from '../../common/Resources'
 import * as Keychain from '../../common/Keychain'
 import * as Config from '../../common/Apis/Config'
+import remoteConfig from '@react-native-firebase/remote-config'
+import { getRemoteConfig, RemoteConfigKey } from '../../common/RemoteConfig'
+
+const dotPosition = 298
 
 export const OnboardingView = () => {
   useEffect(() => {
@@ -111,11 +115,19 @@ const SwiperView = () => {
   const { translations } = useContext(ConfigContext)
 
   const [slideContentY, setSlideContentY] = useState(0)
+  const [newOnboarding, setNewOnboarding] = useState(false)
+
+  // Remote config - onboarding A/B test
+  useEffect(() => {
+    const v = getRemoteConfig(RemoteConfigKey.newOnboarding)
+    console.log('newOnboarding', v, v.asBoolean())
+    setNewOnboarding(v.asBoolean())
+  }, [])
 
   const w = Dimensions.get('window').width
   const h = Dimensions.get('window').height
 
-  return (
+  const OnboardingV1 = () => (
     <Swiper
       style={{ backgroundColor: 'rgb(0, 237, 199)' }}
       showsButtons={false}
@@ -194,6 +206,185 @@ const SwiperView = () => {
         />
       </View>
     </Swiper>
+  )
+
+  const OnboardingV2 = () => {
+    const contentStyle = StyleSheet.create({
+      normal: {
+        fontFamily: Resources.Fonts.book,
+        fontSize: 14,
+        letterSpacing: -0.3,
+        lineHeight: 21,
+        color: Resources.Colors.darkGreyThree,
+        fontWeight: 'normal',
+        textDecorationLine: 'none',
+      },
+      bold: {
+        fontFamily: Resources.Fonts.book,
+        fontSize: 14,
+        letterSpacing: -0.3,
+        lineHeight: 21,
+        color: Resources.Colors.darkGreyThree,
+        fontWeight: 'bold',
+        textDecorationLine: 'none',
+      },
+    })
+
+    return (
+      <Swiper
+        style={{ backgroundColor: 'rgb(0, 237, 199)' }}
+        showsButtons={false}
+        autoplay={false}
+        loop={false}
+        paginationStyle={{
+          justifyContent: 'flex-start',
+          margin: 0,
+          padding: 0,
+          left: 24,
+          top:
+            Platform.OS === 'ios'
+              ? undefined
+              : slideContentY - slideContentY / 32,
+          bottom: Platform.OS === 'ios' ? dotPosition - 44 : h,
+        }}
+        activeDot={swiperActiveDot()}
+        dot={swiperDot()}
+      >
+        <View style={{ flex: 1 }}>
+          <SlideV2
+            imageSource={Resources.Images.onboarding2_01}
+            title={`Trade Mirror Assets`}
+            content={
+              <Text style={contentStyle.normal}>
+                {`Mirror Assets are tokens that track the price of real-world assets, but do`}
+                <Text style={contentStyle.bold}>{` "NOT" `}</Text>
+                {`confer any share rights of the underlying assets.`}
+              </Text>
+            }
+            setSlideContentY={setSlideContentY}
+          />
+        </View>
+        <View style={{ flex: 1 }}>
+          <SlideV2
+            imageSource={Resources.Images.onboarding2_02}
+            title={`Why Mirror Assets?`}
+            content={
+              <Text style={contentStyle.normal}>
+                {`Mirror Assets can be traded:\n`}
+                <Text style={contentStyle.bold}>{`- 24/7`}</Text>
+                {` : trade regardless of market hours\n`}
+                <Text
+                  style={contentStyle.bold}
+                >{`- at fractional shares`}</Text>
+                {` : no need to purchase an entire share\n`}
+                <Text
+                  style={contentStyle.bold}
+                >{`- without an order book`}</Text>
+                {` : immediate order execution\n`}
+              </Text>
+            }
+            setSlideContentY={setSlideContentY}
+          />
+        </View>
+        <View style={{ flex: 1 }}>
+          <SlideV2
+            imageSource={Resources.Images.onboarding2_03}
+            title={`Get UST`}
+            content={
+              <Text style={contentStyle.normal}>
+                {`Fund your wallet with UST, a USD-pegged stablecoin, to start investing in Mirror Assets.\nYou can cash out by transferring your funds to an exchange account.`}
+              </Text>
+            }
+            setSlideContentY={setSlideContentY}
+          />
+        </View>
+      </Swiper>
+    )
+  }
+
+  return <>{newOnboarding ? <OnboardingV2 /> : <OnboardingV1 />}</>
+}
+
+const SlideV2 = ({
+  imageSource,
+  title,
+  content,
+  setSlideContentY,
+}: {
+  imageSource: ImageSourcePropType
+  title: String
+  content: JSX.Element | Array<JSX.Element>
+  setSlideContentY: (y: number) => void
+}) => {
+  const insets = useSafeAreaInsets()
+
+  const w = Dimensions.get('window').width
+  const h = Dimensions.get('window').height
+
+  const [titlePosY, setTitlePosY] = useState(0)
+
+  return (
+    <View
+      style={{
+        flex: 1,
+        flexDirection: 'column',
+        backgroundColor: Resources.Colors.brightTeal,
+        marginHorizontal: 24,
+        marginBottom: 60,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+      }}
+    >
+      <View
+        style={{
+          height: titlePosY,
+        }}
+      >
+        <Image
+          source={imageSource}
+          style={{
+            width: '100%',
+            height: '100%',
+            resizeMode: 'contain',
+          }}
+        />
+      </View>
+
+      <View
+        style={{
+          position: 'absolute',
+          top: h - dotPosition,
+        }}
+        onLayout={({ nativeEvent }) => {
+          const { y } = nativeEvent.layout
+          setTitlePosY(y)
+        }}
+      >
+        <Text
+          style={{
+            fontFamily: Resources.Fonts.medium,
+            fontSize: 24,
+            letterSpacing: -0.5,
+            color: Resources.Colors.darkGreyThree,
+          }}
+        >
+          {title}
+        </Text>
+      </View>
+
+      <View
+        style={{
+          position: 'absolute',
+          top: h - (dotPosition - 64),
+        }}
+        onLayout={(e) => {
+          const { y } = e.nativeEvent.layout
+          setSlideContentY(y)
+        }}
+      >
+        {content}
+      </View>
+    </View>
   )
 }
 
