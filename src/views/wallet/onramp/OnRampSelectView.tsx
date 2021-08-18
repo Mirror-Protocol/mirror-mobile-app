@@ -155,45 +155,47 @@ const TabAll = (props: {
                 enabled={true}
               />
               <Separator style={{ marginVertical: SEPARATOR_MARGIN }} />
-              <OnRampItem
-                logo={Resources.Images.logoTransak}
-                logoStyle={{ width: 26, height: 18 }}
-                title={'Transak'}
-                onPress={() => {
-                  const onPressTransak = async () => {
-                    const config = Config.isDev
-                      ? Config.transakConfig.testnet
-                      : Config.transakConfig.mainnet
+              {Config.isDev && (
+                <OnRampItem
+                  logo={Resources.Images.logoTransak}
+                  logoStyle={{ width: 26, height: 18 }}
+                  title={'Transak'}
+                  onPress={() => {
+                    const onPressTransak = async () => {
+                      const config = Config.isDev
+                        ? Config.transakConfig.testnet
+                        : Config.transakConfig.mainnet
 
-                    const address = await Keychain.getDefaultAddress()
-                    const email =
-                      (await Keychain.getLoginType()) !== 'apple'
-                        ? await Keychain.getUserEmail()
-                        : ''
-                    const query = encodeQueryData({
-                      apiKey: config.apiKey,
-                      environment: config.environment,
-                      defaultCryptoCurrency: 'UST',
-                      cryptoCurrencyList: 'UST',
-                      cryptoCurrencyCode: 'UST',
-                      networks: 'mainnet',
-                      email: email,
-                      walletAddress: address,
-                      partnerOrderId: props.transakPartnerOrderId,
-                    })
-                    const url = `${config.url}?${query}`
-                    console.log(url)
-                    launchBrowser(url)
+                      const address = await Keychain.getDefaultAddress()
+                      const email =
+                        (await Keychain.getLoginType()) !== 'apple'
+                          ? await Keychain.getUserEmail()
+                          : ''
+                      const query = encodeQueryData({
+                        apiKey: config.apiKey,
+                        environment: config.environment,
+                        defaultCryptoCurrency: 'UST',
+                        cryptoCurrencyList: 'UST',
+                        cryptoCurrencyCode: 'UST',
+                        networks: 'mainnet',
+                        email: email,
+                        walletAddress: address,
+                        partnerOrderId: props.transakPartnerOrderId,
+                      })
+                      const url = `${config.url}?${query}`
+                      console.log(url)
+                      launchBrowser(url)
+                    }
+
+                    setLoading(true)
+                    onPressTransak().finally(() => setLoading(false))
+                  }}
+                  pending={
+                    props.enableTransak !== undefined && !props.enableTransak
                   }
-
-                  setLoading(true)
-                  onPressTransak().finally(() => setLoading(false))
-                }}
-                pending={
-                  props.enableTransak !== undefined && !props.enableTransak
-                }
-                enabled={true}
-              />
+                  enabled={true}
+                />
+              )}
               {/* <Separator style={{ marginVertical: SEPARATOR_MARGIN }} />
               <OnRampItem
                 logo={Resources.Images.logoRamp}
