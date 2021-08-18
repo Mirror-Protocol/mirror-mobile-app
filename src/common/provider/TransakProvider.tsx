@@ -13,6 +13,7 @@ interface Props {
 }
 
 interface ITransakContext {
+  initTransak: () => Promise<void>
   enableTransak?: boolean
   partnerOrderId?: string
   onEvent: (eventId: any, orderData: any) => void
@@ -24,6 +25,7 @@ interface ITransakContext {
 }
 
 export const TransakContext = createContext<ITransakContext>({
+  initTransak: async () => {},
   enableTransak: undefined,
   partnerOrderId: undefined,
   onEvent: (eventId: any, orderData: any) => {},
@@ -71,6 +73,12 @@ export const TransakProvider = ({ children }: Props) => {
   }
 
   const initTransak = async (): Promise<void> => {
+    try {
+      if (partnerOrderId === undefined) {
+        const address = await Keychain.getDefaultAddress()
+        setPartnerOrderId(address)
+      }
+    } catch {}
     if (pusher === undefined) {
       pusher = new Pusher(config.pusherAppKey, {
         cluster: 'ap2',
@@ -81,9 +89,9 @@ export const TransakProvider = ({ children }: Props) => {
 
       pusher.subscribe(channelName)
       pusher.bind_global((eventId: any, orderData: any) => {
-        if (eventId === 'pusher:pong') {
-          return
-        }
+        // if (eventId === 'pusher:pong') {
+        //   return
+        // }
         onEvent(eventId, orderData)
       })
     }
@@ -131,13 +139,6 @@ export const TransakProvider = ({ children }: Props) => {
       }
     } catch (e) {}
   }
-
-  useEffect(() => {
-    Keychain.getDefaultAddress().then((address) => {
-      setPartnerOrderId(address)
-    })
-    initTransak()
-  }, [])
 
   useEffect(() => {
     const checkStatus = async () => {
@@ -212,6 +213,7 @@ export const TransakProvider = ({ children }: Props) => {
   return (
     <TransakContext.Provider
       value={{
+        initTransak,
         enableTransak,
         partnerOrderId,
         onEvent,

@@ -22,6 +22,7 @@ import {
   checkDoNotShowDelistNotice,
   setDoNotShowDelistNotice,
 } from '../../common/Keychain'
+import { TransakContext } from '../../common/provider/TransakProvider'
 
 export function Main(props: { navigation: any; route: any }) {
   const safeInsetTop = Resources.getSafeLayoutInsets().top
@@ -43,6 +44,11 @@ export function Main(props: { navigation: any; route: any }) {
     x: 0,
     width: 0,
   })
+
+  const transak = useContext(TransakContext)
+  useEffect(() => {
+    transak.initTransak()
+  }, [])
 
   const scrollX = useRef(new Animated.Value(0)).current
   const tab2ScrollY = useRef(new Animated.Value(0)).current
