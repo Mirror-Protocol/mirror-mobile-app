@@ -177,7 +177,7 @@ const TabAll = (props: {
                         defaultCryptoCurrency: 'UST',
                         cryptoCurrencyList: 'UST',
                         cryptoCurrencyCode: 'UST',
-                        networks: 'mainnet',
+                        networks: 'terra',
                         email: email,
                         walletAddress: address,
                         partnerOrderId: props.transakPartnerOrderId,
