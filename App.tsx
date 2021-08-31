@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { View, StatusBar, Platform, NativeModules, Alert } from 'react-native'
 
 import {
@@ -67,6 +67,11 @@ import { RecoverPrivateKeyView } from './src/views/init/RecoverPrivateKeyView'
 import { RecoverWalletView } from './src/views/init/RecoverWalletView'
 import { TransakProvider } from './src/common/provider/TransakProvider'
 import { initRemoteConfig } from './src/common/RemoteConfig'
+import {
+  QueueContext,
+  QueueProvider,
+} from './src/common/provider/QueueProvider'
+import QueueButton from './src/views/common/QueueButton'
 
 const App = () => {
   const [isLoadingChainConfig, setLoadingChainConfig] = useState(false)
@@ -145,7 +150,9 @@ const App = () => {
         <LoadingProvider>
           <NotificationProvider>
             <TransakProvider>
-              <ContainerView />
+              <QueueProvider>
+                <ContainerView />
+              </QueueProvider>
             </TransakProvider>
           </NotificationProvider>
         </LoadingProvider>
@@ -157,6 +164,7 @@ const App = () => {
 function ContainerView() {
   const { isShowNotification } = useContext(NotificationContext)
   const { isLoading } = useContext(LoadingContext)
+  const { hash, showTxQueued: txQueued } = useContext(QueueContext)
 
   const linking: LinkingOptions = {
     prefixes: ['mirrorapp://'],
@@ -169,6 +177,29 @@ function ContainerView() {
     },
   }
 
+  const [currentRoute, setCurrentRoute] = useState<string>()
+  const navigationRef = useRef<NavigationContainerRef>(null)
+  const routeNameRef = useRef<string>()
+
+  const ready = () => {
+    try {
+      routeNameRef.current = navigationRef?.current?.getCurrentRoute()?.name
+    } catch (e) {}
+  }
+
+  const logScreen = async () => {
+    try {
+      const previousRouteName = routeNameRef.current
+      const currentRouteName = navigationRef?.current?.getCurrentRoute()?.name
+
+      if (!!currentRouteName && previousRouteName !== currentRouteName) {
+        setCurrentRoute(currentRouteName)
+      }
+
+      routeNameRef.current = currentRouteName
+    } catch (e) {}
+  }
+
   return (
     <View
       style={{
@@ -178,6 +209,8 @@ function ContainerView() {
     >
       <NavigationContainer linking={linking}>
         <SplashScreenStack />
+        {/* {txQueued && <QueueButton />} */}
+        <QueueButton currentRouteName={currentRoute} />
       </NavigationContainer>
       {isShowNotification ? <NotificationView /> : <View />}
       {isLoading ? <LoadingView /> : <View />}

@@ -15,7 +15,6 @@ enum LanguageSymbol {
 }
 
 export function ConfigProvider(props: { children: any }) {
-  // 9
   const [appLanguage, setAppLanguage] = useState(0)
   const [pw, setPw] = useState('')
 

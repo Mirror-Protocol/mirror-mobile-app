@@ -9,6 +9,7 @@ import { Text, View, Image, Animated, Platform, ScrollView } from 'react-native'
 import * as Resources from '../../common/Resources'
 import * as Api from '../../common/Apis/Api'
 import * as Utils from '../../common/Utils'
+import * as Config from '../../common/Apis/Config'
 import { useFocusEffect } from '@react-navigation/native'
 import { TouchableOpacity, RectButton } from 'react-native-gesture-handler'
 import { MainTab1 } from './MainTab1'
@@ -28,7 +29,7 @@ export function Main(props: { navigation: any; route: any }) {
   const safeInsetTop = Resources.getSafeLayoutInsets().top
   const safeInsetBottom = Resources.getSafeLayoutInsets().bottom
   const { translations } = useContext(ConfigContext)
-  const [selectedTab, setTab] = useState(0)
+  const [selectedTab, setSelectedTab] = useState(0)
   const [chartLongPressed, setChartLongPressed] = useState(false)
 
   const [assetList, setAssetList] = useState([] as GQL_AssetList1[])
@@ -55,7 +56,9 @@ export function Main(props: { navigation: any; route: any }) {
   const scrollXRef = useRef(0)
   const headerIndicatorLeft = scrollX.interpolate({
     inputRange: [0, Resources.windowSize().width],
-    outputRange: [38, 122],
+    outputRange: !Config.changeInvestToMarket
+      ? [measuredText1Layout.x + 14, measuredText2Layout.x + 2]
+      : [38, 126],
     extrapolate: 'clamp',
   })
   const headerIndicatorWidth = scrollX.interpolate({
@@ -76,9 +79,9 @@ export function Main(props: { navigation: any; route: any }) {
       parseInt(x.toString()) >=
       parseInt(Resources.windowSize().width.toString()) - offset
     ) {
-      setTab(1)
+      setSelectedTab(1)
     } else if (x <= 0 + offset) {
-      setTab(0)
+      setSelectedTab(0)
     } else {
     }
   })
@@ -115,7 +118,7 @@ export function Main(props: { navigation: any; route: any }) {
       Api.assetList2(true, true).then((list) => {
         setAssetList(list)
       })
-    }, [selectedTab])
+    }, [])
   )
 
   const searchBarMarginTop = tab2ScrollY.interpolate({
@@ -499,7 +502,7 @@ export function Main(props: { navigation: any; route: any }) {
             left: Resources.windowSize().width,
             top: 0,
             overflow: 'hidden',
-            width: '100%',
+            width: Resources.windowSize().width,
             height: 150 + safeInsetTop,
           }}
         >
@@ -588,8 +591,7 @@ export function Main(props: { navigation: any; route: any }) {
               scaleX: headerIndicatorWidth,
             },
           ],
-          top:
-            Platform.OS === 'android' ? safeInsetTop + 45 : safeInsetTop + 42,
+          top: safeInsetTop + 42,
           width: 1,
           height: 2,
           backgroundColor: Resources.Colors.brightTeal,
@@ -622,6 +624,10 @@ function Header(props: {
 }) {
   const { translations } = useContext(ConfigContext)
   const safeInsetTop = Resources.getSafeLayoutInsets().top
+
+  const refText1 = useRef<Text>(null)
+  const refText2 = useRef<Text>(null)
+
   return (
     <View
       style={{
@@ -630,6 +636,7 @@ function Header(props: {
         width: '100%',
         top: 0,
         paddingTop: 19 + safeInsetTop,
+        paddingLeft: 24,
         height: 52 + safeInsetTop,
         flexDirection: 'row',
       }}
@@ -640,21 +647,24 @@ function Header(props: {
         }}
       >
         <Text
+          ref={refText1}
           allowFontScaling={false}
           style={{
-            marginLeft: 24,
             fontFamily: Resources.Fonts.medium,
+            includeFontPadding: false,
             fontSize: 18,
             letterSpacing: -0.2,
             color:
-              props.selectedTab == 0
+              props.selectedTab === 0
                 ? Resources.Colors.brightTeal
                 : Resources.Colors.greyishBrown,
           }}
-          onLayout={(e) => {
-            props.setMeasuredText1Layout({
-              x: e.nativeEvent.layout.x,
-              width: e.nativeEvent.layout.width,
+          onLayout={({ nativeEvent }) => {
+            refText1.current?.measureInWindow((x, y, width, height) => {
+              props.setMeasuredText1Layout({
+                x: x,
+                width: width,
+              })
             })
           }}
         >
@@ -663,26 +673,30 @@ function Header(props: {
         <View style={{ height: 5 }} />
       </TouchableOpacity>
       <TouchableOpacity
-        style={{ marginLeft: 18 }}
         onPress={() => {
           props.setTab(1)
         }}
+        style={{ marginLeft: 18 }}
       >
         <Text
+          ref={refText2}
           allowFontScaling={false}
           style={{
             fontFamily: Resources.Fonts.medium,
+            includeFontPadding: false,
             fontSize: 18,
             letterSpacing: -0.2,
             color:
-              props.selectedTab == 1
+              props.selectedTab === 1
                 ? Resources.Colors.brightTeal
                 : Resources.Colors.greyishBrown,
           }}
-          onLayout={(e) => {
-            props.setMeasuredText2Layout({
-              x: e.nativeEvent.layout.x,
-              width: e.nativeEvent.layout.width,
+          onLayout={({ nativeEvent }) => {
+            refText2.current?.measureInWindow((x, y, width, height) => {
+              props.setMeasuredText2Layout({
+                x: x,
+                width: width,
+              })
             })
           }}
         >

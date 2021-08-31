@@ -114,6 +114,7 @@ export const en = {
     sellSuccess: 'Sell order success',
     withdrawSuccess: 'Withdraw success',
     swapSuccess: 'Swap success',
+    burnSuccess: 'Burn success',
     done: 'Done',
   },
   addressPopupView: {
@@ -497,6 +498,7 @@ export const ko = {
     sellSuccess: 'Sell order success',
     withdrawSuccess: 'Withdraw success',
     swapSuccess: 'Swap success',
+    burnSuccess: 'Burn success',
     done: 'Done',
   },
   addressPopupView: {

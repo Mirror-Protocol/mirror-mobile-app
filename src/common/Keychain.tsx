@@ -46,6 +46,8 @@ enum PrefKeys {
   lastTransakStatus = 'lastTransakStatus',
   lastTransakOrderId = 'lastTransakOrderId',
   doNotShowDelistNotice = 'doNotShowDelistNotice',
+
+  txQueue = 'txQueue',
 }
 
 export type TransakOrder = {
@@ -239,6 +241,14 @@ export async function getTransakOrder(): Promise<TransakOrder | undefined> {
 
 export async function clearTransakOrder() {
   await preferences.remove(PrefKeys.transakOrder)
+}
+
+export async function setTxQueueData(data: string) {
+  return await preferences.setString(PrefKeys.txQueue, data)
+}
+
+export async function getTxQueueData() {
+  return await preferences.getString(PrefKeys.txQueue)
 }
 
 export function setLocalePref(index: number) {

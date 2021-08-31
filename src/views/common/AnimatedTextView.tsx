@@ -40,6 +40,8 @@ export function AnimatedTextView(props: {
   const [measuredSymbolWidth, setMeasuredSymbolWidth] = useState(0)
   const [verticalLineShow, setVerticalLineShow] = useState(true)
 
+  const [startAnimation, setStartAnimation] = useState(false)
+
   const duration = 7000
   const animatedWidth = useRef(new Animated.Value(0)).current
   const anim = Animated.sequence([
@@ -56,10 +58,13 @@ export function AnimatedTextView(props: {
   ])
 
   function progressStart() {
+    console.log('progress start')
     Animated.loop(anim).start()
+    setStartAnimation(true)
   }
 
   function progressStop() {
+    console.log('progress stop')
     anim.stop()
     Animated.timing(animatedWidth, {
       toValue: measuredTextWidth + measuredSymbolWidth,
@@ -67,17 +72,23 @@ export function AnimatedTextView(props: {
       useNativeDriver: false,
     }).start(() => {
       setVerticalLineShow(false)
+      setStartAnimation(false)
     })
   }
 
   useEffect(() => {
-    if (props.complete) {
+    console.log('props.complete', props.complete)
+    if (startAnimation === true && props.complete) {
       progressStop()
     }
-  }, [props.complete])
+  }, [startAnimation, props.complete])
 
   useEffect(() => {
-    if (measuredTextWidth != 0 && measuredSymbolWidth != 0) {
+    if (
+      measuredTextWidth !== 0 &&
+      measuredSymbolWidth !== 0 &&
+      startAnimation === false
+    ) {
       progressStart()
     }
   }, [measuredTextWidth, measuredSymbolWidth])

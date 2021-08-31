@@ -1,6 +1,12 @@
 import BigNumber from 'bignumber.js'
-import React, { useEffect, useContext, useState, useCallback } from 'react'
-import { Text, View, BackHandler } from 'react-native'
+import React, {
+  useEffect,
+  useContext,
+  useState,
+  useCallback,
+  useRef,
+} from 'react'
+import { Text, View, BackHandler, Image } from 'react-native'
 import { RectButton } from 'react-native-gesture-handler'
 import * as Resources from '../../common/Resources'
 import * as Utils from '../../common/Utils'
@@ -9,6 +15,7 @@ import * as Keychain from '../../common/Keychain'
 import { ConfigContext } from '../../common/provider/ConfigProvider'
 import { useFocusEffect } from '@react-navigation/native'
 import { AnimatedTextView } from './AnimatedTextView'
+import { QueueContext } from '../../common/provider/QueueProvider'
 
 export enum ProcessingType {
   Buy = 0,
@@ -20,6 +27,7 @@ export enum ProcessingType {
 
 export function ProcessingView(props: { route: any; navigation: any }) {
   const { translations, pw, setPw } = useContext(ConfigContext)
+  const queue = useContext(QueueContext)
   const safeInsetTop = Resources.getSafeLayoutInsets().top
   const safeInsetBottom = Resources.getSafeLayoutInsets().bottom
 
@@ -36,6 +44,49 @@ export function ProcessingView(props: { route: any; navigation: any }) {
   const [subMessageColor, setSubMessageColor] = useState('transparent')
   const [confirmEnable, setConfirmEnable] = useState(0)
 
+  const pollingTimer = useRef<number>()
+  const pollingHash = (txhash: string, event?: any) => {
+    if (queue.hash !== txhash) {
+      queue.setHash(txhash)
+
+      Keychain.setTxQueueData(
+        JSON.stringify({
+          type,
+          amount: amount.toString(),
+          symbol,
+          displayAmount: displayAmount.toString(),
+          displaySymbol,
+          burnPositions,
+          rampPair,
+          txhash,
+        })
+      )
+    }
+
+    pollingTimer.current = setTimeout(() => {
+      Api.getTxInfo(txhash)
+        .then((txinfo) => {
+          if (txinfo === undefined) {
+            console.log('polling::recursive')
+            pollingHash(txhash)
+          } else {
+            console.log('polling::success', txhash)
+            success()
+          }
+        })
+        .catch((error) => {
+          console.log('polling::fail', txhash)
+          fail(error)
+        })
+    }, 1400)
+  }
+
+  useEffect(() => {
+    return () => {
+      pollingTimer.current && clearTimeout(pollingTimer.current)
+    }
+  }, [])
+
   useFocusEffect(
     useCallback(() => {
       const callback = () => {
@@ -49,13 +100,20 @@ export function ProcessingView(props: { route: any; navigation: any }) {
   )
 
   useEffect(() => {
+    setSubMessageColor(
+      type === ProcessingType.Sell
+        ? Resources.Colors.brightTeal
+        : Resources.Colors.black
+    )
+    setSubMessage(`This transaction is in process`)
+
     if (type == ProcessingType.Buy) {
       const price = new BigNumber(props.route.params.price)
       const fee = new BigNumber(props.route.params.fee)
       const tax = new BigNumber(props.route.params.tax)
       Api.buy(pw, price, symbol, amount, fee, tax)
         .then((result) => {
-          success()
+          pollingHash(result.txhash)
         })
         .catch((error) => {
           fail(error)
@@ -66,7 +124,7 @@ export function ProcessingView(props: { route: any; navigation: any }) {
 
       Api.sell(pw, price, symbol, amount, fee)
         .then((result) => {
-          success()
+          pollingHash(result.txhash)
         })
         .catch((error) => {
           fail(error)
@@ -88,7 +146,7 @@ export function ProcessingView(props: { route: any; navigation: any }) {
         memo
       )
         .then((result) => {
-          success()
+          pollingHash(result.txhash)
         })
         .catch((error) => {
           fail(error)
@@ -96,7 +154,7 @@ export function ProcessingView(props: { route: any; navigation: any }) {
     } else if (type == ProcessingType.Swap) {
       Api.swap(pw, symbol, amount)
         .then((result) => {
-          success()
+          pollingHash(result.txhash)
         })
         .catch((error) => {
           fail(error)
@@ -105,7 +163,7 @@ export function ProcessingView(props: { route: any; navigation: any }) {
       const fee = new BigNumber(props.route.params.fee)
       Api.burn(pw, burnPositions, symbol, fee)
         .then((result) => {
-          success()
+          pollingHash(result.txhash)
         })
         .catch((error) => {
           fail(error)
@@ -129,7 +187,7 @@ export function ProcessingView(props: { route: any; navigation: any }) {
     } else if (type === ProcessingType.Swap) {
       setSubMessage(translations.processingView.swapSuccess)
     } else if (type === ProcessingType.Burn) {
-      setSubMessage(`Burn success`)
+      setSubMessage(translations.processingView.burnSuccess)
     }
   }
 
@@ -144,6 +202,12 @@ export function ProcessingView(props: { route: any; navigation: any }) {
   }
 
   function confirmPressed() {
+    queue.setShowTxQueued(false)
+
+    navigateView()
+  }
+
+  function navigateView() {
     if (type == ProcessingType.Buy) {
       props.navigation.navigate('InvestedDetail')
     } else if (type == ProcessingType.Sell) {
@@ -166,7 +230,7 @@ export function ProcessingView(props: { route: any; navigation: any }) {
       style={{
         flex: 1,
         backgroundColor:
-          type == ProcessingType.Sell
+          type === ProcessingType.Sell
             ? Resources.Colors.darkGreyFour
             : Resources.Colors.brightTeal,
         paddingTop: safeInsetTop,
@@ -189,9 +253,9 @@ export function ProcessingView(props: { route: any; navigation: any }) {
         >
           <AnimatedTextView
             type={type}
-            complete={confirmEnable != 0}
+            complete={confirmEnable !== 0}
             amount={
-              type == ProcessingType.Buy || type == ProcessingType.Withdraw
+              type === ProcessingType.Buy || type === ProcessingType.Withdraw
                 ? Utils.getFormatted(displayAmount, 6, true)
                 : Utils.getFormatted(displayAmount, 2, true)
             }
@@ -203,6 +267,7 @@ export function ProcessingView(props: { route: any; navigation: any }) {
             fontFamily: Resources.Fonts.medium,
             fontSize: 14,
             letterSpacing: -0.3,
+            lineHeight: 21,
             marginLeft: 24,
             marginRight: 24,
             color: subMessageColor,
@@ -225,6 +290,43 @@ export function ProcessingView(props: { route: any; navigation: any }) {
           confirmPressed={confirmPressed}
         />
       </View>
+      <MinimizeButton
+        type={type}
+        safeInsetTop={safeInsetTop}
+        minimize={() => {
+          navigateView()
+        }}
+      />
+    </View>
+  )
+}
+
+function MinimizeButton(props: {
+  type: ProcessingType
+  safeInsetTop: number
+  minimize: () => void
+}) {
+  const queue = useContext(QueueContext)
+  return (
+    <View
+      style={{ position: 'absolute', right: 24, top: 16 + props.safeInsetTop }}
+    >
+      <RectButton
+        onPress={() => {
+          console.log('minimize')
+          queue.setShowTxQueued(true)
+          props.minimize()
+        }}
+      >
+        <Image
+          source={
+            props.type === ProcessingType.Sell
+              ? Resources.Images.iconMinimizeG
+              : Resources.Images.iconMinimizeB
+          }
+          style={{ width: 24, height: 24 }}
+        />
+      </RectButton>
     </View>
   )
 }

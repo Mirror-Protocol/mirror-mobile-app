@@ -13,6 +13,7 @@ import {
   MsgExecuteContract,
   RawKey,
   MsgSwap,
+  TxInfo,
 } from '@terra-money/terra.js'
 import * as gql from './gql'
 
@@ -29,7 +30,7 @@ export async function setGasPrice() {
   fee = feeFromDenom(Keychain.baseCurrency)
 }
 
-let terra: any = undefined
+let terra: LCDClient | undefined = undefined
 export function setTerra() {
   terra = new LCDClient({
     URL: Config.currentDomain.chainDomain,
@@ -103,7 +104,7 @@ async function getWallet(pw: string) {
   const pk = await Keychain.getDefaultPrivateKey(masterKey)
   const pkArray: any = Utils.hexToArray(pk)
   const key = new RawKey(pkArray)
-  const wallet = terra.wallet(key)
+  const wallet = terra?.wallet(key)
   return wallet
 }
 
@@ -165,12 +166,12 @@ export async function getSwapEstimate(
 export async function swap(pw: string, symbol: string, amount: BigNumber) {
   const wallet = await getWallet(pw)
   const swap = new MsgSwap(
-    wallet.key.accAddress,
+    wallet!!.key.accAddress,
     new Coin(symbol, amount.toNumber()),
     Keychain.baseCurrency
   )
 
-  const tx = await wallet.createAndSignTx({
+  const tx = await wallet!!.createAndSignTx({
     msgs: [swap],
     memo: '',
     fee: new StdFee(gas.toNumber(), [
@@ -178,8 +179,8 @@ export async function swap(pw: string, symbol: string, amount: BigNumber) {
     ]),
   })
 
-  const response = await terra.tx.broadcast(tx)
-  if (response.code) {
+  const response = await terra!!.tx.broadcastSync(tx)
+  if ('code' in response && response.code) {
     throw new Error(response.raw_log)
   } else {
     return response
@@ -872,6 +873,20 @@ export async function calcBuyFeeTax(
   }
 }
 
+export async function getTxInfo(hash: string): Promise<TxInfo | undefined> {
+  try {
+    const response = await terra!!.tx.txInfo(hash)
+    if ('code' in response && response.code) {
+      throw new Error(response.raw_log)
+    } else {
+      return response
+    }
+  } catch (e) {
+    console.log(e)
+  }
+  return undefined
+}
+
 export async function buy(
   pw: string,
   price: BigNumber,
@@ -886,7 +901,7 @@ export async function buy(
 
   const wallet = await getWallet(pw)
   const msg = new MsgExecuteContract(
-    wallet.key.accAddress,
+    wallet!!.key.accAddress,
     contract.pair,
     {
       swap: {
@@ -901,15 +916,16 @@ export async function buy(
     [new Coin(Keychain.baseCurrency, amount.toNumber())]
   )
 
-  const tx = await wallet.createAndSignTx({
+  const tx = await wallet!!.createAndSignTx({
     msgs: [msg],
     memo: '',
     fee: new StdFee(gas.toNumber(), [
       new Coin(Keychain.baseCurrency, fee.plus(tax).toNumber()),
     ]),
   })
-  const response = await terra.tx.broadcast(tx)
-  if (response.code) {
+
+  const response = await terra!!.tx.broadcastSync(tx)
+  if ('code' in response && response.code) {
     throw new Error(response.raw_log)
   } else {
     return response
@@ -929,7 +945,7 @@ export async function sell(
 
   const wallet = await getWallet(pw)
   const msg = new MsgExecuteContract(
-    wallet.key.accAddress,
+    wallet!!.key.accAddress,
     contract.address,
     {
       send: {
@@ -945,7 +961,7 @@ export async function sell(
     []
   )
 
-  const tx = await wallet.createAndSignTx({
+  const tx = await wallet!!.createAndSignTx({
     msgs: [msg],
     memo: '',
     fee: new StdFee(gas.toNumber(), [
@@ -953,8 +969,8 @@ export async function sell(
     ]),
   })
 
-  const response = await terra.tx.broadcast(tx)
-  if (response.code) {
+  const response = await terra!!.tx.broadcastSync(tx)
+  if ('code' in response && response.code) {
     throw new Error(response.raw_log)
   } else {
     return response
@@ -979,7 +995,7 @@ export async function burn(
 
   const msg = positions.map((i) => {
     return new MsgExecuteContract(
-      wallet.key.accAddress,
+      wallet!!.key.accAddress,
       contract.token,
       {
         send: {
@@ -998,7 +1014,7 @@ export async function burn(
     )
   })
 
-  const tx = await wallet.createAndSignTx({
+  const tx = await wallet!!.createAndSignTx({
     msgs: msg,
     memo: '',
     fee: new StdFee(gas.times(positions.length).toNumber(), [
@@ -1006,8 +1022,8 @@ export async function burn(
     ]),
   })
 
-  const response = await terra.tx.broadcast(tx)
-  if (response.code) {
+  const response = await terra!!.tx.broadcastSync(tx)
+  if ('code' in response && response.code) {
     throw new Error(response.raw_log)
   } else {
     return response
@@ -1033,7 +1049,7 @@ export async function transfer(
     })[0]
 
     msg = new MsgExecuteContract(
-      wallet.key.accAddress,
+      wallet!!.key.accAddress,
       contract.token,
       {
         transfer: { recipient: to, amount: amount.toString() },
@@ -1041,12 +1057,12 @@ export async function transfer(
       []
     )
   } else {
-    msg = new MsgSend(wallet.key.accAddress, to, [
+    msg = new MsgSend(wallet!!.key.accAddress, to, [
       new Coin(denom, amount.toNumber()),
     ])
   }
 
-  const tx = await wallet.createAndSignTx({
+  const tx = await wallet!!.createAndSignTx({
     msgs: [msg],
     memo: memo,
     fee: new StdFee(gas.toNumber(), [
@@ -1056,9 +1072,9 @@ export async function transfer(
     ]),
   })
 
-  const response = await terra.tx.broadcast(tx)
+  const response = await terra!!.tx.broadcastSync(tx)
 
-  if (response.code) {
+  if ('code' in response && response.code) {
     throw new Error(response.raw_log)
   } else {
     return response
