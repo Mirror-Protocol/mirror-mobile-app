@@ -9,8 +9,6 @@ import { ProcessingPopup } from './ProcessingPopup'
 
 export default function QueueButton(props: { currentRouteName?: string }) {
   const { hash, setHash, showTxQueued } = useContext(QueueContext)
-  console.log(props.currentRouteName)
-  console.log('hash', hash)
 
   const [showProcessingPopup, setShowProcessingPopup] = useState(false)
 
@@ -22,7 +20,6 @@ export default function QueueButton(props: { currentRouteName?: string }) {
 
   const pollingTimer = useRef<number>()
   const pollingHash = (txhash: string, event?: any) => {
-    console.log('pollingHash', txhash)
     pollingTimer.current = setTimeout(() => {
       if (txhash === undefined) {
         return
@@ -30,15 +27,12 @@ export default function QueueButton(props: { currentRouteName?: string }) {
       Api.getTxInfo(txhash)
         .then((txinfo) => {
           if (txinfo === undefined) {
-            console.log('polling::recursive')
             pollingHash(txhash)
           } else {
-            console.log('polling::success', txhash)
             setHash(undefined)
           }
         })
         .catch((error) => {
-          console.log('polling::fail', txhash)
           setHash(undefined)
         })
     }, 1400)
@@ -89,7 +83,6 @@ export default function QueueButton(props: { currentRouteName?: string }) {
               alignItems: 'center',
             }}
             onPress={() => {
-              console.log('queued onpress')
               setShowProcessingPopup(true)
             }}
           >

@@ -10,13 +10,6 @@ export function initRemoteConfig() {
       [RemoteConfigKey.newOnboarding]: true,
     })
     .then(() => remoteConfig().fetchAndActivate())
-    .then((fetchedRemotely) => {
-      if (fetchedRemotely) {
-        // console.log('fetch success')
-      } else {
-        // console.log('fetch failed')
-      }
-    })
     .catch((reason) => console.error(reason))
 }
 

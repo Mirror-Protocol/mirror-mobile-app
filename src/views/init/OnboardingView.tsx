@@ -120,7 +120,6 @@ const SwiperView = () => {
   // Remote config - onboarding A/B test
   useEffect(() => {
     const v = getRemoteConfig(RemoteConfigKey.newOnboarding)
-    console.log('newOnboarding', v, v.asBoolean())
     setNewOnboarding(v.asBoolean())
   }, [])
 

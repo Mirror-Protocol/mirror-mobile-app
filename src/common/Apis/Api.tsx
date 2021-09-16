@@ -882,7 +882,7 @@ export async function getTxInfo(hash: string): Promise<TxInfo | undefined> {
       return response
     }
   } catch (e) {
-    console.log(e)
+    console.error(e)
   }
   return undefined
 }

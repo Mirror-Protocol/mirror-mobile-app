@@ -183,7 +183,6 @@ const TabAll = (props: {
                         partnerOrderId: props.transakPartnerOrderId,
                       })
                       const url = `${config.url}?${query}`
-                      console.log(url)
                       launchBrowser(url)
                     }
 

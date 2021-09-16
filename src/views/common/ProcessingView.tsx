@@ -67,15 +67,12 @@ export function ProcessingView(props: { route: any; navigation: any }) {
       Api.getTxInfo(txhash)
         .then((txinfo) => {
           if (txinfo === undefined) {
-            console.log('polling::recursive')
             pollingHash(txhash)
           } else {
-            console.log('polling::success', txhash)
             success()
           }
         })
         .catch((error) => {
-          console.log('polling::fail', txhash)
           fail(error)
         })
     }, 1400)
@@ -313,7 +310,6 @@ function MinimizeButton(props: {
     >
       <RectButton
         onPress={() => {
-          console.log('minimize')
           queue.setShowTxQueued(true)
           props.minimize()
         }}

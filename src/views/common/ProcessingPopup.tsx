@@ -24,7 +24,6 @@ export function ProcessingPopup(props: {
 }) {
   const { translations, pw, setPw } = useContext(ConfigContext)
   const queue = useContext(QueueContext)
-  console.log(queue)
   const safeInsetTop = Resources.getSafeLayoutInsets().top
   const safeInsetBottom = Resources.getSafeLayoutInsets().bottom
 
@@ -35,7 +34,6 @@ export function ProcessingPopup(props: {
   const [data, setData] = useState<any | undefined>()
   useEffect(() => {
     Keychain.getTxQueueData().then((d) => {
-      console.log(d)
       setData(JSON.parse(d))
     })
 
@@ -54,15 +52,12 @@ export function ProcessingPopup(props: {
       Api.getTxInfo(txhash)
         .then((txinfo) => {
           if (txinfo === undefined) {
-            console.log('polling::recursive')
             pollingHash(txhash)
           } else {
-            console.log('polling::success', txhash)
             success()
           }
         })
         .catch((error) => {
-          console.log('polling::fail', txhash)
           fail(error)
         })
     }, 1400)
@@ -81,15 +76,12 @@ export function ProcessingPopup(props: {
     Api.getTxInfo(data.txhash)
       .then((txinfo) => {
         if (txinfo === undefined) {
-          console.log('polling::recursive')
           pollingHash(data.txhash)
         } else {
-          console.log('polling::success', data.txhash)
           success()
         }
       })
       .catch((error) => {
-        console.log('polling::fail', data.txhash)
         fail(error)
       })
 
@@ -144,7 +136,6 @@ export function ProcessingPopup(props: {
   }
 
   function confirmPressed() {
-    console.log('confirmPressed')
     queue.setShowTxQueued(false)
     props.closePopup()
   }
@@ -260,7 +251,6 @@ function MinimizeButton(props: {
     >
       <RectButton
         onPress={() => {
-          console.log('minimize')
           setTxQueued(true)
           props.closePopup()
         }}

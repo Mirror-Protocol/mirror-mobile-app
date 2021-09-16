@@ -58,13 +58,11 @@ export function AnimatedTextView(props: {
   ])
 
   function progressStart() {
-    console.log('progress start')
     Animated.loop(anim).start()
     setStartAnimation(true)
   }
 
   function progressStop() {
-    console.log('progress stop')
     anim.stop()
     Animated.timing(animatedWidth, {
       toValue: measuredTextWidth + measuredSymbolWidth,
@@ -77,7 +75,6 @@ export function AnimatedTextView(props: {
   }
 
   useEffect(() => {
-    console.log('props.complete', props.complete)
     if (startAnimation === true && props.complete) {
       progressStop()
     }
