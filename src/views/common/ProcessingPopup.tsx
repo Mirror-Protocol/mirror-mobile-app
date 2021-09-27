@@ -47,7 +47,7 @@ export function ProcessingPopup(props: {
   }, [])
 
   const pollingTimer = useRef<number>()
-  const pollingHash = (txhash: string, event?: any) => {
+  const pollingHash = (txhash: string) => {
     pollingTimer.current = setTimeout(() => {
       Api.getTxInfo(txhash)
         .then((txinfo) => {

@@ -44,8 +44,8 @@ export function ProcessingView(props: { route: any; navigation: any }) {
   const [subMessageColor, setSubMessageColor] = useState('transparent')
   const [confirmEnable, setConfirmEnable] = useState(0)
 
-  const pollingTimer = useRef<NodeJS.Timer>()
-  const pollingHash = (txhash: string, event?: any) => {
+  const pollingTimer = useRef<number>()
+  const pollingHash = (txhash: string, type: ProcessingType) => {
     if (queue.hash !== txhash) {
       queue.setHash(txhash)
 
@@ -67,7 +67,7 @@ export function ProcessingView(props: { route: any; navigation: any }) {
       Api.getTxInfo(txhash)
         .then((txinfo) => {
           if (txinfo === undefined) {
-            pollingHash(txhash)
+            pollingHash(txhash, type)
           } else {
             success()
           }
@@ -110,7 +110,7 @@ export function ProcessingView(props: { route: any; navigation: any }) {
       const tax = new BigNumber(props.route.params.tax)
       Api.buy(pw, price, symbol, amount, fee, tax)
         .then((result) => {
-          pollingHash(result.txhash)
+          pollingHash(result.txhash, type)
         })
         .catch((error) => {
           fail(error)
@@ -121,7 +121,7 @@ export function ProcessingView(props: { route: any; navigation: any }) {
 
       Api.sell(pw, price, symbol, amount, fee)
         .then((result) => {
-          pollingHash(result.txhash)
+          pollingHash(result.txhash, type)
         })
         .catch((error) => {
           fail(error)
@@ -143,7 +143,7 @@ export function ProcessingView(props: { route: any; navigation: any }) {
         memo
       )
         .then((result) => {
-          pollingHash(result.txhash)
+          pollingHash(result.txhash, type)
         })
         .catch((error) => {
           fail(error)
@@ -151,7 +151,7 @@ export function ProcessingView(props: { route: any; navigation: any }) {
     } else if (type == ProcessingType.Swap) {
       Api.swap(pw, symbol, amount)
         .then((result) => {
-          pollingHash(result.txhash)
+          pollingHash(result.txhash, type)
         })
         .catch((error) => {
           fail(error)
@@ -160,7 +160,7 @@ export function ProcessingView(props: { route: any; navigation: any }) {
       const fee = new BigNumber(props.route.params.fee)
       Api.burn(pw, burnPositions, symbol, fee)
         .then((result) => {
-          pollingHash(result.txhash)
+          pollingHash(result.txhash, type)
         })
         .catch((error) => {
           fail(error)

@@ -7,7 +7,6 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native-gesture-handler'
 import { ConfigContext } from '../../common/provider/ConfigProvider'
-import * as Keychain from '../../common/Keychain'
 
 export function PopupView(props: {
   title: string
@@ -21,8 +20,9 @@ export function PopupView(props: {
 
   const duration = 200
   const bgOpacity = useRef(new Animated.Value(0)).current
-  const windowBottom = useRef(new Animated.Value(-safeInsetBottom - 260))
-    .current
+  const windowBottom = useRef(
+    new Animated.Value(-safeInsetBottom - 260)
+  ).current
 
   useEffect(() => {
     Animated.parallel([

@@ -1370,10 +1370,10 @@
   resolved "https://registry.yarnpkg.com/@terra-money/key-utils/-/key-utils-1.0.2.tgz#156df042a38c1028dce038d04375b8cf092ca392"
   integrity sha512-M3F+yIwiRgQie93nm/0PZSoeYKgjfHmcoJKuew9tc1xiGuLEKA0BXYzAy6AGJbs2DMHwQKBHKyznQjwayPTItw==
 
-"@terra-money/terra.js@^1.8.4":
-  version "1.8.9"
-  resolved "https://registry.yarnpkg.com/@terra-money/terra.js/-/terra.js-1.8.9.tgz#570c4dc797b37a6f83239f1723417dbf8a203d52"
-  integrity sha512-vOBzn6qEWmWDsDngABr1YEwrLXfZjOSCcw/41twSluhspa25zNjLhFPsUexeAozOENbylwPkvEPEbzeFUCbIDg==
+"@terra-money/terra.js@^1.8.10":
+  version "1.8.10"
+  resolved "https://registry.yarnpkg.com/@terra-money/terra.js/-/terra.js-1.8.10.tgz#50f4f28b5592847201b64aa952ff2331809dcbc0"
+  integrity sha512-5tXblDZvXYVxS/z64nPX45m49e0M28eoIaBIaKJjui0JJBEuNS7sFBDZrU572Pl4er1n2xaEAjrfzsNjTYORWg==
   dependencies:
     axios "^0.21.1"
     bech32 "^2.0.0"
@@ -1608,6 +1608,11 @@
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-2.0.1.tgz#20f18294f797f2209b5f65c8e3b5c8e8261d127c"
   integrity sha512-Hl219/BT5fLAaz6NDkSuhzasy49dwQS/DSdu4MdggFB8zcXv7vflBI3xp7FEmkmdDkBUI2bPUNeMttp2knYdxw==
+
+"@types/uuid@^8.3.1":
+  version "8.3.1"
+  resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-8.3.1.tgz#1a32969cf8f0364b3d8c8af9cc3555b7805df14f"
+  integrity sha512-Y2mHTRAbqfFkpjldbkHGY8JIzRN6XqYRliG8/24FcHm2D2PwW24fl5xMRTVGdrb7iMrwCaIEbLWerGIkXuFWVg==
 
 "@types/uuid@^8.3.1":
   version "8.3.1"
@@ -2616,6 +2621,14 @@ chalk@^3.0.0:
     supports-color "^7.1.0"
 
 chalk@^4.0.0, chalk@^4.1.0, chalk@^4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/chalk/-/chalk-4.1.2.tgz#aac4e2b7734a740867aeb16bf02aad556a1e7a01"
+  integrity sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA==
+  dependencies:
+    ansi-styles "^4.1.0"
+    supports-color "^7.1.0"
+
+chalk@^4.1.2:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-4.1.2.tgz#aac4e2b7734a740867aeb16bf02aad556a1e7a01"
   integrity sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA==
