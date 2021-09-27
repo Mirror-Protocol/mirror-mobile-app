@@ -128,11 +128,12 @@ export const Images = {
 
   logoBtc: require('../../assets/images/logoBtc.png'),
   logoEth: require('../../assets/images/logoEth.png'),
-  logoMoonpay: require('../../assets/images/logoMoonpay.png'),
-  LogoSimplex: require('../../assets/images/logoSimplex.png'),
-  logoTransak: require('../../assets/images/logoTransak.png'),
   logoUsdc: require('../../assets/images/logoUsdc.png'),
   logoUsdt: require('../../assets/images/logoUsdt.png'),
+
+  logoMoonpay: require('../../assets/images/logoMoonpay.png'),
+  logoTransak: require('../../assets/images/logoTransak.png'),
+  logoRamp: require('../../assets/images/logoRamp.png'),
 }
 
 export function getSafeLayoutInsets(): EdgeInsets {

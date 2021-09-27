@@ -183,6 +183,34 @@ export const switchainConfig = {
   },
 }
 
+export const transakConfig = {
+  mainnet: {
+    url: 'https://global.transak.com',
+    apiKey: '',
+    apiSecret: '',
+    environment: 'PRODUCTION',
+  },
+  testnet: {
+    url: 'https://staging-global.transak.com',
+    apiKey: '',
+    apiSecret: '',
+    environment: '',
+  },
+}
+
+export const rampNetworkConfig = {
+  mainnet: {
+    api: 'https://api.ramp.network/api',
+    url: 'https://buy.ramp.network',
+    hostApiKey: '',
+  },
+  testnet: {
+    api: 'https://api-instant.ramp.network/api',
+    url: 'https://ri-widget-staging.firebaseapp.com/',
+    hostApiKey: '',
+  },
+}
+
 export const getSwitchainUrl = (): string => {
   return currentChain === 'columbus'
     ? switchainConfig.mainnet.url

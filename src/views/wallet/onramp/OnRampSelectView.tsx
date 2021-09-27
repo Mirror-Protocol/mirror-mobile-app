@@ -144,13 +144,65 @@ const TabAll = (props: {
               />
               <Separator style={{ marginVertical: SEPARATOR_MARGIN }} />
               <OnRampItem
-                logo={Resources.Images.iconCreditCard}
+                logo={Resources.Images.logoMoonpay}
                 logoStyle={{ width: 26, height: 18 }}
                 title={'MoonPay'}
                 onPress={() => props.moonpayDeposit()}
                 pending={
                   props.enableMoonpay !== undefined && !props.enableMoonpay
                 }
+                enabled={true}
+              />
+              <Separator style={{ marginVertical: SEPARATOR_MARGIN }} />
+              <OnRampItem
+                logo={Resources.Images.logoTransak}
+                logoStyle={{ width: 26, height: 18 }}
+                title={'Transak'}
+                onPress={() => {
+                  const onPressTransak = async () => {
+                    const config = Config.transakConfig.testnet
+
+                    const address = await Keychain.getDefaultAddress()
+                    const email = await Keychain.getUserEmail()
+                    const query = encodeQueryData({
+                      apiKey: config.apiKey,
+                      environment: config.environment,
+                      defaultCryptoCurrency: 'UST',
+                      email: email,
+                      walletAddress: address,
+                    })
+                    launchBrowser(`${config.url}?${query}`)
+                  }
+
+                  setLoading(true)
+                  onPressTransak().finally(() => setLoading(false))
+                }}
+                pending={false}
+                enabled={true}
+              />
+              <Separator style={{ marginVertical: SEPARATOR_MARGIN }} />
+              <OnRampItem
+                logo={Resources.Images.logoRamp}
+                logoStyle={{ width: 26, height: 18 }}
+                title={'Ramp'}
+                onPress={() => {
+                  const onPressRampNetwork = async () => {
+                    const config = Config.rampNetworkConfig.testnet
+                    const address = await Keychain.getDefaultAddress()
+                    const email = await Keychain.getUserEmail()
+                    const query = encodeQueryData({
+                      hostApiKey: config.hostApiKey,
+                      userAddress: address,
+                      userEmailAddress: email,
+                      swapAsset: 'TERRA_UST',
+                    })
+                    launchBrowser(`${config.url}?${query}`)
+                  }
+
+                  setLoading(true)
+                  onPressRampNetwork().finally(() => setLoading(false))
+                }}
+                pending={false}
                 enabled={true}
               />
             </>
