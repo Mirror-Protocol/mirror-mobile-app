@@ -9,7 +9,7 @@ import {
   LCDClient,
   Coin,
   MsgSend,
-  StdFee,
+  Fee,
   MsgExecuteContract,
   RawKey,
   MsgSwap,
@@ -174,7 +174,7 @@ export async function swap(pw: string, symbol: string, amount: BigNumber) {
   const tx = await wallet!!.createAndSignTx({
     msgs: [swap],
     memo: '',
-    fee: new StdFee(gas.toNumber(), [
+    fee: new Fee(gas.toNumber(), [
       new Coin(Keychain.baseCurrency, fee.toNumber()),
     ]),
   })
@@ -917,7 +917,7 @@ export async function buy(
   const tx = await wallet!!.createAndSignTx({
     msgs: [msg],
     memo: '',
-    fee: new StdFee(gas.toNumber(), [
+    fee: new Fee(gas.toNumber(), [
       new Coin(Keychain.baseCurrency, fee.plus(tax).toNumber()),
     ]),
   })
@@ -962,7 +962,7 @@ export async function sell(
   const tx = await wallet!!.createAndSignTx({
     msgs: [msg],
     memo: '',
-    fee: new StdFee(gas.toNumber(), [
+    fee: new Fee(gas.toNumber(), [
       new Coin(Keychain.baseCurrency, fee.toNumber()),
     ]),
   })
@@ -1015,7 +1015,7 @@ export async function burn(
   const tx = await wallet!!.createAndSignTx({
     msgs: msg,
     memo: '',
-    fee: new StdFee(gas.times(positions.length).toNumber(), [
+    fee: new Fee(gas.times(positions.length).toNumber(), [
       new Coin(Keychain.baseCurrency, fee.toNumber()),
     ]),
   })
@@ -1063,7 +1063,7 @@ export async function transfer(
   const tx = await wallet!!.createAndSignTx({
     msgs: [msg],
     memo: memo,
-    fee: new StdFee(gas.toNumber(), [
+    fee: new Fee(gas.toNumber(), [
       denom.startsWith('m') || denom.toLowerCase() === 'mir'
         ? new Coin(feeDenom, fee.plus(tax).toNumber())
         : new Coin(feeDenom, feeFromDenom(denom).plus(tax).toNumber()),
