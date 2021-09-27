@@ -1,10 +1,11 @@
 import _ from 'lodash'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import useMoonpay from './useMoonpay'
 import { SwitchainOfferPending, useSwitchainState } from './useSwitchain'
 import * as Utils from '../common/Utils'
 import * as Config from '../common/Apis/Config'
 import BigNumber from 'bignumber.js'
+import { TransakContext } from '../common/provider/TransakProvider'
 
 export interface PendingData {
   key: string
@@ -30,6 +31,9 @@ const usePending = () => {
     PendingData[]
   >([])
   const [moonpayPendingData, setMoonpayPendingData] = useState<PendingData[]>(
+    []
+  )
+  const [transakPendingData, setTransakPendingData] = useState<PendingData[]>(
     []
   )
 
@@ -90,8 +94,8 @@ const usePending = () => {
       })
       setCompleteData([...completeData])
     }
-    updatePending()
-    updateComplete()
+    // updatePending()
+    // updateComplete()
   }, [switchain.pendingOffers, switchain.completeOffers])
 
   useEffect(() => {
@@ -113,15 +117,44 @@ const usePending = () => {
     }
   }, [moonpay.enableMoonpay])
 
+  const transak = useContext(TransakContext)
+
   useEffect(() => {
-    setPendingData([...switchainPendingData, ...moonpayPendingData])
-  }, [switchainPendingData, moonpayPendingData])
+    if (transak.enableTransak !== undefined && !transak.enableTransak) {
+      const already = transakPendingData.find((p) => p.key === 'transak')
+      !already &&
+        transak.getOrder().then((order) => {
+          order &&
+            setTransakPendingData([
+              {
+                key: 'transak',
+                title: 'transak',
+                from: `${order.from} ${order.fromCurrency}`,
+                to: `${order.to} ${order.toCurrency}`,
+              },
+            ])
+        })
+    } else {
+      setTransakPendingData(
+        transakPendingData.filter((p) => p.key !== 'transak')
+      )
+    }
+  }, [transak.enableTransak])
+
+  useEffect(() => {
+    setPendingData([
+      ...switchainPendingData,
+      ...moonpayPendingData,
+      ...transakPendingData,
+    ])
+  }, [switchainPendingData, moonpayPendingData, transakPendingData])
 
   return {
     withdrawData,
     pendingData,
     completeData,
     moonpay,
+    transak,
     switchain,
     checkSwitchainComplete,
   }

@@ -14,7 +14,8 @@ import { WalletSummaryTab2 } from './WalletSummaryTab2'
 import ThrottleButton from '../../../component/ThrottleButton'
 import usePending from '../../../hooks/usePending'
 import { SwitchainPopupView } from '../../common/SwitchainPopupView'
-import { MoonpayPopupView } from '../../common/MoonpayPopupView'
+import { OnrampPopupView } from '../../common/OnrampPopupView'
+import { TransakContext } from '../../../common/provider/TransakProvider'
 
 export function WalletSummaryView(props: { navigation: any; route: any }) {
   const { setLoading } = useContext(LoadingContext)
@@ -26,6 +27,8 @@ export function WalletSummaryView(props: { navigation: any; route: any }) {
     moonpay,
     checkSwitchainComplete,
   } = usePending()
+
+  const transak = useContext(TransakContext)
 
   const [isLoaded, setLoaded] = useState(true)
   const [showAddressView, setShowAddressView] = useState(false)
@@ -248,8 +251,9 @@ export function WalletSummaryView(props: { navigation: any; route: any }) {
         />
       )}
 
-      {/* {moonpay.showMoonpayDepositPopup && (
-        <MoonpayPopupView
+      {moonpay.showMoonpayDepositPopup && (
+        <OnrampPopupView
+          title={'MoonPay'}
           onDismissPressed={() => {
             moonpay.setShowMoonpayDepositPopup(false)
           }}
@@ -258,7 +262,21 @@ export function WalletSummaryView(props: { navigation: any; route: any }) {
           navigation={props.navigation}
           route={props.route}
         />
-      )} */}
+      )}
+      {transak.showTransakDepositPopup &&
+        !!transak.transakAmount &&
+        !!transak.transakStatus && (
+          <OnrampPopupView
+            title={'Transak'}
+            onDismissPressed={() => {
+              transak.setShowTransakDepositPopup(false)
+            }}
+            amount={transak.transakAmount}
+            status={transak.transakStatus}
+            navigation={props.navigation}
+            route={props.route}
+          />
+        )}
       {completeData.length > 0 &&
         completeData.map((i) => {
           return (

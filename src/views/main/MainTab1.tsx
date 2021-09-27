@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback } from 'react'
 import { Image, View } from 'react-native'
 import * as Utils from '../../common/Utils'
 import * as Api from '../../common/Apis/Api'
@@ -103,8 +103,6 @@ export function MainTab1(props: {
             setChartLoading(false)
           })
       }
-
-      return () => {}
     }, [props.selectedTab, chartDataType])
   )
 

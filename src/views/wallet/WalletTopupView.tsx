@@ -20,7 +20,7 @@ import { launchBrowser } from '../../common/InAppBrowserHelper'
 import { NavigationView } from '../common/NavigationView'
 import { ConfigContext } from '../../common/provider/ConfigProvider'
 import ThrottleButton from '../../component/ThrottleButton'
-import { MoonpayPopupView } from '../common/MoonpayPopupView'
+import { OnrampPopupView } from '../common/OnrampPopupView'
 
 export function WalletTopupView(props: { navigation: any; route: any }) {
   const { translations } = useContext(ConfigContext)
@@ -178,7 +178,7 @@ export function WalletTopupView(props: { navigation: any; route: any }) {
       )}
 
       {showMoonpayDepositPopup && (
-        <MoonpayPopupView
+        <OnrampPopupView
           onDismissPressed={() => {
             setShowMoonpayDepositPopup(false)
           }}

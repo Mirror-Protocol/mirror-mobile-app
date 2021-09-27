@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 
 export const isDev = true
+export const logEnabled = false
 export const reviewApp = false
 
 export const hideOnboarding = reviewApp
@@ -186,30 +187,34 @@ export const switchainConfig = {
 export const transakConfig = {
   mainnet: {
     url: 'https://global.transak.com',
+    apiUrl: 'https://api.transak.com/api/v2',
     apiKey: '',
     apiSecret: '',
     environment: 'PRODUCTION',
+    pusherAppKey: '',
   },
   testnet: {
     url: 'https://staging-global.transak.com',
+    apiUrl: 'https://staging-api.transak.com/api/v2',
     apiKey: '',
     apiSecret: '',
-    environment: '',
+    environment: 'STAGING',
+    pusherAppKey: '',
   },
 }
 
-export const rampNetworkConfig = {
-  mainnet: {
-    api: 'https://api.ramp.network/api',
-    url: 'https://buy.ramp.network',
-    hostApiKey: '',
-  },
-  testnet: {
-    api: 'https://api-instant.ramp.network/api',
-    url: 'https://ri-widget-staging.firebaseapp.com/',
-    hostApiKey: '',
-  },
-}
+// export const rampNetworkConfig = {
+//   mainnet: {
+//     api: 'https://api.ramp.network/api',
+//     url: 'https://buy.ramp.network',
+//     hostApiKey: '',
+//   },
+//   testnet: {
+//     api: 'https://api-instant-staging.supozu.com/api',
+//     url: 'https://ri-widget-staging.firebaseapp.com/',
+//     hostApiKey: '',
+//   },
+// }
 
 export const getSwitchainUrl = (): string => {
   return currentChain === 'columbus'

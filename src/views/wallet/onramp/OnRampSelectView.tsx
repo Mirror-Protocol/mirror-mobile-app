@@ -15,7 +15,6 @@ import { getCryptoQuote } from '../../../common/Apis/Switchain'
 import * as Resources from '../../../common/Resources'
 import * as Keychain from '../../../common/Keychain'
 import * as Config from '../../../common/Apis/Config'
-import * as Api from '../../../common/Apis/Api'
 import { NavigationView } from '../../common/NavigationView'
 import { SelectItem } from '../../common/SelectPopup'
 import Separator from '../../common/Separator'
@@ -24,7 +23,7 @@ import {
   getPairName,
   useSwitchainMarketInfo,
 } from '../../../hooks/useSwitchain'
-import { MoonpayPopupView } from '../../common/MoonpayPopupView'
+import { OnrampPopupView } from '../../common/OnrampPopupView'
 import usePending, { PendingData } from '../../../hooks/usePending'
 import _ from 'lodash'
 import { SwitchainPopupView } from '../../common/SwitchainPopupView'
@@ -32,7 +31,7 @@ import { AddressPopupView } from '../../common/AddressPopupView'
 import { LoadingContext } from '../../../common/provider/LoadingProvider'
 import { launchBrowser } from '../../../common/InAppBrowserHelper'
 import { encodeQueryData } from '../../../common/Utils'
-import { AccAddress } from '@terra-money/terra.js'
+import { TransakContext } from '../../../common/provider/TransakProvider'
 
 const cryptoList: SelectItem[] = []
 // [
@@ -66,6 +65,8 @@ const TabAll = (props: {
   moonpayDeposit: () => void
   enableMoonpay?: boolean
   pendingData?: PendingData[]
+  enableTransak?: boolean
+  transakPartnerOrderId?: string
   onPressDeposit?: () => void
   withdraw?: boolean
 }) => {
@@ -160,27 +161,40 @@ const TabAll = (props: {
                 title={'Transak'}
                 onPress={() => {
                   const onPressTransak = async () => {
-                    const config = Config.transakConfig.testnet
+                    const config = Config.isDev
+                      ? Config.transakConfig.testnet
+                      : Config.transakConfig.mainnet
 
                     const address = await Keychain.getDefaultAddress()
-                    const email = await Keychain.getUserEmail()
+                    const email =
+                      (await Keychain.getLoginType()) !== 'apple'
+                        ? await Keychain.getUserEmail()
+                        : ''
                     const query = encodeQueryData({
                       apiKey: config.apiKey,
                       environment: config.environment,
                       defaultCryptoCurrency: 'UST',
+                      cryptoCurrencyList: 'UST',
+                      cryptoCurrencyCode: 'UST',
+                      networks: 'mainnet',
                       email: email,
                       walletAddress: address,
+                      partnerOrderId: props.transakPartnerOrderId,
                     })
-                    launchBrowser(`${config.url}?${query}`)
+                    const url = `${config.url}?${query}`
+                    console.log(url)
+                    launchBrowser(url)
                   }
 
                   setLoading(true)
                   onPressTransak().finally(() => setLoading(false))
                 }}
-                pending={false}
+                pending={
+                  props.enableTransak !== undefined && !props.enableTransak
+                }
                 enabled={true}
               />
-              <Separator style={{ marginVertical: SEPARATOR_MARGIN }} />
+              {/* <Separator style={{ marginVertical: SEPARATOR_MARGIN }} />
               <OnRampItem
                 logo={Resources.Images.logoRamp}
                 logoStyle={{ width: 26, height: 18 }}
@@ -195,8 +209,10 @@ const TabAll = (props: {
                       userAddress: address,
                       userEmailAddress: email,
                       swapAsset: 'TERRA_UST',
+                      finalUrl: 'mirrorapp://onramp_ramp',
                     })
-                    launchBrowser(`${config.url}?${query}`)
+                    const url = `${config.url}?${query}`
+                    launchBrowser(url)
                   }
 
                   setLoading(true)
@@ -204,7 +220,7 @@ const TabAll = (props: {
                 }}
                 pending={false}
                 enabled={true}
-              />
+              /> */}
             </>
           )}
           <Separator style={{ marginVertical: SEPARATOR_MARGIN }} />
@@ -363,6 +379,8 @@ const OnRampSelectView = (props: { route: any; navigation: any }) => {
     checkSwitchainComplete,
   } = usePending()
 
+  const transak = useContext(TransakContext)
+
   const TITLE_LEFT = 24
   const TITLE_TOP = 100 + insets.top
 
@@ -485,6 +503,8 @@ const OnRampSelectView = (props: { route: any; navigation: any }) => {
               navigation={props.navigation}
               moonpayDeposit={moonpay.moonpayDeposit}
               enableMoonpay={moonpay.enableMoonpay}
+              transakPartnerOrderId={transak.partnerOrderId}
+              enableTransak={transak.enableTransak}
               pendingData={isWithdraw ? withdrawData : pendingData}
               onPressDeposit={() => setShowAddressView(true)}
               withdraw={isWithdraw}
@@ -593,7 +613,8 @@ const OnRampSelectView = (props: { route: any; navigation: any }) => {
         />
       )}
       {moonpay.showMoonpayDepositPopup && (
-        <MoonpayPopupView
+        <OnrampPopupView
+          title={'MoonPay'}
           onDismissPressed={() => {
             moonpay.setShowMoonpayDepositPopup(false)
           }}
@@ -603,6 +624,20 @@ const OnRampSelectView = (props: { route: any; navigation: any }) => {
           route={props.route}
         />
       )}
+      {transak.showTransakDepositPopup &&
+        !!transak.transakAmount &&
+        !!transak.transakStatus && (
+          <OnrampPopupView
+            title={'Transak'}
+            onDismissPressed={() => {
+              transak.setShowTransakDepositPopup(false)
+            }}
+            amount={transak.transakAmount}
+            status={transak.transakStatus}
+            navigation={props.navigation}
+            route={props.route}
+          />
+        )}
       {completeData.length > 0 &&
         completeData.map((i) => {
           return (

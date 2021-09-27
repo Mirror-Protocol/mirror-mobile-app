@@ -72,14 +72,14 @@ export function WalletInfoView(props: { navigation: any }) {
         <EmailView email={email} loginType={loginType} />
         <View style={{ flex: 1 }} />
         <Logout
-          logoutPressed={() => {
-            Keychain.reset()
+          logoutPressed={async () => {
             props.navigation.dispatch(
               CommonActions.reset({
                 index: 1,
                 routes: [{ name: 'InitialView' }],
               })
             )
+            await Keychain.reset()
           }}
         />
         <View style={{ height: 17 + safeInsetBottom }} />

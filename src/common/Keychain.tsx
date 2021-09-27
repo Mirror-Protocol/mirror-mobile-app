@@ -42,7 +42,19 @@ enum PrefKeys {
   lastMoonpayStatus = 'lastMoonpayStatus',
   lastMoonpayOpen = 'lastMoonpayOpen',
   switchainStatus = 'switchainStatus',
+  transakOrder = 'transakOrder',
+  lastTransakStatus = 'lastTransakStatus',
+  lastTransakOrderId = 'lastTransakOrderId',
   doNotShowDelistNotice = 'doNotShowDelistNotice',
+}
+
+export type TransakOrder = {
+  id: string
+  status: string
+  from: string
+  fromCurrency: string
+  to: string
+  toCurrency: string
 }
 
 export const baseCurrency = 'uusd'
@@ -195,6 +207,38 @@ export async function removeSwitchainOffer(key: string) {
   ]
 
   preferences.setString(PrefKeys.switchainStatus, JSON.stringify(filter))
+}
+
+export async function setTransakLastOrderId(orderId: string) {
+  await preferences.setString(PrefKeys.lastTransakOrderId, orderId)
+}
+
+export async function getTransakLastOrderId(): Promise<string | undefined> {
+  return await preferences.getString(PrefKeys.lastTransakOrderId)
+}
+
+export async function setTransakLastStatus(status: String) {
+  await preferences.setString(PrefKeys.lastTransakStatus, status)
+}
+
+export async function getTransakLastStatus(): Promise<string | undefined> {
+  return await preferences.getString(PrefKeys.lastTransakStatus)
+}
+
+export async function setTransakOrder(orderId: TransakOrder) {
+  await preferences.setString(PrefKeys.transakOrder, JSON.stringify(orderId))
+}
+
+export async function getTransakOrder(): Promise<TransakOrder | undefined> {
+  try {
+    const order = await preferences.getString(PrefKeys.transakOrder)
+    return JSON.parse(order)
+  } catch {}
+  return undefined
+}
+
+export async function clearTransakOrder() {
+  await preferences.remove(PrefKeys.transakOrder)
 }
 
 export function setLocalePref(index: number) {
@@ -554,6 +598,9 @@ export async function reset() {
     await preferences.remove(PrefKeys.PasswordLock)
 
     await preferences.remove(PrefKeys.switchainStatus)
+    await preferences.remove(PrefKeys.transakOrder)
+    await preferences.remove(PrefKeys.lastTransakOrderId)
+    await preferences.remove(PrefKeys.lastTransakStatus)
     await clearMoonpayLastOpen()
     await clearMoonpayLastStatus()
 

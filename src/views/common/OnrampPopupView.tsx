@@ -9,7 +9,8 @@ import {
 import { ConfigContext } from '../../common/provider/ConfigProvider'
 import * as Keychain from '../../common/Keychain'
 
-export function MoonpayPopupView(props: {
+export function OnrampPopupView(props: {
+  title: string
   navigation: any
   route: any
   status: 'completed' | 'failed'
@@ -88,6 +89,7 @@ export function MoonpayPopupView(props: {
         }}
       >
         <Content
+          title={props.title}
           navigation={props.navigation}
           route={props.route}
           amount={props.amount}
@@ -100,6 +102,7 @@ export function MoonpayPopupView(props: {
 }
 
 const Content = (props: {
+  title: string
   navigation: any
   route: any
   amount: string
@@ -143,8 +146,8 @@ const Content = (props: {
             }}
           >
             {props.status === 'completed'
-              ? translations.moonpayPopupView.completedTitle
-              : translations.moonpayPopupView.failedTitle}
+              ? `${props.title} Deposit Completed`
+              : `${props.title} Deposit Failed`}
           </Text>
         </View>
 
@@ -185,7 +188,7 @@ const Content = (props: {
               marginBottom: 24,
             }}
           >
-            {translations.moonpayPopupView.failedMessage1}
+            {`Your ${props.title} transaction for `}
             {props.amount}
             <Text
               style={{
@@ -199,7 +202,7 @@ const Content = (props: {
             >
               {translations.moonpayPopupView.symbol}
             </Text>
-            {translations.moonpayPopupView.failedMessage2}
+            {` has failed. For more detailed information, please check your transaction details on the ${props.title} webpage.`}
           </Text>
         )}
         <View

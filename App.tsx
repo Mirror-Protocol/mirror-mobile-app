@@ -2,7 +2,11 @@ import 'react-native-gesture-handler'
 import React, { useContext, useEffect, useState } from 'react'
 import { View, StatusBar, Platform, NativeModules, Alert } from 'react-native'
 
-import { NavigationContainer } from '@react-navigation/native'
+import {
+  LinkingOptions,
+  NavigationContainer,
+  NavigationContainerRef,
+} from '@react-navigation/native'
 import {
   createStackNavigator,
   TransitionPresets,
@@ -61,6 +65,7 @@ import { RecoverQrView } from './src/views/init/RecoverQrView'
 import { RecoverPasswordView } from './src/views/init/RecoverPasswordView'
 import { RecoverPrivateKeyView } from './src/views/init/RecoverPrivateKeyView'
 import { RecoverWalletView } from './src/views/init/RecoverWalletView'
+import { TransakProvider } from './src/common/provider/TransakProvider'
 
 const App = () => {
   const [isLoadingChainConfig, setLoadingChainConfig] = useState(false)
@@ -134,7 +139,9 @@ const App = () => {
       <SafeAreaProvider>
         <LoadingProvider>
           <NotificationProvider>
-            <ContainerView />
+            <TransakProvider>
+              <ContainerView />
+            </TransakProvider>
           </NotificationProvider>
         </LoadingProvider>
       </SafeAreaProvider>
@@ -146,7 +153,7 @@ function ContainerView() {
   const { isShowNotification } = useContext(NotificationContext)
   const { isLoading } = useContext(LoadingContext)
 
-  const linking = {
+  const linking: LinkingOptions = {
     prefixes: ['mirrorapp://'],
     config: {
       screens: {
@@ -346,10 +353,14 @@ function MainScreenStack() {
         component={InvestedDetailView}
         options={{ headerShown: false }}
       />
-
       <MainStack.Screen
         name='InvestedNewsView'
         component={InvestedNewsView}
+        options={{ headerShown: false }}
+      />
+      <MainStack.Screen
+        name='OnRampItemDetailView'
+        component={OnRampItemDetailView}
         options={{ headerShown: false }}
       />
     </MainStack.Navigator>
