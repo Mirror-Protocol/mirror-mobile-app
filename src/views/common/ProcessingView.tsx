@@ -44,7 +44,7 @@ export function ProcessingView(props: { route: any; navigation: any }) {
   const [subMessageColor, setSubMessageColor] = useState('transparent')
   const [confirmEnable, setConfirmEnable] = useState(0)
 
-  const pollingTimer = useRef<number>()
+  const pollingTimer = useRef<NodeJS.Timer>()
   const pollingHash = (txhash: string, event?: any) => {
     if (queue.hash !== txhash) {
       queue.setHash(txhash)

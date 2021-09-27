@@ -22,14 +22,6 @@ export function QueueProvider(props: Props) {
   const [showTxQueued, setShowTxQueued] = useState<boolean>(false)
   const [hash, setHash] = useState<string>()
 
-  useEffect(() => {
-    console.log('context::hash', hash)
-  }, [])
-
-  useEffect(() => {
-    console.log('context::showTxQueued', showTxQueued)
-  }, [showTxQueued])
-
   return (
     <QueueContext.Provider
       value={{

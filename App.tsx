@@ -66,7 +66,6 @@ import { RecoverPasswordView } from './src/views/init/RecoverPasswordView'
 import { RecoverPrivateKeyView } from './src/views/init/RecoverPrivateKeyView'
 import { RecoverWalletView } from './src/views/init/RecoverWalletView'
 import { TransakProvider } from './src/common/provider/TransakProvider'
-import { initRemoteConfig } from './src/common/RemoteConfig'
 import {
   QueueContext,
   QueueProvider,
@@ -76,10 +75,6 @@ import QueueButton from './src/views/common/QueueButton'
 const App = () => {
   const [isLoadingChainConfig, setLoadingChainConfig] = useState(false)
   const [isRooted, setRooted] = useState(Config.isDev ? false : undefined)
-
-  useEffect(() => {
-    initRemoteConfig()
-  }, [])
 
   useEffect(() => {
     SplashScreen.hide()
@@ -103,7 +98,7 @@ const App = () => {
 
     const initChain = async () => {
       const chain = await Keychain.getCurrentChain()
-      Config.setCurrentChain(chain)
+      await Config.setCurrentChain(chain)
 
       const net = await Keychain.getCurrentTorusNet()
       Config.setTorusNetwork(net)

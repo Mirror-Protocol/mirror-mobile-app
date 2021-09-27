@@ -91,7 +91,7 @@ export async function setCurrentChain(chain: string) {
 export async function getCurrentChain() {
   const chain = await preferences.getString(PrefKeys.currentChain)
   if (chain === undefined || chain === '') {
-    return Config.isDev ? 'tequila' : 'columbus'
+    return Config.isDev ? 'testnet' : 'mainnet'
   }
 
   return chain

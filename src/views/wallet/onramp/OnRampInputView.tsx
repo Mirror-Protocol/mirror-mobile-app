@@ -52,7 +52,7 @@ const validateAddress = (address: string, denom: string): boolean => {
     WAValidator.validate(
       address,
       currency.name,
-      Config.currentChain === 'columbus' ? 'prod' : 'testnet'
+      Config.currentChain === 'mainnet' ? 'prod' : 'testnet'
     )
 
   return valid

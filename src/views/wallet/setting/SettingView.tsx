@@ -21,6 +21,7 @@ import ReactNativePickerModule from 'react-native-picker-module'
 import RNRestart from 'react-native-restart'
 import ThrottleButton from '../../../component/ThrottleButton'
 import DeviceInfo from 'react-native-device-info'
+import { Chain } from '../../../common/Apis/Config'
 
 export function SettingView(props: { navigation: any }) {
   const { translations, pw } = useContext(ConfigContext)
@@ -418,6 +419,14 @@ function SelectChain(props: { setChangeConfig: (b: boolean) => void }) {
   const pickerRef = useRef<ReactNativePickerModule | undefined>(undefined)
 
   const [currentChain, setCurrentChain] = useState('')
+
+  const chainItems: Chain[] = [
+    'mainnet',
+    'testnet',
+    'bombay',
+    'moonshine',
+    'tequila',
+  ]
   useEffect(() => {
     Keychain.getCurrentChain().then((chain) => {
       setCurrentChain(chain)
@@ -444,7 +453,7 @@ function SelectChain(props: { setChangeConfig: (b: boolean) => void }) {
       <ReactNativePickerModule
         pickerRef={pickerRef as any}
         value={currentChain}
-        items={['columbus', 'tequila']}
+        items={chainItems}
         onValueChange={(value) => {
           setCurrentChain(value)
           Keychain.setCurrentChain(value).then(() => {
