@@ -71,6 +71,8 @@ import {
   QueueProvider,
 } from './src/common/provider/QueueProvider'
 import QueueButton from './src/views/common/QueueButton'
+import MaintenanceView from './src/views/common/MaintenanceView'
+import { getJson } from './src/common/request'
 
 const App = () => {
   const [isLoadingChainConfig, setLoadingChainConfig] = useState(false)
@@ -127,6 +129,19 @@ const App = () => {
     isRooted === false && init()
   }, [isRooted])
 
+  /** Maintenance */
+  const [maintenance, setMaintenance] = useState<any>()
+
+  useEffect(() => {
+    getJson(Config.maintenance)
+      .then((ret) => {
+        setMaintenance(ret)
+      })
+      .catch((e) => {
+        setMaintenance({ maintenance: false })
+      })
+  }, [])
+
   return !isLoadingChainConfig ? (
     <View style={{ flex: 1, backgroundColor: Resources.Colors.black }}>
       <StatusBar
@@ -135,6 +150,8 @@ const App = () => {
       />
       <LoadingView />
     </View>
+  ) : maintenance !== undefined && maintenance.maintenance === true ? (
+    <MaintenanceView maintenance={maintenance} />
   ) : (
     <ConfigProvider>
       <StatusBar

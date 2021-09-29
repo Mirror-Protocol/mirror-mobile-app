@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { get } from '../request'
 
-export const isDev = true
-export const logEnabled = false
+export const isDev = false
+export const logEnabled = true
 export const reviewApp = false
 
 export const hideOnboarding = reviewApp
@@ -25,7 +25,17 @@ export async function setCurrentChain(chain: Chain): Promise<void> {
   setDomain()
 }
 
-export const agreement = 'https://mirror.finance/assets/json/agreement_v1.json'
+export const APPSTORE_URL = 'https://apps.apple.com/app/id1540542362'
+export const PLAYSTORE_URL =
+  'https://play.google.com/store/apps/details?id=io.kysenpool.mirror.android'
+
+export const version = isDev
+  ? 'https://mirror.finance/assets/json/version_staging_v2.json'
+  : 'https://mirror.finance/assets/json/version_v2.json'
+export const agreement = useOtherAgreement
+  ? 'https://mirror.finance/assets/json/agreement_other.json'
+  : 'https://mirror.finance/assets/json/agreement_v1.json'
+export const maintenance = 'https://mirror.finance/assets/json/maintenance.json'
 export const assetIconAddress = 'https://mirror.finance/assets/icon/$1@3x.png'
 export const spreadPage = 'https://docs.mirror.finance/protocol/terraswap'
 export const protocolDocumentation = 'https://help.mirrorwallet.com/'
@@ -56,10 +66,10 @@ let domain = {
   },
   bombay: {
     chainDomain: 'https://bombay-lcd.terra.dev',
-    chainId: 'bombay-11',
+    chainId: 'bombay-12',
 
     gqlMantleClientDomain: 'https://bombay-mantle.terra.dev',
-    gqlPriceClientDomain: 'https://tequila-graph.mirror.finance/graphql',
+    gqlPriceClientDomain: 'https://bombay-mirror-graph.terra.dev/graphql', // temporary
 
     assetsAddress: 'https://whitelist.mirror.finance/tequila.json', // same as tequila
 

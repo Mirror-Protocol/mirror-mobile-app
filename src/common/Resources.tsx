@@ -143,6 +143,9 @@ export const Images = {
   iconMinimizeG: require('../../assets/images/iconMinimizeG.png'),
   iconQueueLoading: require('../../assets/images/iconQueueLoading.png'),
   iconQueueComplete: require('../../assets/images/iconQueueComplete.png'),
+
+  maintenanceLogo: require('../../assets/images/maintenanceLogo.png'),
+  maintenanceProgress: require('../../assets/images/maintenanceProgress.png'),
 }
 
 export function getSafeLayoutInsets(): EdgeInsets {
