@@ -17,8 +17,6 @@ import { ConfigContext } from '../../common/provider/ConfigProvider'
 import * as Resources from '../../common/Resources'
 import * as Keychain from '../../common/Keychain'
 import * as Config from '../../common/Apis/Config'
-import remoteConfig from '@react-native-firebase/remote-config'
-import { getRemoteConfig, RemoteConfigKey } from '../../common/RemoteConfig'
 
 const dotPosition = 298
 
@@ -115,13 +113,7 @@ const SwiperView = () => {
   const { translations } = useContext(ConfigContext)
 
   const [slideContentY, setSlideContentY] = useState(0)
-  const [newOnboarding, setNewOnboarding] = useState(false)
-
-  // Remote config - onboarding A/B test
-  useEffect(() => {
-    const v = getRemoteConfig(RemoteConfigKey.newOnboarding)
-    setNewOnboarding(v.asBoolean())
-  }, [])
+  const [newOnboarding, setNewOnboarding] = useState(true)
 
   const w = Dimensions.get('window').width
   const h = Dimensions.get('window').height

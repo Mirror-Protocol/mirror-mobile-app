@@ -420,13 +420,7 @@ function SelectChain(props: { setChangeConfig: (b: boolean) => void }) {
 
   const [currentChain, setCurrentChain] = useState('')
 
-  const chainItems: Chain[] = [
-    'mainnet',
-    'testnet',
-    'bombay',
-    'moonshine',
-    'tequila',
-  ]
+  const chainItems: Chain[] = ['mainnet', 'testnet']
   useEffect(() => {
     Keychain.getCurrentChain().then((chain) => {
       setCurrentChain(chain)

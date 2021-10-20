@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { get } from '../request'
 
 export const isDev = false
-export const logEnabled = true
+export const logEnabled = false
 export const reviewApp = false
 
 export const hideOnboarding = reviewApp
@@ -17,7 +17,7 @@ export const changeInvestToMarket = reviewApp
 export const hideWalletCategory = reviewApp
 export const changeLoginButton = reviewApp
 
-export type Chain = 'mainnet' | 'testnet' | 'moonshine' | 'bombay' | 'tequila'
+export type Chain = 'mainnet' | 'testnet'
 export let currentChain: Chain | undefined = undefined
 export async function setCurrentChain(chain: Chain): Promise<void> {
   currentChain = isDev ? chain : 'mainnet'
@@ -42,53 +42,20 @@ export const protocolDocumentation = 'https://help.mirrorwallet.com/'
 const chains = 'https://assets.terra.money/chains.json'
 
 let domain = {
-  moonshine: {
-    chainDomain: 'https://moonshine-lcd.terra.dev',
-    chainId: 'moonshine',
-
-    gqlMantleClientDomain: 'https://moonshine-mantle.terra.dev/',
-    gqlPriceClientDomain: 'https://moonshine-graph.mirror.finance/graphql',
-
-    assetsAddress: 'https://whitelist.mirror.finance/moonshine.json',
-
-    gasPrices: 'https://moonshine-fcd.terra.dev/v1/txs/gas_prices',
-  },
-  tequila: {
-    chainDomain: 'https://tequila-lcd.terra.dev',
-    chainId: 'tequila-0004',
-
-    gqlMantleClientDomain: 'https://tequila-mantle.terra.dev',
-    gqlPriceClientDomain: 'https://tequila-graph.mirror.finance/graphql',
-
-    assetsAddress: 'https://whitelist.mirror.finance/tequila.json',
-
-    gasPrices: 'https://tequila-fcd.terra.dev/v1/txs/gas_prices',
-  },
-  bombay: {
+  testnet: {
     chainDomain: 'https://bombay-lcd.terra.dev',
     chainId: 'bombay-12',
 
     gqlMantleClientDomain: 'https://bombay-mantle.terra.dev',
-    gqlPriceClientDomain: 'https://bombay-mirror-graph.terra.dev/graphql', // temporary
-
-    assetsAddress: 'https://whitelist.mirror.finance/tequila.json', // same as tequila
-
-    gasPrices: 'https://bombay-fcd.terra.dev/v1/txs/gas_prices',
-  },
-  testnet: {
-    chainDomain: 'https://tequila-lcd.terra.dev',
-    chainId: 'tequila-0004',
-
-    gqlMantleClientDomain: 'https://tequila-mantle.terra.dev',
-    gqlPriceClientDomain: 'https://tequila-graph.mirror.finance/graphql',
+    gqlPriceClientDomain: 'https://bombay-graph.mirror.finance/graphql',
 
     assetsAddress: 'https://whitelist.mirror.finance/tequila.json',
 
-    gasPrices: 'https://tequila-fcd.terra.dev/v1/txs/gas_prices',
+    gasPrices: 'https://bombay-fcd.terra.dev/v1/txs/gas_prices',
   },
   mainnet: {
     chainDomain: 'https://lcd.terra.dev',
-    chainId: 'columbus-4',
+    chainId: 'columbus-5',
 
     gqlMantleClientDomain: 'https://mantle.terra.dev/',
     gqlPriceClientDomain: 'https://graph.mirror.finance/graphql',
@@ -121,15 +88,6 @@ function setDomain() {
   switch (currentChain as string) {
     case 'testnet':
       currentDomain = domain.testnet
-      break
-    case 'moonshine':
-      currentDomain = domain.moonshine
-      break
-    case 'tequila':
-      currentDomain = domain.tequila
-      break
-    case 'bombay':
-      currentDomain = domain.bombay
       break
     case 'columbus':
     default:
