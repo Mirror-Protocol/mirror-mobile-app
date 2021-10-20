@@ -22,6 +22,11 @@ import { validateMnemonic, getMnemonicKeys } from '@terra-money/key-utils'
 import * as Config from '../../common/Apis/Config'
 import { StackActions } from '@react-navigation/native'
 import BtnBackBlur from '../../component/BtnBackBlur'
+import {
+  LazyGradedVestingAccount,
+  LCDClient,
+  MnemonicKey,
+} from '@terra-money/terra.js'
 
 export const RecoverSeedView = (props: { navigation: any; route: any }) => {
   const { translations } = useContext(ConfigContext)
@@ -121,15 +126,69 @@ export const RecoverSeedView = (props: { navigation: any; route: any }) => {
     return count
   }
 
-  const createWallet = () => {
+  const createWallet = async () => {
     setAwait(true)
     hideKeyboard()
     setTimeout(async () => {
       try {
-        const keys = await getMnemonicKeys(trimMnemonicWords(mk), {
-          chainID: Config.currentDomain.chainID,
-          URL: Config.currentDomain.chainDomain,
+        const trimMk = trimMnemonicWords(mk)
+        const mk118 = new MnemonicKey({
+          mnemonic: trimMk,
+          coinType: 118,
         })
+        const mk330 = new MnemonicKey({
+          mnemonic: trimMk,
+          coinType: 330,
+        })
+
+        const getAssets = async (address: string) => {
+          const terra = new LCDClient({
+            URL: Config.currentDomain.chainDomain,
+            chainID: Config.currentDomain.chainId,
+          })
+          let acct = undefined
+          try {
+            acct = await terra.auth.accountInfo(address)
+          } catch (e) {}
+
+          let balance = undefined
+          try {
+            balance = await terra.bank.balance(address)
+          } catch (e) {}
+
+          let delegations = undefined
+          try {
+            delegations = await terra.staking.delegations(address)
+          } catch (e) {}
+
+          let unbondingDelegations = undefined
+          try {
+            unbondingDelegations = await terra.staking.unbondingDelegations(
+              address
+            )
+          } catch (e) {}
+
+          return {
+            vestingSchedules:
+              acct instanceof LazyGradedVestingAccount
+                ? acct.vesting_schedules
+                : undefined,
+            balance: balance?.[0],
+            delegations: delegations?.[0],
+            unbondingDelegations: unbondingDelegations?.[0],
+          }
+        }
+
+        const keys = {
+          118: {
+            mnemonicKey: mk118,
+            assets: await getAssets(mk118.accAddress),
+          },
+          330: {
+            mnemonicKey: mk330,
+            assets: await getAssets(mk330.accAddress),
+          },
+        }
 
         props.navigation.dispatch({
           ...StackActions.replace('SelectWalletView', { keys }),
