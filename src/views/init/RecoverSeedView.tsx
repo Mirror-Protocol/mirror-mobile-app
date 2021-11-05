@@ -18,7 +18,6 @@ import {
 import { ConfigContext } from '../../common/provider/ConfigProvider'
 import * as Resources from '../../common/Resources'
 import ThrottleButton from '../../component/ThrottleButton'
-import { validateMnemonic, getMnemonicKeys } from '@terra-money/key-utils'
 import * as Config from '../../common/Apis/Config'
 import { StackActions } from '@react-navigation/native'
 import BtnBackBlur from '../../component/BtnBackBlur'
@@ -27,6 +26,7 @@ import {
   LCDClient,
   MnemonicKey,
 } from '@terra-money/terra.js'
+import { validateMnemonic } from '../../libs/key-utils/mnemonic'
 
 export const RecoverSeedView = (props: { navigation: any; route: any }) => {
   const { translations } = useContext(ConfigContext)
